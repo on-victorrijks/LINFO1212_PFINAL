@@ -43,7 +43,8 @@ Pages a designer
 - Accueil
 - Résultats de recherche
 - Profil d'un kot
-- Modifier un kot / Settings
+- Modifier un kot
+- Modifier compte / Settings
 - Profil
 - Profil public
 - Créer un kot
