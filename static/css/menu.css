@@ -1,0 +1,378 @@
+.menu {
+    background: var(--color-bg-light);
+    width: 100vw;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.menu[mobileHidden="true"]{
+    display: none;
+}
+.menuElms{
+    padding: var(--padding-menu);
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 50px);
+}
+.logo {
+    width: 100%;
+    height: 6vh;
+    margin: 1vh 0 1vh 1vh;
+}
+.logo img{
+    height: 6vh;
+}
+.menuTopElements{
+    display: flex;
+    flex-direction: row;
+    height: 8vh;
+    margin-bottom: 8vh;
+}
+.registerorlogin{
+    margin-bottom: 60px;
+    flex-direction: row; 
+    display: flex;
+    background-color: var(--color-bg-light);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    -webkit-box-shadow: var(--shadow); 
+    box-shadow: var(--shadow); 
+    cursor: pointer;
+    transition: all .15s;
+    text-decoration: none;
+}
+.registerorlogin:hover{
+    -webkit-box-shadow: var(--shadow-strong); 
+    box-shadow: var(--shadow-strong);
+}
+.registerorlogin h1{
+    font-size: 18px;
+    text-align: center;
+    width: 100%;
+    color: var(--color-accentColor);
+}
+.user {
+    height: 6vh;
+    margin: 1vh;
+    flex-direction: row;
+    display: flex;
+    cursor: pointer;
+    transition: all .15s;
+    text-decoration: none;
+    margin-right: 10vh;
+}
+.userImage{
+    width: 6vh;
+    height: 6vh;
+    border-radius: 3vh;
+    overflow: hidden;
+}
+.userImage img{
+    width: 6vh;
+}
+.userText{
+    display: none;
+}
+.menuOptions{
+    flex-direction: column;
+    flex: 1;
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.menuOptions .option{
+    height: 6vh;
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+    flex-direction: row;
+    display: flex;
+    margin-bottom: 1vh;
+    opacity: 0.45;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--color-font-title);
+}
+.menuOptions .option:hover{
+    opacity: 0.7;
+}
+.option .optionImage{
+    width: 6vh;
+    height: 6vh;
+}
+.option .optionImage #unselected{
+    display: block;
+}
+.option .optionImage #selected{
+    display: none;
+}
+.option .optionImage img{
+    width: 4vh;
+    margin: 1vh;
+}
+.option .optionName{
+    flex: 1;
+    margin-left: 15px;
+    height: 6vh;
+}
+.option .optionName h2{
+    font-weight: 500;
+    line-height: 6vh;
+    vertical-align: middle;
+    font-size: 2vh;
+}
+/*selected*/
+.menuOptions .option[selected="true"]{
+    opacity: 1;
+    position: relative;
+}
+.menuOptions .option[selected="true"]::after{
+    content: "";
+    position: absolute;
+    left: calc(var(--padding-menu) * -1);
+    top: 1vh;
+    height: 4vh;
+    width: 2vw;
+    background-color: var(--color-accentColor);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.menuOptions .option[selected="true"] .optionName h2{
+    color: var(--color-accentColor);
+}
+.menuOptions .option[selected="true"] .optionImage #unselected{
+    display: none;
+}
+.menuOptions .option[selected="true"] .optionImage #selected{
+    display: block;
+}
+.otherBtns {
+    width: 90%;
+    margin: 0 5%;
+    display: flex;
+    flex-direction: column;
+    justify-self: flex-end;
+    height: 15vh;
+    justify-content: space-around;
+    cursor: pointer;
+}
+.otherBtns a:hover{
+    opacity: 0.8;
+}
+.otherBtns a{
+    text-decoration: none;
+    width: 6vh;
+    height: 6vh;
+}
+.otherBtns a img{
+    width: 4vh;
+    margin: 1vh;
+}
+.fixedBtn{
+    position: fixed;
+    width: 6vh;
+    height: 6vh;
+    border-radius: 3vh;
+    background-color: var(--color-bg-light);
+    -webkit-box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
+    right: calc(1vh + 25px);
+    top: calc(1vh + 25px);
+    z-index: 200;
+    cursor: pointer;
+}
+.fixedBtn img{
+    width: 3vh;
+    height: 3vh;
+    margin: 1.5vh;
+}
+.fixedBtn[hidden="true"]{
+    display: none;
+}
+.fixedBtn[hidden="false"]{
+    display: block;
+}
+#logo_long{
+    display: none;
+}
+#logo_mini{
+    display: block;
+}
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .menu{
+        background: var(--color-bg-light);
+        width: var(--width-menu);
+        position: fixed;
+        height: 96vh;
+        top: 2vh;
+        z-index: 100;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        -webkit-box-shadow: var(--shadow);
+        box-shadow: var(--shadow);
+    }
+    .user{
+        margin: 0;
+        height: unset;
+        margin-bottom: 60px;
+        flex-direction: row; 
+        display: flex;
+        background-color: var(--color-bg-light);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        -webkit-box-shadow: var(--shadow); 
+        box-shadow: var(--shadow); 
+        cursor: pointer;
+        transition: all .15s;
+        text-decoration: none;
+    }
+    .userImage{
+        width: 45px;
+        height: 45px;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .userImage img{
+        width: 45px;
+    }
+    .userText{
+        flex: 1;
+        margin-left: 15px;
+        display: flex;
+        flex-direction: column;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 35px;
+    }
+    .userText h1{
+        font-size: 16px;
+        line-height: 23px;
+        color: var(--color-font-title);
+    }
+    .userText h2{
+        font-size: 13px;
+        line-height: 12px;
+        color: var(--color-accentColor);
+        font-weight: 500;
+    }
+    .menuOptions .option{
+        height: 50px;
+        width: 100%;
+        padding-left: 5%;
+        padding-right: 5%;
+        flex-direction: row;
+        display: flex;
+        margin-bottom: 20px;
+        opacity: 0.45;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--color-font-title);
+    }
+    .menuOptions .option:hover{
+        opacity: 0.7;
+    }
+    .option .optionImage{
+        width: 50px;
+        height: 50px;
+    }
+    .option .optionImage #unselected{
+        display: block;
+    }
+    .option .optionImage #selected{
+        display: none;
+    }
+    .option .optionImage img{
+        width: 30px;
+        margin: 10px;
+    }
+    .option .optionName{
+        flex: 1;
+        margin-left: 15px;
+        height: 50px;
+    }
+    .option .optionName h2{
+        font-weight: 500;
+        line-height: 50px;
+        vertical-align: middle;
+        font-size: 18px;
+    }
+    /*selected*/
+    .menuOptions .option[selected="true"]{
+        opacity: 1;
+        position: relative;
+    }
+    .menuOptions .option[selected="true"]::after{
+        content: "";
+        position: absolute;
+        left: calc(var(--padding-menu) * -1);
+        top: 10px;
+        height: 30px;
+        width: 5px;
+        background-color: var(--color-accentColor);
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    .menuOptions .option[selected="true"] .optionName h2{
+        color: var(--color-accentColor);
+    }
+    .menuOptions .option[selected="true"] .optionImage #unselected{
+        display: none;
+    }
+    .menuOptions .option[selected="true"] .optionImage #selected{
+        display: block;
+    }
+    .otherBtns {
+        width: 90%;
+        margin: 0 5%;
+        display: flex;
+        flex-direction: column;
+        justify-self: flex-end;
+        height: 120px;
+        justify-content: space-around;
+        cursor: pointer;
+    }
+    .otherBtns a:hover{
+        opacity: 0.8;
+    }
+    .otherBtns a{
+        text-decoration: none;
+        width: 50px;
+        height: 50px;
+    }
+    .otherBtns a img{
+        width: 30px;
+        margin: 10px;
+    }
+    .logo{
+        width: 100%;
+        margin-bottom: 25px;
+    }
+    .logo img{
+        width: 80%;
+        margin: 5% 10%;
+    }
+    .menuTopElements{
+        display: flex;
+        flex-direction: column;
+    }
+    .fixedBtn{
+        display: none !important;
+    }
+    .menu[mobileHidden="true"]{
+        display: block;
+    }
+    .menuTopElements{
+        height: unset;
+        margin: unset;
+    }
+    #logo_long{
+        display: block;
+    }
+    #logo_mini{
+        display: none;
+    }    
+}
