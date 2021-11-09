@@ -219,6 +219,7 @@
         margin: 0;
         height: unset;
         margin-bottom: 60px;
+        margin-top: 30px;
         flex-direction: row; 
         display: flex;
         background-color: var(--color-bg-light);

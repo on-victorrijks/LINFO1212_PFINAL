@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>TITLE - PAGENAME</title>
+  <meta name="description" content="LINFO1212">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../css/vars.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/kot_profile.css">
+  <link rel="stylesheet" href="../css/footer.css">
+
+</head>
+<body>
+
+    <div class="menuContainer">
+        <div class="fixedBtn" id="mobileOpen">
+            <img src="../imgs/icons/menu_black_24dp.svg" alt="logo"/>
+        </div>
+        <div class="fixedBtn" id="mobileClose" hidden="true">
+            <img src="../imgs/icons/close_black_24dp.svg" alt="logo"/>
+        </div>
+    
+        <div class="menu" id="menu" mobileHidden="true">
+    
+            <div class="menuElms">
+    
+                <div class="menuTopElements">
+                    <div class="logo">
+                        <img src="../imgs/logo.svg" id="logo_long" alt="logo"/>
+                        <img src="../imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                    </div>
+                    <!--
+                    <a class="registerorlogin" href="/register_login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    -->
+                    <a class="user" href="/account">
+                        <div class="userImage">
+                            <img src="../imgs/user.png" alt="user"/>
+                        </div>
+                        <div class="userText">
+                            <h1>Firstname Lastname</h1>
+                            <h2>Mon compte</h2>
+                        </div>
+                    </a>
+                </div>
+                <div class="menuOptions">
+    
+                    <a class="option" selected="false" href="/">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/search_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/search_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Accueil</h2>
+                        </div>
+                    </a>
+                    
+                    <a class="option" selected="true" href="/favs">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/favorite_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/favorite_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes favoris</h2>
+                        </div>
+                    </a>
+    
+                    <a class="option" selected="false" href="/publish">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/add_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/add_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Publier un kot</h2>
+                        </div>
+                    </a>
+    
+                    <a class="option" selected="false" href="/mykots">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/home_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/home_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes kots</h2>
+                        </div>
+                    </a>
+    
+                    <a class="option" selected="false" href="/contact">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/call_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/call_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Contact</h2>
+                        </div>
+                    </a>
+    
+                </div>
+    
+                <div class="otherBtns">
+                    <a href="/settings">
+                        <img src="../imgs/icons/settings_black_24dp.svg" alt="settings"/>
+                    </a>
+                    <a href="/disconnect">
+                        <img src="../imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
+                    </a>
+                </div>
+    
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="g-background">
+
+        <div class="g-content">
+
+            <div class="topBar">
+                <a class="topTitle" href="/search">
+                    <img src="../imgs/icons/arrow_back_ios_black_24dp.svg" alt="back_arrow">
+                    <h1>Retourner à la recherche</h1>
+                </a>
+                <div class="topIcons">
+                    <button id="share">
+                        <img src="../imgs/icons/ios_share_black_24dp.svg" alt="share">
+                    </button>
+                </div>
+            </div>
+
+            <div class="columnsContainer">
+                <div class="kotInfos">
+
+                    <div class="carrousel">
+                        <img alt="carrouselImage1" src="../imgs/temp/appart.jpg">
+                        <div class="controls">
+                            <div class="bubble" selected="false"></div>
+                            <div class="bubble" selected="true"></div>
+                            <div class="bubble" selected="false"></div>
+                            <div class="bubble" selected="false"></div>
+                            <div class="bubble" selected="false"></div>
+                            <div class="bubble" selected="false"></div>
+                        </div>
+                        <button class="favBtn" id="fav" inFavs="false">
+                            <img id="fav_true" src="../imgs/icons/favorite_black_24dp_selected.svg" alt="share">
+                            <img id="fav_false" src="../imgs/icons/favorite_border_black_24dp.svg" alt="share">
+                        </button>
+                    </div>
+
+                    <div class="informationsContainer">
+                        <div class="mainInformations">
+                            <h1>Appartement de 100m2 en plein centre de LLN</h1>
+                            <h2>18 Grand Place, 1120, Louvain-La-Neuve</h2>
+                        </div>
+                        <div class="sideInformations">
+                            <h2>1000€</h2>
+                            <h3>+ 50€</h3>
+                        </div>
+                    </div>
+
+                    <h1 class="infosLabel">Description</h1>
+                    <div class="descriptionContainer">
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. 
+                            <br /><br />
+                            Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus 
+                            et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,<br /><br /> 
+                            ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis 
+                            vitae, justo. Nullam dictum felis eu pede mollis 
+                            pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, 
+                            consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. 
+                            <br /><br />
+                            Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, 
+                            tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar,
+                        </p>
+                    </div>
+
+                    <div class="lineSeparator"></div>
+
+                    <h1 class="infosLabel">Voir sur la carte</h1>
+                    <div class="mapShower">
+                        <div id="map"></div>
+                    </div>
+
+                    <h1 class="infosLabel">Autres informations</h1>
+                    <div class="otherInformations">
+                        <div class="infosColumn">
+
+                            <h2>Spécifications du batîment</h2>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/bedroom_parent_black_24dp.svg">
+                                <h3>5 chambres</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/bathroom_black_24dp.svg">
+                                <h3>2 salles de bain</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/wc_black_24dp.svg">
+                                <h3>1 toilette</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/maps_home_work_black_24dp.svg">
+                                <h3>Type du batîment : Appartement</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/square_foot_black_24dp.svg">
+                                <h3>Surface : 75m²</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/house_siding_black_24dp.svg">
+                                <h3>1 étage</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/construction_black_24dp.svg">
+                                <h3>Année de construction : 2006</h3>
+                            </div>
+
+                            <div class="spacer"></div>
+
+                            <h2>Autres</h2>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/lock_open_black_24dp.svg">
+                                <h3>Kot habitable dés le : 05/11/2021</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/chair_black_24dp.svg">
+                                <h3>Kot meublé</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/pets_black_24dp.svg">
+                                <h3>Petits animaux autorisés</h3>
+                            </div>
+
+                        </div>
+                        <div class="infosColumn">
+
+                            <h2>Informations sur la collocation</h2>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/groups_black_24dp.svg">
+                                <h3>Ce kot est proposé comme une collocation</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/person_add_black_24dp.svg">
+                                <h3>2/5 collocataires trouvés</h3>
+                            </div>
+
+                            <div class="spacer"></div>
+
+                            <h2>Informations sur l'éxtérieur</h2>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/local_parking_black_24dp.svg">
+                                <h3>2 places de parking</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/yard_black_24dp.svg">
+                                <h3>Kot avec un jardin</h3>
+                            </div>
+                            <div class="infoRow">
+                                <img alt="" src="../imgs/icons/deck_black_24dp.svg">
+                                <h3>Kot avec une terrace</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="creatorInfos">
+                    <div class="creatorBox">
+                        <div class="creatorProfilPicContainer">
+                            <div class="creatorProfilPic">
+                                <img alt="creator_profilPic" src="https://randomuser.me/api/portraits/men/43.jpg"/>
+                            </div>
+                        </div>
+                        <div class="creatorInfos">
+                            <h1>Daniel James</h1>
+                            <h3>(+32) 470 50 12 65</h3>
+                            <h3>daniel.james@email.com</h3>
+                        </div>
+                    </div>
+                    <div class="tagsAndButtonsContainer">
+                        <a href="/userProfile?userID=TO_BE_DEFINED">Voir le profil</a>
+                        <div class="tag">
+                            <img alt="dispo_icon" src="../imgs/icons/done_black_24dp.svg"/>
+                            <h2>Kot disponible</h2>
+                        </div>
+                        <div class="tag">
+                            <img alt="dispo_icon" src="../imgs/icons/close_black_24dp.svg"/>
+                            <h2>Kot non-disponible</h2>
+                        </div>
+                        <div class="tag">
+                            <img alt="dispo_icon" src="../imgs/icons/edit_black_24dp.svg"/>
+                            <h2>Annonce modifiée</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+        </div>
+
+    </div>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
+      async
+    ></script>
+    <script src="../js/menu.js"></script>
+    <script src="../js/kot_profile.js"></script>
+
+</body>
+

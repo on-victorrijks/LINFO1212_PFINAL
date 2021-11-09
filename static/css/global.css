@@ -3,12 +3,14 @@
     margin: 0;
 }
 .g-background{
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     width: 100vw;
     min-height: 100vh;
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-light);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .g-content{
     position: absolute;

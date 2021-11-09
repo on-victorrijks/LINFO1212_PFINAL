@@ -207,7 +207,6 @@ label.filtersTitle {
     label.filtersTitle {
         display: block;
         font-weight: bold;
-        vertical-align: middle;
         width: unset;
         padding: 8px 16px;
         line-height: 25px;
