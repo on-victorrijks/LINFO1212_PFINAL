@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <form action="/api/createUser" method="POST">
+
+        <label for="type">Type du comtpe</label>
+        <select name="type" required>
+          <option value="resident">Je recherche un kot</option>
+          <option value="landlord">Je suis un propriétaire</option>
+        </select>
+
+        <label for="firstname">Prénom</label>
+        <input type="text" name="firstname" placeholder="Prénom" required/>
+
+        <label for="lastname">Nom</label>
+        <input type="text" name="lastname" placeholder="Nom" required/>
+
+        <label for="email">Adresse email</label>
+        <input type="email" name="email" placeholder="Adresse email" required/>
+
+        <label for="phonenumber">Numéro de téléphone</label>
+        <input type="number" name="phonenumber" placeholder="0450675036" required/>
+
+        <label for="companyName">Nom de votre société</label>
+        <input type="text" name="companyName" placeholder="Nom de votre société"/>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" placeholder="********" required/>
+
+        <label for="password_verif">Vérification du mot de passe</label>
+        <input type="password" name="password_verif" placeholder="********" required/>
+        
+        <button type="submit">Créer le compte</button>
+    </form>
+
+</body>
+
+<style>
+    form{
+        display: flex;
+        flex-direction: column;
+    }
+    label{
+        margin-top: 25px;
+    }
+    input, select{
+        padding: 10px;
+    }
+    input[required], select[required]{
+        border-color: red;
+    }
+</style>

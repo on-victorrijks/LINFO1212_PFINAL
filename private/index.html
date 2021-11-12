@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    {{#user}}
+    <div>
+        <h2>Vous êtes connecté</h2>
+        <div class="profilPicture">
+            <img src="https://localhost:8080/users/profilPicture/{{user._id}}"/>
+        </div>
+        <span>{{user.firstname}}</span>
+        <span>{{user.lastname}}</span>
+        <span>{{user.createdOn}}</span>
+        <span>{{user.email}}</span>
+        <span>{{user.phonenumber}}</span>
+        <span>{{user.profilPicture}}</span>
+        <span>{{user.type}}</span>
+        <span>{{user.companyName}}</span>
+        <a href="/account/settings">Paramètres</a>
+        <a href="/disconnect">Déconnexion</a>
+    </div>
+    {{/user}}
+    {{^user}}
+    <div>
+        <h2>Vous n'êtes pas connecté</h2>
+        <a href="/register">Créer un compte</a>
+        <a href="/login">Connexion</a>
+    </div>
+    {{/user}}
+
+</body>
+
+<style>
+    div{
+        display: flex;
+        flex-direction: column;
+    }
+    .profilPicture{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+    }
+    .profilPicture img{
+        position: absolute;
+        left: 0;right: 0;
+        top: 0;bottom: 0;
+        margin: auto;
+        width: 100%;
+    }
+</style>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <form action="/api/loginUser" method="POST">
+
+        <label for="email">Adresse email</label>
+        <input type="email" name="email" placeholder="Adresse email" required/>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" placeholder="********" required/>
+        
+        <button type="submit">Connexion</button>
+    </form>
+
+</body>
+
+<style>
+    form{
+        display: flex;
+        flex-direction: column;
+    }
+    label{
+        margin-top: 25px;
+    }
+    input, select{
+        padding: 10px;
+    }
+    input[required], select[required]{
+        border-color: red;
+        border-width: 1;
+    }
+</style>
