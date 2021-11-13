@@ -8,6 +8,7 @@ import fs from "fs";
 import multer from "multer";
 import path from "path";
 import url from 'url';
+import cors from 'cors';
 
 const MongoClient = mongodb.MongoClient;
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -20,12 +21,16 @@ import { getUser } from './functions/users/getUser.js';
 import { logoutUser } from './functions/users/logoutUser.js';
 import { modifyUser } from './functions/users/modifyUser.js';
 import { modifyUserProfilPicture } from './functions/users/modifyUserProfilPicture.js';
+// Kots imports
+import { createKot } from './functions/kots/createKot.js';
+import { getKot } from './functions/kots/getKot.js';
 // Technicals imports
-import { getConnectedUserID } from './functions/technicals/technicals.js';
+import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
 
 
 ////// Multer
 const profilPicturesPath = path.join(__dirname, "/users/uploads/");
+const kotsPicturesPath = path.join(__dirname, "/kots/uploads/");;
 const upload = multer({
     dest: profilPicturesPath
 });
@@ -39,6 +44,7 @@ app.engine('html', consolidate.hogan)
 app.set('views', 'private');
 app.use(express.static('static'));
 app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(cors());
 app.use(session({
   secret: "test",
   resave: false,
@@ -103,6 +109,60 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         }
     })
 
+    app.post('/api/kot/create', upload.array("pictures", 10), (req, res, next) => {
+
+        const userID = getConnectedUserID(req);
+        if(userID==="") return res.redirect("/login?error=CONNECTION_NEEDED");
+
+        let pictures = req.files;
+        let filteredPicturesName = [];
+
+        // Vérifications des fichiers uploadés
+        let mainPictureIndex = 0;
+        let mainPictureName = (req && req.body && req.body.mainPictureName) ? req.body.mainPictureName : pictures[0].mainPictureName;
+
+        for (let i = 0; i < pictures.length; i++) {
+            const picture = pictures[i];
+            // Le fichier est trop gros (size > 8mb), ou il n'est pas dans un format accepté, ou c'est un doublon
+            if(!["image/jpeg", "image/jpg", "image/png"].includes(picture.mimetype) || picture.size > 8000000 || filteredPicturesName.includes(picture.originalname)){
+                pictures.splice(i, 1);
+                i -= 1;
+            } else {
+                filteredPicturesName.push(picture.originalname);
+                if(picture.originalname===mainPictureName) {
+                    mainPictureIndex = i;
+                }
+            }
+        }
+
+        if(pictures.length===0) return res.redirect("/kot/create/?error=PICTURE_NEEDED");
+
+        createKot(database, req, mainPictureIndex, filteredPicturesName, (result) => {
+            if(Array.isArray(result)){
+                const newKotID = result[0];
+
+                pictures.forEach(picture => {
+                    const tempPath = picture.path;
+                    const imageExtension = path.extname(picture.originalname).toLowerCase();
+                    const imageName = newKotID + "_" + picture.originalname;
+                    const targetPath = path.join(kotsPicturesPath, imageName);
+            
+                    if ([".png", ".jpeg", ".jpg"].includes(imageExtension)) {
+                        fs.rename(tempPath, targetPath, () => {});
+                    } else {
+                        fs.unlink(tempPath, () => {});
+                    }
+                });
+
+                return res.redirect("/kot/profile/"+newKotID.toString());
+
+            } else {
+                return res.send(result.toString());
+            }
+        });
+
+    })
+
     // ------------  VIEWS  ------------
 
     app.get('/', (req, res, next) => {
@@ -159,6 +219,70 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         });
     })
 
+    app.get('/kot/create', (req, res, next) => {
+        const params = {
+            page: {
+                title: "Créer un kot",
+                description: "Créer un kot"
+            }
+        }
+        getUser(database, getConnectedUserID(req), (connectedUser) => {
+            params.user = connectedUser;
+            res.render('createKot.html', params);
+        });
+    })
+
+    app.get('/kot/profile/:kotID', (req, res, next) => {
+
+        const connectedUserID = getConnectedUserID(req);
+
+        const params = {
+            page: {
+                title: "Profil d'un kot",
+                description: "Profil d'un kot",
+                kot: null,
+                creatorData: null,
+                isConnectedUserTheCreator: false,
+            }
+        }
+        getKot(database, req.params.kotID, (kotData) => {
+
+            if(!kotData) return res.redirect("/?error=BAD_KOTID");
+
+            kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
+            kotData.availability = formatDate(kotData.availability)
+            if(kotData.petFriendly==="small"){
+                kotData.petFriendly = "Petits animaux autorisés";
+            } else if(kotData.petFriendly==="big"){
+                kotData.petFriendly = "Grands animaux autorisés";
+            } else {
+                kotData.petFriendly = "Pas d'animaux autorisés";
+            }
+
+            // On génère picturesUsableData avec un structure plus facilement utilisable pour créer le carrousel d'images
+            let picturesUsableData = [];
+            for (let index = 0; index < kotData.pictures.length; index++) {
+                picturesUsableData.push({
+                    imageName: kotData.pictures[index],
+                    index: index,
+                    isMainImage: index===kotData.mainPictureIndex
+                });                 
+            }
+            kotData.pictures = picturesUsableData;
+
+            getUser(database, kotData.creatorID, (creatorData) => {
+                params.isConnectedUserTheCreator = connectedUserID && kotData.creatorID.toString()===connectedUserID
+                params.title = kotData.title;
+                params.creatorData = creatorData;
+                params.kot = kotData;
+                res.render('kot_profile.html', params);
+            })
+
+        });
+    })
+
+    // ------------  FILES  ------------
+
     app.get('/users/profilPicture/:userID', function (req, res) {
         getUser(database, req.params.userID, (user) => {
             if(user && user.profilPicture !== "$DEFAULT"){
@@ -170,8 +294,13 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         });
     });
 
+    app.get('/users/kots/images/:imageName', function (req, res) {
+        res.sendFile(path.join(kotsPicturesPath, req.params.imageName));
+    });
+
     
-    
+    // ------------  ERROR404  ------------
+
     app.get('*', (req, res) => {
         res.render('404error.html');
     });

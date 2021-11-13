@@ -6,10 +6,23 @@ function initMap() {
       disableDefaultUI: true,
     }); 
 
-    const marker = new google.maps.Marker({
-        position: {lat: 50.66786525392885, lng: 4.611996765955197},
+
+    const kot_lat = parseFloat(document.getElementById("kot_localisation_lat").value);
+    const kot_lng = parseFloat(document.getElementById("kot_localisation_lng").value);
+
+    const markerKot = new google.maps.Marker({
+        position: {lat: kot_lat, lng: kot_lng},
         map: map,
-        icon: "https://i.postimg.cc/6phnCM88/marker-house.png"
+        icon: "https://i.postimg.cc/6phnCM88/marker-house.png",
+        title: "Emplacement du kot"
+    });
+
+    google.maps.event.addListener(markerKot, 'click', function() {
+        infowindow.open(map,markerKot);
+    });
+
+    var infowindow = new google.maps.InfoWindow({
+        content: "<b>Emplacement du kot</b>"
     });
 
     /*
@@ -99,3 +112,10 @@ favBTN.addEventListener("click", (e) => {
     }
     favBTN.setAttribute("inFavs", (!isFav).toString());
 });
+
+function setCarrouselImage(index) {
+    document.querySelector('.carrousel img[main="true"]').setAttribute("main", "false");
+    document.querySelector('.carrousel .bubble[selected="true"]').setAttribute("selected", "false");
+    document.querySelector('#carrouselImage'+index).setAttribute("main", "true");
+    document.querySelector('#carrouselBubble'+index).setAttribute("selected", "true");
+}

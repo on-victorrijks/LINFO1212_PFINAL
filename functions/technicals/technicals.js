@@ -1,5 +1,21 @@
 import { ObjectId } from 'mongodb';
 
+// Constants
+const MONTHS = [
+    "janvier",
+    "février",
+    "mars",
+    "avril",
+    "mai",
+    "juin",
+    "juillet",
+    "aout",
+    "septembre",
+    "octobre",
+    "novembre",
+    "décembre"
+];
+
 export const isPasswordValid = (password) => {
     /*
         DEF  : On vérifie si le paramètre password est utilisable, d'une longueur supérieure ou égale à 6 est inférieure ou égale a 256
@@ -58,4 +74,73 @@ export const getConnectedUserID = (req) => {
         POST : string|undefined
     */
     return req && req.session && req.session.userID
+}
+
+export const cutString = (val, max) => {
+    /*
+        DEF  : On renvoie une version coupé du paramètre val de longueur maximale max caractère
+        PRE  : string (any) | max (number)
+        POST : string
+    */
+    try {
+        let string = val.toString();
+        return string.slice(0,max);
+    } catch {
+        return "UNKNOWN";
+    }
+}
+
+export const toFloat = (val, def=0.0) => {
+    /*
+        DEF  : On tente de transformer le paramètre val en float, si on ne peut pas on renvoie le paramètre def
+        PRE  : var (any) | def (float)
+        POST : float
+    */
+    try {
+        let float = parseFloat(val);
+        if(isNaN(float)) return def;
+        return float;
+    } catch {
+        return def;
+    }
+}
+
+export const toBoolean = (val) => {
+    /*
+        DEF  : On convertit le paramètre val en boolean selon la règle interne ("true"=true & any=false)
+        PRE  : var (any)
+        POST : boolean
+    */
+   if(val==="true"){
+       return true
+   }
+   return false
+}
+
+
+export const toInt = (val, min, max, def=0) => {
+    /*
+        DEF  : On tente de transformer le paramètre val en integer comprit entre les paramètres min et max, si on ne peut pas on renvoie def
+        PRE  : var (any) | min (integer) | max (integer) | def (integer)
+        POST : integer
+    */
+    try {
+        let integer = parseInt(val);
+        if(isNaN(integer)) return def;
+        if(integer < min) return def;
+        if(integer > max) return def;
+        return integer;
+    } catch {
+        return def;
+    }
+}
+
+export const formatDate = (date) => {
+    /*
+        DEF  : On renvoie la date donnée formatté pour être plus lisible
+        PRE  : date (date sous un format autre que Date (ex: number))
+        POST : string
+    */
+    const mDate = new Date(date);
+    return mDate.getDate() + " " + MONTHS[mDate.getMonth()] + " " + mDate.getFullYear();
 }

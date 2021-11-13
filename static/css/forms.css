@@ -1,0 +1,56 @@
+
+input, select, textarea{
+    background-color: rgb(231, 231, 231);
+    border-radius: 5px;
+    padding: 22px;
+    font-size: 15px;
+    color: black;
+    border: none;
+}
+textarea{
+    min-width: calc(100% - 44px);
+    max-width: calc(100% - 44px);
+    width: calc(100% - 44px);
+    min-height: 100px;
+    max-height: 500px;
+}
+label{
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    position: relative;
+}
+label[required]::after{
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    margin: 25px;
+}
+label{
+    margin-top: 25px;
+}
+button{
+    background-color: rgb(99, 145, 54);
+    border-radius: 5px;
+    padding: 22px;
+    font-size: 15px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+hr{
+    margin-top: 25px;
+}

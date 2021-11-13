@@ -8,7 +8,7 @@ import { log, toObjectID } from '../technicals/technicals.js';
 
 export const getUser = (database, userID, callback) => {
     /*
-        DEF  : On cherche un utilisateur avec l'userID fourni et on callback soit null si il n'existe pas, soit ses donénes (sans hashedPassword)
+        DEF  : On cherche un utilisateur avec l'userID fourni et on callback soit null si il n'existe pas, soit ses données (sans hashedPassword)
         PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) | callback (Function(False|string))
         CALLBACK : null|données de l'utilisateur demandé
     */

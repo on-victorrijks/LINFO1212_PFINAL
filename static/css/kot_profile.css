@@ -76,9 +76,16 @@
 }
 .carrousel img{
     width: 100%;
+    height: 100%;
+    object-fit: contain;
     position: absolute;
     top: 0;bottom: 0;left: 0;right: 0;
     margin: auto;
+    opacity: 0;
+    transition: opacity 1s;
+}
+.carrousel img[main="true"]{
+    opacity: 1;
 }
 .carrousel .controls{
     position: absolute;
@@ -87,7 +94,6 @@
     bottom: 15px;
     display: flex;
     flex-direction: row;
-    width: 150px;
     justify-content: center;
     background-color: rgba(0,0,0,0.7);
     border-radius: var(--border-radius-small);
@@ -136,6 +142,7 @@
 }
 .favBtn img{
     width: 40px;
+    opacity: 1;
 }
 .favBtn[inFavs="true"] #fav_true{
     display: block;
@@ -213,6 +220,7 @@
     font-size: 16px;
     line-height: 22px;
     color: var(--color-font-text);
+    white-space: pre-line;
 }
 
 #map{
@@ -289,9 +297,12 @@
     overflow: hidden;
     -webkit-box-shadow: var(--shadow); 
     box-shadow: var(--shadow); 
+    position: relative;
 }
 .creatorProfilPic img{
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .creatorInfos{
     flex: 1;
@@ -361,6 +372,12 @@
     text-decoration: none;
     text-align: center;
     margin-bottom: 15px;
+    transform: scale(1);
+    transition: transform .2s;
+}
+.tagsAndButtonsContainer a:hover{
+    transform: scale(1.05);
+    opacity: .8;
 }
 .tagsAndButtonsContainer .tag{
     display: flex;
@@ -384,6 +401,20 @@
     height: 25px;
     width: 25px;
     margin: 10px;
+}
+.no-kot{
+    position: absolute;
+    left: 0;right: 0;
+    top: 0;bottom: 0;
+    margin: auto;
+    width: 330px;
+    height: 100px;
+}
+.no-kot h2{
+    font-weight: 500;
+    text-align: center;
+    width: 330px;
+    line-height: 100px;
 }
 
 /*TABLET VERSION*/
@@ -482,9 +513,6 @@
         -webkit-box-shadow: var(--shadow); 
         box-shadow: var(--shadow); 
     }
-    .creatorProfilPic img{
-        width: 100%;
-    }
     .creatorInfos{
         width: 100%;
         display: flex;
@@ -511,6 +539,7 @@
         color: var(--color-font-title);
         font-size: 30px;
         text-align: center;
+        max-width: 250px;
     }
     .creatorBox h3{
         letter-spacing: 1px;

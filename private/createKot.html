@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/forms.css">
+
+</head>
+<body>
+
+    <h1>Créer un kot</h1>
+    
+    {{#user}}
+    <form action="/api/kot/create" method="POST" enctype="multipart/form-data" id="createKotForm">
+
+        <div class="form-alert" id="form-alert">
+            
+        </div>
+
+        <label for="title" required>Titre</label>
+        <input type="text" name="title" placeholder="Titre" required/>
+
+        <label for="description" required>Description</label>
+        <textarea name="description" placeholder="Description" required></textarea>
+
+        <label for="localisation" required>Localisation</label>
+        <div class="searchLocalisation">
+            <input type="text" name="localisation" placeholder="Localisation" id="searchLocalisationField" required/>
+            <button type="button" id="searchLocalisationButton">Chercher</button>
+            <div class="searchLocalisationResults" id="searchLocalisationResults">
+
+            </div>
+            <input type="hidden" name="localisation_address" id="localisation_address" required>
+            <input type="hidden" name="localisation_lat" id="localisation_lat" required>
+            <input type="hidden" name="localisation_lng" id="localisation_lng" required>
+        </div>
+
+        <label for="pictures">Images</label>
+        <div class="addPictures">
+            <input type="file" name="pictures" id="pictures-input" multiple accept="image/jpeg, image/png" onchange="previewImage(event)">
+            <div class="addPictures-gallery">
+                <div class="addPictures-gallery-slider" id="addPictures-gallery">
+                
+                </div>
+            </div>
+            <input type="hidden" name="mainPictureName" id="mainPictureName" value="">
+        </div>
+        
+        <label for="isOpen" required>Le kot est disponible (demandes possibles)</label>
+        <select name="isOpen" required>
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+
+        <label for="availability" required>Date de disponibilité</label>
+        <input type="date" name="availability" required min="2021-01-12"/>
+
+        <hr>
+
+        <label for="isCollocation" required>Est-ce une collocation</label>
+        <select name="isCollocation" required>
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+
+        <label for="maxTenant" required>Nombres de places de collocation disponibles</label>
+        <input type="number" name="maxTenant" placeholder="3" min="0" max="25" required/>
+
+        <hr>
+
+        <label for="basePrice" required>Prix sans les charges</label>
+        <input type="number" name="basePrice" placeholder="350" min="0" max="20000" required/>
+
+        <label for="chargePrice" required>Charges supplémentaires</label>
+        <input type="number" name="chargePrice" placeholder="50" min="0" max="20000" required/>
+        
+        <hr>
+
+        <label for="bedrooms" required>Nombre de chambres</label>
+        <input type="number" name="bedrooms" placeholder="1" min="1" max="25" required/>
+
+        <label for="bathrooms" required>Nombre de salle de bain</label>
+        <input type="number" name="bathrooms" placeholder="1" min="0" max="25" required/>
+
+        <label for="toilets" required>Nombre de toilettes</label>
+        <input type="number" name="toilets" placeholder="1" min="0" max="25" required/>
+
+        <label for="type" required>Type de batiment</label>
+        <select name="type" required>
+          <option value="flat">Appartement</option>
+          <option value="house">Maison</option>
+        </select>
+        
+        <hr>
+
+        <label for="surface" required>Surface en m²</label>
+        <input type="number" name="surface" placeholder="25" min="1" max="1000" required/>
+
+        <label for="floors" required>Nombre d'étages</label>
+        <input type="number" name="floors" placeholder="1" min="1" max="10" required/>
+
+        <label for="constructionYear" required>Année de construction</label>
+        <input type="number" name="constructionYear" placeholder="2010" min="1900" max="2021" required/>
+
+        <label for="parking" required>Nombre de place de parking</label>
+        <input type="number" name="parking" placeholder="0" min="0" max="25" required/>
+
+        <hr>
+
+        <label for="furnished" required>Meubles disponibles</label>
+        <select name="furnished" required>
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+
+        <label for="petFriendly" required>Règlement animaux</label>
+        <select name="petFriendly" required>
+          <option value="false">Pas d'animaux</option>
+          <option value="small">Petits animaux</option>
+          <option value="big">Grands animaux</option>
+        </select>
+  
+        <label for="garden" required>Présence d'un jardin</label>
+        <select name="garden" required>
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+
+        <label for="terrace" required>Présence d'une terrace</label>
+        <select name="terrace" required>
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+
+        <button type="button" id="publish_btn">Publier</button>
+    </form>
+    {{/user}}
+    {{^user}}
+    <h2>L'utilisateur doit être connecté pour voir cette page !!</h2>  
+    {{/user}}
+
+
+</body>
+
+<script>
+
+    const addPicturesGallery = document.getElementById("addPictures-gallery");
+    const picturesInput = document.getElementById("pictures-input");
+    const mainPictureNameInput = document.getElementById("mainPictureName");
+
+    function removeImage(toDelName, divID){
+        var files = picturesInput.files; 
+        var fileBuffer = new DataTransfer();
+
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].name === toDelName){
+                document.getElementById(divID).remove();
+            } else {
+                fileBuffer.items.add(files[i]);
+            }
+        }
+        
+        picturesInput.files = fileBuffer.files;
+    }
+
+    let previewImageID = 0;
+
+    function setMainPictureName(toSetMainName, divID){
+        mainPictureNameInput.value = toSetMainName;
+        const oldMain = document.querySelector('#addPictures-gallery .image[main="true"]');
+        if (oldMain) oldMain.removeAttribute("main");
+        document.getElementById(divID).setAttribute("main", "true");
+    }
+
+    function previewImage(event) {
+
+        const newFiles = event.target.files;
+        for (var i = 0; i < newFiles.length; i++) {
+
+            const file = newFiles[i];
+
+            var image = document.createElement("img");
+            image.src = URL.createObjectURL(file);
+
+            var buttonRemove = document.createElement("button");
+            buttonRemove.setAttribute("type", "button");
+            buttonRemove.setAttribute("class", "remove");
+            buttonRemove.innerHTML = "D";
+            buttonRemove.setAttribute("onClick", "removeImage('"+file.name+"', "+previewImageID+")");
+
+            var buttonSetMain = document.createElement("button");
+            buttonSetMain.setAttribute("type", "button");
+            buttonSetMain.setAttribute("class", "setMain");
+            buttonSetMain.innerHTML = "M";
+            buttonSetMain.setAttribute("onClick", "setMainPictureName('"+file.name+"', "+previewImageID+")")
+
+            var buttonsContainer = document.createElement("div");
+            buttonsContainer.setAttribute("class", "buttonsContainer");
+
+            buttonsContainer.appendChild(buttonRemove);
+            buttonsContainer.appendChild(buttonSetMain);
+
+            var imageContainer = document.createElement("div");
+            imageContainer.setAttribute("class", "image");
+            imageContainer.setAttribute("id", previewImageID);
+            imageContainer.appendChild(image);
+            imageContainer.appendChild(buttonsContainer);
+
+            addPicturesGallery.appendChild(imageContainer);
+            previewImageID += 1;
+
+        }
+    };
+
+    const searchLocalisationField = document.getElementById("searchLocalisationField");
+    const searchLocalisationResults = document.getElementById("searchLocalisationResults");
+
+    const searchLocalisationInputAddress = document.getElementById("localisation_address");
+    const searchLocalisationInputLat = document.getElementById("localisation_lat");
+    const searchLocalisationInputLng = document.getElementById("localisation_lng");
+
+    document.getElementById("searchLocalisationButton").addEventListener("click", searchLocalisation);
+    document.getElementById("publish_btn").addEventListener("click", (e) => {
+        if(
+            searchLocalisationInputAddress.value!=="" &&
+            searchLocalisationInputLat.value!=="" &&
+            searchLocalisationInputLng.value!==""
+        ){
+            document.getElementById("createKotForm").submit();
+        } else {
+            document.getElementById("form-alert").innerHTML = "<h1>Adresse invalide</h1>";
+        }   
+    });
+
+    async function searchLocalisation() {
+        const value = searchLocalisationField.value;
+
+        if(value!==""){
+
+            const url = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&region=be&address="+value+" LLN";
+
+            searchLocalisationResults.innerHTML = "<h1>Recherche...</h1>"
+
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const status = data.status;
+                if(status==="OK"){
+                    const results = data.results;
+                    if(results.length >= 1){
+                        const formatted_address = results[0]["formatted_address"];
+                        const lat = results[0]["geometry"]["location"]["lat"];
+                        const lng = results[0]["geometry"]["location"]["lng"];
+
+                        searchLocalisationInputAddress.value = formatted_address;
+                        searchLocalisationInputLat.value = lat;
+                        searchLocalisationInputLng.value = lng;
+
+                        searchLocalisationResults.innerHTML = "<h2>"+formatted_address+"</h2>" + "<h2>"+lat+"</h2>" + "<h2>"+lng+"</h2>"
+                    } else {
+                        searchLocalisationResults.innerHTML = "<h1>Pas de résultat</h1>"
+                    }
+                }
+            });
+
+        }
+
+    }
+</script>
+
+<style>
+    .buttonsContainer button{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: black;
+        border: none;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .buttonsContainer button:hover{
+        opacity: 0.7;
+    }
+    .buttonsContainer{
+        width: 130px;
+        height: 40px;
+        position: absolute;
+        bottom: 0;
+        z-index: 5;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+    }
+    .addPictures-gallery .image img{
+        position: absolute;
+        left: 0;right: 0;
+        top: 0;bottom: 0;
+        margin: auto;
+        height: 100%;
+    }
+    .addPictures-gallery .image[main="true"]{
+        border: solid 2px gold;
+        border-radius: 15px;
+    }
+    .addPictures-gallery .image{
+        border: solid 2px white;
+        position: relative;
+        float: left;
+        height: 126px;
+        width: 126px;
+        overflow: hidden;
+        border-radius: 5px;
+        margin: 10px;
+    }
+    .addPictures-gallery-slider{
+        width: 1500px;
+    }
+    .addPictures-gallery{
+        max-height: 150px;
+        padding: 25px;
+        border: solid 2px darkgrey;  
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+    .addPictures{
+        padding: 25px;
+        border: solid 2px darkgrey;
+        margin-bottom: 25px;
+    }
+    .searchLocalisationResults{
+        max-height: 150px;
+        padding: 25px;
+        border: solid 2px darkgrey;
+    }
+    .searchLocalisation{
+        padding: 25px;
+        background: #eee;
+        border: solid 2px darkgrey;
+        margin-bottom: 25px;
+    }
+</style>
