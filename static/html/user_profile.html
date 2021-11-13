@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>TITLE - PAGENAME</title>
+  <meta name="description" content="LINFO1212">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../css/vars.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/footer.css">
+
+</head>
+<body>
+
+    <div class="menuContainer">
+        <div class="fixedBtn" id="mobileOpen">
+            <img src="../imgs/icons/menu_black_24dp.svg" alt="logo"/>
+        </div>
+        <div class="fixedBtn" id="mobileClose" hidden="true">
+            <img src="../imgs/icons/close_black_24dp.svg" alt="logo"/>
+        </div>
+    
+        <div class="menu" id="menu" mobileHidden="true">
+    
+            <div class="menuElms">
+    
+                <div class="menuTopElements">
+                    <div class="logo">
+                        <img src="../imgs/logo.svg" id="logo_long" alt="logo"/>
+                        <img src="../imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                    </div>
+                    <!--
+                    <a class="registerorlogin" href="/register_login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    -->
+                    <a class="user" href="/account">
+                        <div class="userImage">
+                            <img src="../imgs/user.png" alt="user"/>
+                        </div>
+                        <div class="userText">
+                            <h1>Firstname Lastname</h1>
+                            <h2>Mon compte</h2>
+                        </div>
+                    </a>
+                </div>
+                <div class="menuOptions">
+    
+                    <a class="option" selected="false" href="/">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/search_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/search_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Accueil</h2>
+                        </div>
+                    </a>
+                    
+                    <a class="option" selected="true" href="/favs">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/favorite_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/favorite_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes favoris</h2>
+                        </div>
+                    </a>
+    
+                    <a class="option" selected="false" href="/publish">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/add_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/add_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Publier un kot</h2>
+                        </div>
+                    </a>
+    
+                    <a class="option" selected="false" href="/mykots">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/home_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/home_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes kots</h2>
+                        </div>
+                    </a>
+    
+                    <a class="option" selected="false" href="/contact">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="../imgs/icons/call_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="../imgs/icons/call_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Contact</h2>
+                        </div>
+                    </a>
+    
+                </div>
+    
+                <div class="otherBtns">
+                    <a href="/settings">
+                        <img src="../imgs/icons/settings_black_24dp.svg" alt="settings"/>
+                    </a>
+                    <a href="/disconnect">
+                        <img src="../imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
+                    </a>
+                </div>
+    
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="creatorinfosBox">
+        <h1 class="infosLabel">Informations :</h1>
+        <div class="creatorBox">
+            <div class="creatorProfilPicContainer">
+                <div class="creatorProfilPic">
+                    <img alt="creator_profilPic" src="https://randomuser.me/api/portraits/men/43.jpg"/>
+                </div>
+            </div>
+            <div class="creatorInfos">
+                <h1>Daniel James</h1>
+            </div>
+            <div class="sendMess">
+                <button type="button" class="sendMessButton">Envoyer un message</button>
+            </div>
+        </div>
+    </div>
+    
+    
+
+
+
+
+
+
+<style>
+.sendMess {
+    text-align: center;
+}
+.sendMessButton {
+    background-color: var(--color-accentColor);
+    color: var(--color-font-op);
+    border-radius: 45px;
+    height: 50px;
+    border: 0;
+    font-weight: 500;
+    font-size: 17px;
+    padding: 10px 22px;
+    cursor: pointer;
+    
+}
+.infosLabel{
+    margin-left: 40%;
+    height: auto;
+    color: var(--color-font-title);
+    font-size: 50px;
+    text-decoration: underline;
+    letter-spacing: 1px;
+}
+.creatorInfosBox{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.creatorProfilPicContainer{
+    display: block;
+    width: 70%;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1;
+    margin-left: auto;
+    margin-right: auto;
+}
+.creatorProfilPic{
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 500px;
+    overflow: hidden;
+    -webkit-box-shadow: var(--shadow); 
+    box-shadow: var(--shadow);   
+}
+.creatorProfilPic img{
+    width: 100%;
+}
+.creatorInfos{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.creatorBox {
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    -webkit-box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
+    padding: 15px;  
+    margin-left: 20%;
+    width: 15%;
+}
+.creatorBox h1{
+    margin: 15px;
+    margin-top: 30px;
+}
+
+</style>
