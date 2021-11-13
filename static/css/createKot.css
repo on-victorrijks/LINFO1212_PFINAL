@@ -1,0 +1,145 @@
+.buttonsContainer button.setMain{
+    background-image: url("/imgs/icons/star_black_24dp.svg");
+    background-position: center center;
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+.buttonsContainer button.remove{
+    background-image: url("/imgs/icons/delete_black_24dp.svg");
+    background-position: center center;
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+.buttonsContainer button{
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border: none;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+    background-color: white;
+    box-shadow: var(--shadow);
+    -webkit-box-shadow: var(--shadow); 
+    opacity: 0.8;
+    padding: 0;
+    border-radius: var(--border-radius-small);
+    font-size: unset;
+}
+.buttonsContainer button:hover{
+    opacity: 1;
+}
+.buttonsContainer{
+    width: 100%;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.addPictures-gallery .image img{
+    height: 100%;
+}
+.addPictures-gallery .image[main="true"]{
+    border: solid 2px gold;
+    background-color: rgb(219, 224, 170)
+}
+.addPictures-gallery .image[inBin="true"]{
+    border: solid 2px red;
+    background-color: rgb(218, 174, 174);
+}
+.addPictures-gallery .image[inBin="true"] img, .addPictures-gallery .image[main="true"] img{
+    opacity: .3;
+}
+.addPictures-gallery .addFileBtn {
+    position: relative;
+    float: left;
+    height: 200px;
+    width: 200px;
+    margin: 10px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    background-color: var(--color-accentColor);
+    border: solid 2px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1);
+    transition: transform .3s;
+    cursor: pointer;
+}
+.addPictures-gallery .addFileBtn h2{
+    color: var(--color-font-op);
+    font-weight: 600;
+    font-size: 18px;
+    width: 50%;
+    text-align: center
+}
+.addPictures-gallery .image{
+    position: relative;
+    float: left;
+    height: 200px;
+    width: auto;
+    max-width: 600px;
+    margin: 10px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    transform: scale(1);
+    transition: transform .5s;
+    cursor: pointer;
+    background-color: var(--color-unloaded);
+    border: solid 2px rgba(0,0,0,0.1);
+}
+.addPictures-gallery .addFileBtn:hover, .addPictures-gallery .image:hover{
+    transform: scale(1.03);
+}
+.addPictures-gallery-slider{
+    width: 5000px;
+}
+.addPictures-gallery{
+    height: 250px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+}
+.addPictures {
+    border-radius: var(--border-radius-small);
+    background-color: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 1px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+.searchLocalisationResults {
+    height: 40px;
+    padding: 10px;
+    margin-left: 25px;
+    flex: 1;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 40px;
+}
+.searchLocalisation{
+    padding: 25px;
+    border-radius: var(--border-radius-small);
+    background-color: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 1px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .searchLocalisation{
+        flex-direction: row;
+    }
+}

@@ -13,6 +13,8 @@
     --color-font-text: #747474;
     --color-font-op: #fff;
     --color-unloaded: #e6e6e6;
+    --color-submit: #10ac84;
+    --color-submit-pressed: #128f6f;
 
     --width-menu: 350px;
     --padding-menu: 25px;

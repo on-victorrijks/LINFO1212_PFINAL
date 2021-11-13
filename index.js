@@ -232,6 +232,92 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         });
     })
 
+    app.get('/kot/modify/:kotID', (req, res, next) => {
+
+        const connectedUserID = getConnectedUserID(req);
+        if(!connectedUserID) return res.redirect("/?error=CONNECTION_NEEDED");
+
+        const params = {
+            page: {
+                title: "Modifier un kot",
+                description: "Modifier un kot"
+            },
+            user: null,
+            kot: null,
+            formPreloader: null,
+        }
+        getKot(database, req.params.kotID, (kotData) => {
+
+            if(!kotData) return res.redirect("/?error=BAD_KOTID");
+
+            getUser(database, connectedUserID, (connectedUser) => {
+
+                if(kotData.creatorID.toString() !== connectedUserID) return res.redirect("/?error=NOT_CREATOR");
+
+                // On génère picturesUsableData avec un structure plus facilement utilisable pour afficher les images déja uploadées
+                let picturesUsableData = [];
+                for (let index = 0; index < kotData.pictures.length; index++) {
+                    picturesUsableData.push({
+                        imageName: kotData.pictures[index],
+                        index: index,
+                        isMainImage: index===kotData.mainPictureIndex
+                    });                 
+                }
+                kotData.pictures = picturesUsableData;
+
+                const availabilityAsDate = new Date(kotData.availability);
+
+                let day = availabilityAsDate.getDate().toString();
+                let month = (availabilityAsDate.getMonth() + 1).toString();
+                let year = availabilityAsDate.getFullYear().toString();
+
+                if(day.length===1)   day = "0"+day;
+                if(month.length===1) month = "0"+month;
+
+                const preloadedDate = year+"-"+month+"-"+day;
+
+                params.user = connectedUser;
+                params.kot = kotData;
+                params.formPreloader = {
+                    mainPictureName: kotData.pictures[kotData.mainPictureIndex],
+                    isOpen: {
+                        opt1: kotData.isOpen,
+                        opt2: !kotData.isOpen
+                    },
+                    availability: preloadedDate,
+                    isCollocation: {
+                        opt1: kotData.isCollocation,
+                        opt2: !kotData.isCollocation
+                    },
+                    type: {
+                        opt1: kotData.type==="flat",
+                        opt2: kotData.type==="house",
+                    },
+                    furnished: {
+                        opt1: kotData.furnished,
+                        opt2: !kotData.furnished
+                    },
+                    petFriendly: {
+                        opt1: kotData.petFriendly==="false",
+                        opt2: kotData.petFriendly==="small",
+                        opt3: kotData.petFriendly==="big"
+                    },
+                    garden: {
+                        opt1: kotData.garden,
+                        opt2: !kotData.garden
+                    },
+                    terrace: {
+                        opt1: kotData.terrace,
+                        opt2: !kotData.terrace
+                    }
+                };
+
+                res.render('modifyKot.html', params);
+
+            });
+        });
+    })
+
     app.get('/kot/profile/:kotID', (req, res, next) => {
 
         const connectedUserID = getConnectedUserID(req);
@@ -272,7 +358,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
             getUser(database, kotData.creatorID, (creatorData) => {
                 params.isConnectedUserTheCreator = connectedUserID && kotData.creatorID.toString()===connectedUserID
-                params.title = kotData.title;
+                params.page.title = kotData.title;
                 params.creatorData = creatorData;
                 params.kot = kotData;
                 res.render('kot_profile.html', params);

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/menu.css">
   <link rel="stylesheet" href="/css/forms.css">
-  <link rel="stylesheet" href="/css/createKot.css">
+  <link rel="stylesheet" href="/css/modifyKot.css">
 
 </head>
 <body>
@@ -119,13 +119,22 @@
 
         <div class="g-content">
 
+            {{#kot}}
+
             <div class="g-topBar">
                 <div class="g-topTitle">
-                    <h1>Publier un kot</b></h1>
+                    <h1>Modifier un kot - <b>{{kot.title}}</b></h1>
                 </div>
             </div>
 
-            <form action="/api/kot/create" method="POST" enctype="multipart/form-data" id="createKotForm">
+            <div class="g-info-box">
+                <img src="/imgs/icons/info_accentColor_24dp.svg">
+                <p>
+                    Attention : Après une modification de l'annonce, il est signalé sur celle-ci qu'elle a été modifié. Nous faisons ceci pour éviter toutes confusions entre un propriétaire et un locataire.
+                </p>
+            </div>
+
+            <form action="/api/kot/modify" method="POST" enctype="multipart/form-data" id="modifyKotForm">
         
                 <div class="form-alert" id="form-alert" hidden>
                     <img src="/imgs/icons/report_accentColor_24dp.svg">
@@ -133,23 +142,23 @@
                 </div>
         
                 <label for="title" required>Titre</label>
-                <input type="text" name="title" placeholder="Titre" required/>
+                <input type="text" name="title" placeholder="Titre" required value="{{kot.title}}"/>
         
                 <label for="description" required>Description</label>
-                <textarea name="description" placeholder="Description" required></textarea>
+                <textarea name="description" placeholder="Description" required>{{kot.description}}</textarea>
         
                 <label for="localisation" required>Localisation</label>
                 <div class="searchLocalisation">
                     <div class="form-searchBar">
-                        <input type="text" name="localisation" placeholder="Localisation" id="searchLocalisationField" required/>
+                        <input type="text" name="localisation" placeholder="Localisation" id="searchLocalisationField" required value="{{kot.location.address}}"/>
                         <button type="button" id="searchLocalisationButton">Chercher</button>
                     </div>
                     <h1 class="searchLocalisationResults" id="searchLocalisationResults">
-                        Veuillez chercher une adresse
+                        {{kot.location.address}}
                     </h1>
-                    <input type="hidden" name="localisation_address" id="localisation_address" required>
-                    <input type="hidden" name="localisation_lat" id="localisation_lat" required>
-                    <input type="hidden" name="localisation_lng" id="localisation_lng" required>
+                    <input type="hidden" name="localisation_address" id="localisation_address" required value="{{kot.location.address}}">
+                    <input type="hidden" name="localisation_lat" id="localisation_lat" required value="{{kot.location.lat}}">
+                    <input type="hidden" name="localisation_lng" id="localisation_lng" required value="{{kot.location.lng}}">
                 </div>
         
                 <div class="addPictures">
@@ -159,99 +168,109 @@
                             <label class="addFileBtn" for="pictures-input">
                                 <h2>Ajouter des images</h2>
                             </label>
+                            {{#kot.pictures}}
+                            <div class="image" id="{{index}}" {{#isMainImage}}main="true"{{/isMainImage}}>
+                                <img src="https://localhost:8080/users/kots/images/{{kot._id}}_{{imageName}}">
+                                <div class="buttonsContainer">
+                                    <button type="button" class="remove" onclick="switchBinStatus('{{imageName}}', {{index}})"></button>
+                                    <button type="button" class="setMain" onclick="setMainPictureName('{{imageName}}', {{index}})"></button>
+                                </div>
+                            </div>
+                            {{/kot.pictures}}
                         </div>
                     </div>
-                    <input type="hidden" name="mainPictureName" id="mainPictureName" >
+                    <input type="hidden" name="mainPictureName" id="mainPictureName"  value="{{formPreloader.mainPictureName}}">
                 </div>
                 
-            <label for="isOpen" required>Le kot est disponible (demandes possibles)</label>
-            <select name="isOpen" required>
-            <option value="true">Oui</option>
-            <option value="false">Non</option>
-            </select>
-
-            <label for="availability" required>Date de disponibilité</label>
-            <input type="date" name="availability" required min="2021-01-12"/>
-
-            <hr>
-
-            <label for="isCollocation" required>Est-ce une collocation</label>
-            <select name="isCollocation" required>
-            <option value="true">Oui</option>
-            <option value="false">Non</option>
-            </select>
-
-            <label for="maxTenant" required>Nombres de places de collocation disponibles</label>
-            <input type="number" name="maxTenant" placeholder="3" min="0" max="25" required/>
-
-            <hr>
-
-            <label for="basePrice" required>Prix sans les charges</label>
-            <input type="number" name="basePrice" placeholder="350" min="0" max="20000" required/>
-
-            <label for="chargePrice" required>Charges supplémentaires</label>
-            <input type="number" name="chargePrice" placeholder="50" min="0" max="20000" required/>
-            
-            <hr>
-
-            <label for="bedrooms" required>Nombre de chambres</label>
-            <input type="number" name="bedrooms" placeholder="1" min="1" max="25" required/>
-
-            <label for="bathrooms" required>Nombre de salle de bain</label>
-            <input type="number" name="bathrooms" placeholder="1" min="0" max="25" required/>
-
-            <label for="toilets" required>Nombre de toilettes</label>
-            <input type="number" name="toilets" placeholder="1" min="0" max="25" required/>
-
-            <label for="type" required>Type de batiment</label>
-            <select name="type" required>
-            <option value="flat">Appartement</option>
-            <option value="house">Maison</option>
-            </select>
-            
-            <hr>
-
-            <label for="surface" required>Surface en m²</label>
-            <input type="number" name="surface" placeholder="25" min="1" max="1000" required/>
-
-            <label for="floors" required>Nombre d'étages</label>
-            <input type="number" name="floors" placeholder="1" min="1" max="10" required/>
-
-            <label for="constructionYear" required>Année de construction</label>
-            <input type="number" name="constructionYear" placeholder="2010" min="1900" max="2021" required/>
-
-            <label for="parking" required>Nombre de place de parking</label>
-            <input type="number" name="parking" placeholder="0" min="0" max="25" required/>
-
-            <hr>
-
-            <label for="furnished" required>Meubles disponibles</label>
-            <select name="furnished" required>
-                <option value="true">Oui</option>
-                <option value="false">Non</option>
-            </select>
-
-            <label for="petFriendly" required>Règlement animaux</label>
-            <select name="petFriendly" required>
-                <option value="false">Pas d'animaux</option>
-                <option value="small">Petits animaux</option>
-                <option value="big">Grands animaux</option>
-            </select>
-    
-            <label for="garden" required>Présence d'un jardin</label>
-            <select name="garden" required>
-                <option value="true">Oui</option>
-                <option value="false">Non</option>
-            </select>
-
-            <label for="terrace" required>Présence d'une terrace</label>
-            <select name="terrace" required>
-                <option value="true">Oui</option>
-                <option value="false">Non</option>
-            </select>
+                <label for="isOpen" required>Le kot est disponible (demandes possibles)</label>
+                <select name="isOpen" required>
+                  <option value="true"  {{#formPreloader.isOpen.opt1}}selected="true"{{/formPreloader.isOpen.opt1}}>Oui</option>
+                  <option value="false" {{#formPreloader.isOpen.opt2}}selected="true"{{/formPreloader.isOpen.opt2}}>Non</option>
+                </select>
         
-                <button type="button" class="submit" id="publish_btn">Publier</button>
+                <label for="availability" required>Date de disponibilité</label>
+                <input type="date" name="availability" required min="2021-01-12" value="{{formPreloader.availability}}"/>
+        
+                <hr>
+        
+                <label for="isCollocation" required>Est-ce une collocation</label>
+                <select name="isCollocation" required>
+                  <option value="true"  {{#formPreloader.isCollocation.opt1}}selected="true"{{/formPreloader.isCollocation.opt1}}>Oui</option>
+                  <option value="false" {{#formPreloader.isCollocation.opt2}}selected="true"{{/formPreloader.isCollocation.opt2}}>Non</option>
+                </select>
+        
+                <label for="maxTenant" required>Nombres de places de collocation disponibles</label>
+                <input type="number" name="maxTenant" placeholder="3" min="0" max="25" required value="{{kot.collocationData.maxTenant}}"/>
+        
+                <hr>
+        
+                <label for="basePrice" required>Prix sans les charges</label>
+                <input type="number" name="basePrice" placeholder="350" min="0" max="20000" required value="{{kot.basePrice}}"/>
+        
+                <label for="chargePrice" required>Charges supplémentaires</label>
+                <input type="number" name="chargePrice" placeholder="50" min="0" max="20000" required value="{{kot.chargePrice}}"/>
+                
+                <hr>
+        
+                <label for="bedrooms" required>Nombre de chambres</label>
+                <input type="number" name="bedrooms" placeholder="1" min="1" max="25" required value="{{kot.bedrooms}}"/>
+        
+                <label for="bathrooms" required>Nombre de salle de bain</label>
+                <input type="number" name="bathrooms" placeholder="1" min="0" max="25" required value="{{kot.bathrooms}}"/>
+        
+                <label for="toilets" required>Nombre de toilettes</label>
+                <input type="number" name="toilets" placeholder="1" min="0" max="25" required value="{{kot.toilets}}"/>
+        
+                <label for="type" required>Type de batiment</label>
+                <select name="type" required>
+                  <option value="flat"  {{#formPreloader.type.opt1}}selected="true"{{/formPreloader.type.opt1}}>Appartement</option>
+                  <option value="house" {{#formPreloader.type.opt2}}selected="true"{{/formPreloader.type.opt2}}>Maison</option>
+                </select>
+                
+                <hr>
+        
+                <label for="surface" required>Surface en m²</label>
+                <input type="number" name="surface" placeholder="25" min="1" max="1000" required value="{{kot.surface}}"/>
+        
+                <label for="floors" required>Nombre d'étages</label>
+                <input type="number" name="floors" placeholder="1" min="1" max="10" required value="{{kot.floors}}"/>
+        
+                <label for="constructionYear" required>Année de construction</label>
+                <input type="number" name="constructionYear" placeholder="2010" min="1900" max="2021" required value="{{kot.constructionYear}}"/>
+        
+                <label for="parking" required>Nombre de place de parking</label>
+                <input type="number" name="parking" placeholder="0" min="0" max="25" required value="{{kot.parking}}"/>
+        
+                <hr>
+        
+                <label for="furnished" required>Meubles disponibles</label>
+                <select name="furnished" required>
+                  <option value="true"  {{#formPreloader.furnished.opt1}}selected="true"{{/formPreloader.furnished.opt1}}>Oui</option>
+                  <option value="false" {{#formPreloader.furnished.opt2}}selected="true"{{/formPreloader.furnished.opt2}}>Non</option>
+                </select>
+        
+                <label for="petFriendly" required>Règlement animaux</label>
+                <select name="petFriendly" required>
+                  <option value="false" {{#formPreloader.petFriendly.opt1}}selected="true"{{/formPreloader.petFriendly.opt1}}>Pas d'animaux</option>
+                  <option value="small" {{#formPreloader.petFriendly.opt2}}selected="true"{{/formPreloader.petFriendly.opt2}}>Petits animaux</option>
+                  <option value="big"   {{#formPreloader.petFriendly.opt3}}selected="true"{{/formPreloader.petFriendly.opt3}}>Grands animaux</option>
+                </select>
+          
+                <label for="garden" required>Présence d'un jardin</label>
+                <select name="garden" required>
+                  <option value="true"  {{#formPreloader.garden.opt1}}selected="true"{{/formPreloader.garden.opt1}}>Oui</option>
+                  <option value="false" {{#formPreloader.garden.opt2}}selected="true"{{/formPreloader.garden.opt2}}>Non</option>
+                </select>
+        
+                <label for="terrace" required>Présence d'une terrace</label>
+                <select name="terrace" required>
+                  <option value="true"  {{#formPreloader.terrace.opt1}}selected="true"{{/formPreloader.terrace.opt1}}>Oui</option>
+                  <option value="false" {{#formPreloader.terrace.opt2}}selected="true"{{/formPreloader.terrace.opt2}}>Non</option>
+                </select>
+        
+                <button type="button" class="submit" id="modify_btn">Modifier</button>
             </form>
+            {{/kot}}
                 
         </div>
 
@@ -264,6 +283,15 @@
     const addPicturesGallery = document.getElementById("addPictures-gallery");
     const picturesInput = document.getElementById("pictures-input");
     const mainPictureNameInput = document.getElementById("mainPictureName");
+
+    function switchBinStatus(toDelName, divID){
+        const isInBin = document.getElementById(divID).hasAttribute("inBin");
+        if(isInBin){
+            document.getElementById(divID).removeAttribute("inBin");
+        } else {
+            document.getElementById(divID).setAttribute("inBin", "true");
+        }
+    }
 
     function removeImage(toDelName, divID){
         var files = picturesInput.files; 
@@ -280,7 +308,7 @@
         picturesInput.files = fileBuffer.files;
     }
 
-    let previewImageID = 0;
+    let previewImageID = {{kot.pictures.length}};
 
     function setMainPictureName(toSetMainName, divID){
         mainPictureNameInput.value = toSetMainName;
@@ -335,13 +363,13 @@
     const searchLocalisationInputLng = document.getElementById("localisation_lng");
 
     document.getElementById("searchLocalisationButton").addEventListener("click", searchLocalisation);
-    document.getElementById("publish_btn").addEventListener("click", (e) => {
+    document.getElementById("modify_btn").addEventListener("click", (e) => {
         if(
             searchLocalisationInputAddress.value!=="" &&
             searchLocalisationInputLat.value!=="" &&
             searchLocalisationInputLng.value!==""
         ){
-            document.getElementById("createKotForm").submit();
+            document.getElementById("modifyKotForm").submit();
         } else {
             document.getElementById("form-alert").removeAttribute("hidden");
             document.getElementById("form-alert-message").innerHTML = "Veuillez spécifier une adresse valide";
