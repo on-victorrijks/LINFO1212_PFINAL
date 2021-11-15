@@ -15,7 +15,7 @@ const ENTRY_PETFRIENDLY = ["false", "small", "big"];
 
 const isCreateKotFormDataValid = (req) => {
     /*
-        DEF  : On vérifie que les champs nécessaires pour créer un jot sont dans la requête POST et utilisables
+        DEF  : On vérifie que les champs nécessaires pour créer un kot sont dans la requête POST et utilisables
         PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
         POST : boolean
     */

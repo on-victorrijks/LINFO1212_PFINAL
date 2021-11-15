@@ -136,6 +136,8 @@
 
             <form action="/api/kot/modify" method="POST" enctype="multipart/form-data" id="modifyKotForm">
         
+                <input type="hidden" name="kotID" value="{{kot._id}}"/>
+
                 <div class="form-alert" id="form-alert" hidden>
                     <img src="/imgs/icons/report_accentColor_24dp.svg">
                     <p id="form-alert-message"></p>
@@ -180,6 +182,7 @@
                         </div>
                     </div>
                     <input type="hidden" name="mainPictureName" id="mainPictureName"  value="{{formPreloader.mainPictureName}}">
+                    <input type="hidden" name="binNames" id="binNames">
                 </div>
                 
                 <label for="isOpen" required>Le kot est disponible (demandes possibles)</label>
@@ -283,13 +286,17 @@
     const addPicturesGallery = document.getElementById("addPictures-gallery");
     const picturesInput = document.getElementById("pictures-input");
     const mainPictureNameInput = document.getElementById("mainPictureName");
+    const binInput = document.getElementById("binNames");
 
     function switchBinStatus(toDelName, divID){
         const isInBin = document.getElementById(divID).hasAttribute("inBin");
+        const storedName = "|"+toDelName;
         if(isInBin){
             document.getElementById(divID).removeAttribute("inBin");
+            binInput.value = binInput.value.replace(storedName, "");
         } else {
             document.getElementById(divID).setAttribute("inBin", "true");
+            binInput.value += storedName;
         }
     }
 

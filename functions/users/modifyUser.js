@@ -66,9 +66,9 @@ export const modifyUser = (database, req, callback) => {
         } 
 
         database.collection("users").updateOne({ _id: userID_toObjectID }, modifiedUser, function(err, res) {
-            if(err) return callback("BAD_REQUEST");     // Erreur reliée à mongoDB
+            if(err) return callback("SERVICE_PROBLEM");     // Erreur reliée à mongoDB
             log("User modified, ID:" + res.insertedId);
-            return callback(false);                     // Aucune erreur
+            return callback(false);                         // Aucune erreur
         });
 
     }); 
