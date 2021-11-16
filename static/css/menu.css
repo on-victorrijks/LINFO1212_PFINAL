@@ -31,10 +31,10 @@
     margin-bottom: 8vh;
 }
 .registerorlogin{
-    margin-bottom: 60px;
+    margin: 30px 0;
     flex-direction: row; 
     display: flex;
-    background-color: var(--color-bg-light);
+    background-color: var(--color-accentColor);
     padding: 15px;
     border-radius: var(--border-radius);
     -webkit-box-shadow: var(--shadow); 
@@ -44,6 +44,7 @@
     text-decoration: none;
 }
 .registerorlogin:hover{
+    background-color: var(--color-pressed);
     -webkit-box-shadow: var(--shadow-strong); 
     box-shadow: var(--shadow-strong);
 }
@@ -51,7 +52,7 @@
     font-size: 18px;
     text-align: center;
     width: 100%;
-    color: var(--color-accentColor);
+    color: var(--color-font-op);
 }
 .user {
     height: 6vh;

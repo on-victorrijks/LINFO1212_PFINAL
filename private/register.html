@@ -5,55 +5,104 @@
   <title>{{page.title}}</title>
   <meta name="description" content="{{page.description}}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/loginregister.css">
+
 </head>
 <body>
 
-    <form action="/api/createUser" method="POST">
+    <div class="centerContainer">
+        <div class="logoContainer">
+            <a href="/">
+                <img alt="logo" src="/imgs/logo.svg"/>
+            </a>
+        </div>
+        <div class="g-background-map">
+            <div id="map"></div>
+        </div>
+        <div class="centerBox">
 
-        <label for="type">Type du compte</label>
-        <select name="type" required>
-          <option value="resident">Je recherche un kot</option>
-          <option value="landlord">Je suis un propriétaire</option>
-        </select>
+            <div class="g-columnsContainer solidBox">
 
-        <label for="firstname">Prénom</label>
-        <input type="text" name="firstname" placeholder="Prénom" required/>
+                <div class="g-column h-full">
+                    <div class="topBarTitle">
+                        <h1>Créer un compte</h1>
+                        <h2></h2>
+                    </div>
+                    <form action="/api/createUser" method="POST">
 
-        <label for="lastname">Nom</label>
-        <input type="text" name="lastname" placeholder="Nom" required/>
+                        <label for="type">Type du compte</label>
+                        <select name="type" required>
+                          <option value="resident">Je recherche un kot (Résident)</option>
+                          <option value="landlord">Je suis un propriétaire (Propriétaire)</option>
+                        </select>
+                    
+                        <label for="firstname">Prénom</label>
+                        <input type="text" name="firstname" placeholder="Prénom" required/>
+                    
+                        <label for="lastname">Nom</label>
+                        <input type="text" name="lastname" placeholder="Nom" required/>
+                    
+                        <label for="email">Adresse email</label>
+                        <input type="email" name="email" placeholder="Adresse email" required/>
+                    
+                        <label for="phonenumber">Numéro de téléphone</label>
+                        <input type="number" name="phonenumber" placeholder="0450675036" required/>
+                    
+                        <label for="companyName">Nom de votre société</label>
+                        <input type="text" name="companyName" placeholder="Nom de votre société"/>
+                    
+                        <label for="password">Mot de passe</label>
+                        <input type="password" name="password" placeholder="********" required/>
+                    
+                        <label for="password_verif">Vérification du mot de passe</label>
+                        <input type="password" name="password_verif" placeholder="********" required/>
+                        
+                        <button type="submit" class="submit">Créer le compte</button>
+                    </form>
+                </div>
 
-        <label for="email">Adresse email</label>
-        <input type="email" name="email" placeholder="Adresse email" required/>
+                <div class="g-columnSeparator"></div>
 
-        <label for="phonenumber">Numéro de téléphone</label>
-        <input type="number" name="phonenumber" placeholder="0450675036" required/>
+                <div class="g-column h-full">
+                    <div class="topBarTitle">
+                        <h1>Quel type de compte choisir ?</h1>
+                        <h2>Choisir le type de compte est une étape importante et définitive de la création de compte</h2>
+                    </div>
+                    <div class="explanationColumn">
+                        <div class="advantages-list">
+                            <div class="advantage">
+                                <img src="/imgs/icons/search_black_24dp.svg" />
+                                <div class="role">
+                                    <h2>Résident</h2>
+                                    <h3>Vous pouvez rejoindre un kot, discuter avec le propriétaire et gardez des kots dans vos favoris.</h3>
+                                </div>
+                            </div>
+                            <div class="advantage">
+                                <img src="/imgs/icons/home_black_24dp.svg" />
+                                <div class="role">
+                                    <h2>Propriétaire</h2>
+                                    <h3>Vous pouvez publier vos kots et accepter/refuser des demandes de rejoindre vos habitations.</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/login">Je possède déja un compte</a>
+                    </div>
+                </div>
 
-        <label for="companyName">Nom de votre société</label>
-        <input type="text" name="companyName" placeholder="Nom de votre société"/>
-
-        <label for="password">Mot de passe</label>
-        <input type="password" name="password" placeholder="********" required/>
-
-        <label for="password_verif">Vérification du mot de passe</label>
-        <input type="password" name="password_verif" placeholder="********" required/>
-        
-        <button type="submit">Créer le compte</button>
-    </form>
+            </div>
+                
+        </div>
+    </div>
 
 </body>
 
-<style>
-    form{
-        display: flex;
-        flex-direction: column;
-    }
-    label{
-        margin-top: 25px;
-    }
-    input, select{
-        padding: 10px;
-    }
-    input[required], select[required]{
-        border-color: red;
-    }
-</style>
+<script src="/js/login.js"></script>
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
+async
+></script>

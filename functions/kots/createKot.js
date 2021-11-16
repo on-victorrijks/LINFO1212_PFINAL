@@ -56,6 +56,8 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
     if(!isRequestPOST(req)) return callback("BAD_REQUEST");                      // est-ce que req.body est défini (POST)
     if(!isCreateKotFormDataValid(req)) return callback("BAD_REQUEST");           // est-ce que les données nécessaires pour créer un kot sont dans la requête POST et utilisables
 
+    //FIX VERIF USER TYPE
+
     const newKot = {
         "creatorID"         : userID_toObjectID,
         "title"             : cutString(req.body.title, 128),

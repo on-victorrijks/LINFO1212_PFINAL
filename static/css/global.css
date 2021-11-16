@@ -34,7 +34,6 @@
     flex: 1;
 }
 .g-background-map {
-    opacity: 0.5;
     position: fixed;
     left: 0;
     top: 0;
@@ -132,6 +131,30 @@ a.g-topTitle h1{
     margin-right: 15px;
     border-right: solid 1px rgba(0,0,0,0.1);
 }
+.g-columnsContainer{
+    display: flex;
+    flex-direction: column;
+}
+.g-columnSeparator{
+    height: 1px;
+    margin: 10px 0;
+    background-color: var(--color-accentColor);
+    opacity: 0.1;
+}
+.g-columnsContainer.solidBox{
+
+}
+.g-column{
+    flex: 1;
+    border-radius: var(--border-radius-small);
+    background-color: var(--color-bg-light);
+    -webkit-box-shadow: var(--shadow); 
+    box-shadow: var(--shadow); 
+    margin: 10px;
+}
+.g-column.h-full{
+    height: 100%;
+}
 
 
 /*DESKTOP VERSION*/
@@ -147,6 +170,7 @@ a.g-topTitle h1{
     .g-topBar{
         margin-top: 2vh;
         margin-right: 1vh;
+        margin-bottom: 0;
         max-height: 100px;
         min-height: 60px;
         height: 8vh;
@@ -172,5 +196,29 @@ a.g-topTitle h1{
         top: 0;
         width: calc(100vw - var(--width-menu));
         min-height: 100vh;
+    }
+    .g-columnsContainer{
+        flex-direction: row;
+    }
+    .g-columnSeparator{
+        width: 1px;
+        height: unset;
+        margin: 0 10px;
+    }
+    .g-columnsContainer.solidBox{
+        height: unset;
+        margin: 5px 25px;
+        padding: 25px;
+        border-radius: var(--border-radius-small);
+        background-color: var(--color-bg);
+        border: solid 1px rgba(0,0,0,0.1);
+    }
+    .g-column{
+        margin: 0;
+    }
+    .g-column.h-full{
+        max-height: 60vh;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 }

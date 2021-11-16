@@ -39,6 +39,18 @@ const upload = multer({
 ////// Data import
 const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
 
+////// Constants
+const DEFAULT_PARAMS = {
+    user: null,
+    page: {
+        title: "SITENAME - ",
+        description: ""
+    },
+    menu: {
+        selectedPage: {}
+    }
+}
+
 ////// Express setup
 const app = express()
 app.engine('html', consolidate.hogan)
@@ -242,13 +254,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     // ------------  VIEWS  ------------
 
     app.get('/', (req, res, next) => {
-        const params = {
-            user: null,
-            page: {
-                title: "Créer un compte",
-                description: "Créer un compte"
-            }
-        }
+
+        const params = DEFAULT_PARAMS;
+        params.menu.selectedPage.home = "true";
+        params.page.title += "Trouver un kot";
+        params.page.description = "Trouver un kot sur LLN";
+
         getUser(database, getConnectedUserID(req), (connectedUser) => {
             params.user = connectedUser;
             res.render('index.html', params);
@@ -256,33 +267,29 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     })
 
     app.get('/register', (req, res, next) => {
-        const params = {
-            page: {
-                title: "Créer un compte",
-                description: "Créer un compte"
-            }
-        }
+
+        const params = DEFAULT_PARAMS;
+        params.page.title += "Créer un compte";
+        params.page.description = "Créer un compte";
+
         res.render('register.html', params);
     })
 
     app.get('/login', (req, res, next) => {
-        const params = {
-            page: {
-                title: "Connexion",
-                description: "Connexion"
-            }
-        }
+
+        const params = DEFAULT_PARAMS;
+        params.page.title += "Connexion";
+        params.page.description = "Connexion";
+
         res.render('login.html', params);
     })
 
     app.get('/account/settings', (req, res, next) => {
-        const params = {
-            page: {
-                user: null,
-                title: "Paramètres",
-                description: "Paramètres"
-            }
-        }
+
+        const params = DEFAULT_PARAMS;
+        params.page.title += "Paramètres";
+        params.page.description = "Paramètres";
+
         getUser(database, getConnectedUserID(req), (connectedUser) => {
             params.user = connectedUser;
             res.render('settings.html', params);
@@ -296,12 +303,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     })
 
     app.get('/kot/create', (req, res, next) => {
-        const params = {
-            page: {
-                title: "Créer un kot",
-                description: "Créer un kot"
-            }
-        }
+
+        const params = DEFAULT_PARAMS;
+        params.menu.selectedPage.publish = "true";
+        params.page.title += "Créer un kot";
+        params.page.description = "Créer un kot";
+
         getUser(database, getConnectedUserID(req), (connectedUser) => {
             params.user = connectedUser;
             res.render('createKot.html', params);
@@ -313,15 +320,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         const connectedUserID = getConnectedUserID(req);
         if(!connectedUserID) return res.redirect("/?error=CONNECTION_NEEDED");
 
-        const params = {
-            page: {
-                title: "Modifier un kot",
-                description: "Modifier un kot"
-            },
-            user: null,
-            kot: null,
-            formPreloader: null,
-        }
+        const params = DEFAULT_PARAMS;
+        params.page.title += "Modifier un kot";
+        params.page.description = "Modifier un kot";
+
         getKot(database, req.params.kotID, (kotData) => {
 
             if(!kotData) return res.redirect("/?error=BAD_KOTID");
@@ -398,15 +400,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
         const connectedUserID = getConnectedUserID(req);
 
-        const params = {
-            page: {
-                title: "Profil d'un kot",
-                description: "Profil d'un kot",
-                kot: null,
-                creatorData: null,
-                isConnectedUserTheCreator: false,
-            }
-        }
+        const params = DEFAULT_PARAMS;
+        params.page.description = "Profil d'un kot";
+
         getKot(database, req.params.kotID, (kotData) => {
 
             if(!kotData) return res.redirect("/?error=BAD_KOTID");
@@ -434,7 +430,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
             getUser(database, kotData.creatorID, (creatorData) => {
                 params.isConnectedUserTheCreator = connectedUserID && kotData.creatorID.toString()===connectedUserID
-                params.page.title = kotData.title;
+                params.page.title += kotData.title;
                 params.creatorData = creatorData;
                 params.kot = kotData;
                 res.render('kot_profile.html', params);

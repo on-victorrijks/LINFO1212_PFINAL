@@ -3,6 +3,7 @@
     height: 100vh;
     position: absolute;
     z-index: 0;
+    pointer-events: none;
 }
 .centerTitle{
     text-align: center;

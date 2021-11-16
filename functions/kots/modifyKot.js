@@ -56,6 +56,8 @@ export const modifyKot = (database, req, kotID, toDeletePictures, kotsPicturesPa
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
     const kotID_toObjectID  = toObjectID(kotID);
 
+    //FIX VERIF USER TYPE
+
     if(userID_toObjectID === "") return callback("BAD_REQUEST");                   // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
     if(kotID_toObjectID  === "") return callback("BAD_REQUEST");                   // le kotID ne peut pas être transformé en mongodb.ObjectID
     if(!isRequestPOST(req)) return callback("BAD_REQUEST");                        // est-ce que req.body est défini (POST)

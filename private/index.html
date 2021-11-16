@@ -5,54 +5,340 @@
   <title>{{page.title}}</title>
   <meta name="description" content="{{page.description}}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/index.css">
+
 </head>
 <body>
 
-    {{#user}}
-    <div>
-        <h2>Vous êtes connecté</h2>
-        <div class="profilPicture">
-            <img src="https://localhost:8080/users/profilPicture/{{user._id}}"/>
+    <div class="menuContainer">
+        <div class="fixedBtn" id="mobileOpen">
+            <img src="/imgs/icons/menu_black_24dp.svg" alt="logo"/>
         </div>
-        <span>{{user.firstname}}</span>
-        <span>{{user.lastname}}</span>
-        <span>{{user.createdOn}}</span>
-        <span>{{user.email}}</span>
-        <span>{{user.phonenumber}}</span>
-        <span>{{user.profilPicture}}</span>
-        <span>{{user.type}}</span>
-        <span>{{user.companyName}}</span>
-        <a href="/account/settings">Paramètres</a>
-        <a href="/disconnect">Déconnexion</a>
+        <div class="fixedBtn" id="mobileClose" hidden="true">
+            <img src="/imgs/icons/close_black_24dp.svg" alt="logo"/>
+        </div>
+    
+        <div class="menu" id="menu" mobileHidden="true">
+    
+            <div class="menuElms">
+    
+                <div class="menuTopElements">
+                    <div class="logo">
+                        <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
+                        <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                    </div>
+                    {{#user}}
+                    <a class="user" href="/account">
+                        <div class="userImage">
+                            <img src="https://localhost:8080/users/profilPicture/{{user._id}}" alt="user"/>
+                        </div>
+                        <div class="userText">
+                            <h1>{{user.firstname}} {{user.lastname}}</h1>
+                            <h2>Mon compte</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    {{^user}}
+                    <a class="registerorlogin" href="/login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    {{/user}}
+                </div>
+                <div class="menuOptions">
+    
+                    <a class="option" selected="{{menu.selectedPage.home}}" href="/">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/search_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/search_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Accueil</h2>
+                        </div>
+                    </a>
+
+                    <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/view_module_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/view_module_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Présentation</h2>
+                        </div>
+                    </a>
+                    
+                    {{#user}}
+                    {{#user.type=="resident"}}
+                    <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/favorite_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes favoris</h2>
+                        </div>
+                    </a>
+                    {{/user.type=="resident"}}
+                    {{/user}}
+    
+                    {{#user}}
+                    {{#user.type=="landlord"}}
+                    <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/add_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Publier un kot</h2>
+                        </div>
+                    </a>
+                    <a class="option" selected="{{menu.selectedPage.mykots}}" href="/kot/my">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/home_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/home_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes kots</h2>
+                        </div>
+                    </a>
+                    {{/user.type=="landlord"}}
+                    {{/user}}
+    
+                    <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/call_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/call_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Contact</h2>
+                        </div>
+                    </a>
+    
+                </div>
+                
+                {{#user}}
+                <div class="otherBtns">
+                    <a href="/account/settings">
+                        <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
+                    </a>
+                    <a href="/disconnect">
+                        <img src="/imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
+                    </a>
+                </div>
+                {{/user}}
+    
+            </div>
+            
+        </div>
     </div>
-    {{/user}}
-    {{^user}}
-    <div>
-        <h2>Vous n'êtes pas connecté</h2>
-        <a href="/register">Créer un compte</a>
-        <a href="/login">Connexion</a>
+
+    <div class="g-background">
+        <div class="g-background-map">
+            <div id="map"></div>
+        </div>
+        <div class="g-content">
+            <div class="g-center g-flexContainerVertical">
+                <div class="g-maxflex"></div>
+                <h1 class="centerTitle">Rechercher un kot</h1>
+                <form class="searchForm" action="search" method="POST">
+                    <input class="searchBar" type="text" placeholder="Trouver un kot..." name="text_search">
+                    <div class="filtersContainer">
+
+                        <label class="filtersTitle">Filtres :</label>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="minValue" value=""/>
+                            <label id="res">
+                                <h2>Prix minimum</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Prix minimum</div>
+                                <div class="element" value="100">100€</div>
+                                <div class="element" value="200">200€</div>
+                                <div class="element" value="300">300€</div>
+                                <div class="element" value="400">400€</div>
+                                <div class="element" value="500">500€</div>
+                                <div class="element" value="600">600€</div>
+                                <div class="element" value="700">700€</div>
+                                <div class="element" value="800">800€</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="maxValue" value=""/>
+                            <label id="res">
+                                <h2>Prix maximum</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Prix maximum</div>
+                                <div class="element" value="300">300€</div>
+                                <div class="element" value="400">400€</div>
+                                <div class="element" value="500">500€</div>
+                                <div class="element" value="600">600€</div>
+                                <div class="element" value="700">700€</div>
+                                <div class="element" value="800">800€</div>
+                                <div class="element" value="900">900€</div>
+                                <div class="element" value="1000">1000€</div>
+                                <div class="element" value="1100">1100€</div>
+                                <div class="element" value="1200">1200€</div>
+                                <div class="element" value="1300">1300€</div>
+                                <div class="element" value="1400">1400€</div>
+                                <div class="element" value="1500">1500€</div>
+                                <div class="element" value="1600">1600€</div>
+                                <div class="element" value="1700">1700€</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="postedsince" value=""/>
+                            <label id="res">
+                                <h2>Postée depuis</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Postée depuis</div>
+                                <div class="element" value="1week">1 semaine</div>
+                                <div class="element" value="1month">1 mois</div>
+                                <div class="element" value="3month">3 mois</div>
+                                <div class="element" value="6month">6 mois</div>
+                                <div class="element" value="1year">1 an</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="localisation" value=""/>
+                            <label id="res">
+                                <h2>Localisation</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Localisation</div>
+                                <div class="element" value="sciences">A moins de 500m de la place des sciences</div>
+                                <div class="element" value="agora">A moins de 500m de l'Agora</div>
+                                <div class="element" value="esplanade">A moins de 500m de l'Espalanade</div>
+                                <div class="element" value="lac">A moins de 500m du lac</div>
+                                <div class="element" value="grandplace">A moins de 500m de la grand place</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="isOpen" value=""/>
+                            <label id="res">
+                                <h2>Disponibilitée</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Disponibilitée</div>
+                                <div class="element" value="opened">Disponible</div>
+                                <div class="element" value="closed">Non-disponible</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="nbbedrooms" value=""/>
+                            <label id="res">
+                                <h2>Nb. chambres min.</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Nb. chambres min.</div>
+                                <div class="element" value="1">1 +</div>
+                                <div class="element" value="2">2 +</div>
+                                <div class="element" value="3">3 +</div>
+                                <div class="element" value="4">4 +</div>
+                                <div class="element" value="5">5 +</div>
+                                <div class="element" value="6">6 +</div>
+                                <div class="element" value="7">7 +</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="nbbathrooms" value=""/>
+                            <label id="res">
+                                <h2>Nb. salle de bain min.</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Nb. salle de bain min.</div>
+                                <div class="element" value="1">1 +</div>
+                                <div class="element" value="2">2 +</div>
+                                <div class="element" value="3">3 +</div>
+                                <div class="element" value="4">4 +</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="type" value=""/>
+                            <label id="res">
+                                <h2>Type de batîment</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Type de batîment</div>
+                                <div class="element" value="appart">Appartement</div>
+                                <div class="element" value="house">Maison</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="surfacemin" value=""/>
+                            <label id="res">
+                                <h2>Surface min.</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Surface min.</div>
+                                <div class="element" value="10">10m²</div>
+                                <div class="element" value="15">15m²</div>
+                                <div class="element" value="20">20m²</div>
+                                <div class="element" value="25">15m²</div>
+                                <div class="element" value="30">30m²</div>
+                                <div class="element" value="50">50m²</div>
+                                <div class="element" value="75">75m²</div>
+                                <div class="element" value="100">100m²</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="nbparking" value=""/>
+                            <label id="res">
+                                <h2>Nb. parking</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Nb. parking</div>
+                                <div class="element" value="0">0+</div>
+                                <div class="element" value="1">1+</div>
+                                <div class="element" value="2">2+</div>
+                                <div class="element" value="3">3+</div>
+                                <div class="element" value="4">4+</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="petfriendly" value=""/>
+                            <label id="res">
+                                <h2>Animaux</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Animaux</div>
+                                <div class="element" value="small">Petits animaux</div>
+                                <div class="element" value="big">Grands animaux</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="height: 25px;"></div>
+
+                    <button type="submit">Rechercher</button>
+
+                </form>
+                <div class="g-maxflex"></div>
+
+            </div>
+        </div>
     </div>
-    {{/user}}
 
 </body>
-
-<style>
-    div{
-        display: flex;
-        flex-direction: column;
-    }
-    .profilPicture{
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        overflow: hidden;
-        position: relative;
-    }
-    .profilPicture img{
-        position: absolute;
-        left: 0;right: 0;
-        top: 0;bottom: 0;
-        margin: auto;
-        width: 100%;
-    }
-</style>
+<script src="/js/menu.js"></script>
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
+async
+></script>
+<script src="/js/index.js"></script>

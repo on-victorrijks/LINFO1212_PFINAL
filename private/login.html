@@ -5,35 +5,81 @@
   <title>{{page.title}}</title>
   <meta name="description" content="{{page.description}}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/loginregister.css">
+
 </head>
 <body>
 
-    <form action="/api/loginUser" method="POST">
+    <div class="centerContainer">
+        <div class="logoContainer">
+            <a href="/">
+                <img alt="logo" src="/imgs/logo.svg"/>
+            </a>
+        </div>
+        <div class="g-background-map">
+            <div id="map"></div>
+        </div>
+        <div class="centerBox">
 
-        <label for="email">Adresse email</label>
-        <input type="email" name="email" placeholder="Adresse email" required/>
+            <div class="g-columnsContainer solidBox">
 
-        <label for="password">Mot de passe</label>
-        <input type="password" name="password" placeholder="********" required/>
+                <div class="g-column h-full">
+                    <div class="topBarTitle">
+                        <h1>Se connecter</h1>
+                        <h2>Créer un compte rapidement et facilement pour profiter de ces avantages</h2>
+                    </div>
+                    <form action="/api/loginUser" method="POST">
         
-        <button type="submit">Connexion</button>
-    </form>
+                        <label for="email">Adresse email</label>
+                        <input type="email" name="email" placeholder="Adresse email" required/>
+                
+                        <label for="password">Mot de passe</label>
+                        <input type="password" name="password" placeholder="********" required/>
+                        
+                        <button type="submit" class="submit">Connexion</button>
+                    </form>
+                </div>
+
+                <div class="g-columnSeparator"></div>
+
+                <div class="g-column h-full">
+                    <div class="topBarTitle">
+                        <h1>Vous n'avez pas encore de compte ?</h1>
+                        <h2>Créer un compte rapidement et facilement pour profiter de ces avantages</h2>
+                    </div>
+                    <div class="explanationColumn">
+                        <div class="advantages-list">
+                            <div class="advantage">
+                                <img src="/imgs/icons/favorite_black_24dp_selected.svg" />
+                                <h3>Sauvegarder vos kots favoris</h3>
+                            </div>
+                            <div class="advantage">
+                                <img src="/imgs/icons/add_black_24dp_selected.svg" />
+                                <h3>Publier vos kots</h3>
+                            </div>
+                            <div class="advantage">
+                                <img src="/imgs/icons/question_answer_black_24dp_selected.svg" />
+                                <h3>Discuter via un messagerie intégrée avec le propriétaire/vos résidents</h3>
+                            </div>
+                        </div>
+                        <a href="/register">Créer un compte</a>
+                    </div>
+                </div>
+
+            </div>
+                
+        </div>
+    </div>
 
 </body>
 
-<style>
-    form{
-        display: flex;
-        flex-direction: column;
-    }
-    label{
-        margin-top: 25px;
-    }
-    input, select{
-        padding: 10px;
-    }
-    input[required], select[required]{
-        border-color: red;
-        border-width: 1;
-    }
-</style>
+<script src="/js/login.js"></script>
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
+async
+></script>
