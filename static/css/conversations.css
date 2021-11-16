@@ -1,0 +1,200 @@
+.browsersContainer{
+    display: flex;
+    flex-direction: row;
+    margin: 25px;
+    flex: 1;
+    max-height: calc(100% - 125px);
+}
+
+.conversationsBrowser{
+    width: 330px;
+    background-color: var(--color-bg);
+    border-radius: var(--border-radius);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-right: 15px;
+}
+.cB-conversation{
+    margin: 25px;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    transition: all .5s;
+    opacity: 1;
+    margin-left: 25px;
+}
+.cB-conversation:hover{
+    opacity: .9;
+    margin-left: 30px;
+    margin-right: 20px;
+}
+.cB-conversation .cB-conversation-image{
+    display: block;
+    height: 50px;
+    width: 50px;
+    margin: 5px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+.cB-conversation .cB-conversation-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cB-conversation .cB-conversation-text{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0;
+}
+.cB-conversation .cB-conversation-text h1{
+    color: var(--color-accentColor);
+    font-size: 15px;
+    line-height: 25px;
+    font-weight: 600;
+}
+.cB-conversation .cB-conversation-text h2{
+    color: var(--color-font-subtitle);
+    font-size: 12px;
+    line-height: 25px;
+    font-weight: 600;
+}
+
+.conversationWindow{
+    flex: 1;
+    background-color: var(--color-bg);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.cW-topBar{
+    background-color: var(--color-accentColor);
+    height: 50px;
+    width: 100%;
+    padding: 10px 22px;
+    -webkit-box-shadow: var(--shadow); 
+    box-shadow: var(--shadow); 
+    position: relative;
+    z-index: 2;
+}
+.cW-topBar h1{
+    color: var(--color-font-op);
+    line-height: 50px;
+    font-size: 22px;
+    font-weight: 600;
+}
+.cW-messagesBrowser{
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.cW-message{
+    position: relative;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    margin: 8px 0;
+}
+.cW-message[fromUser="true"]{
+    margin-left: 50%;
+    flex-direction: row-reverse;
+}
+.cW-userImage{
+    width: 20px;
+    overflow: hidden;
+    margin: 10px;
+    flex-shrink: 0;
+}
+.cW-userImageContainer{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.cW-userImageContainer img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cW-messageText{
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius-small);
+    -webkit-box-shadow: var(--shadow-light); 
+    box-shadow: var(--shadow-light); 
+    padding: 15px;
+}
+.cW-message[fromUser="true"] .cW-messageText{
+    background-color: var(--color-accentColor);
+}
+.cW-messageText p{
+    color: var(--color-font-title);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.cW-messageText h5{
+    color: var(--color-font-subtitle);
+    text-align: right;
+    font-size: 10px;
+    font-weight: 500;
+}
+.cW-message[fromUser="true"] .cW-messageText p { color: var(--color-font-op);}
+.cW-message[fromUser="true"] .cW-messageText h5{ color: rgba(255, 255, 255, 0.5);}
+
+.cW-writeMessage{
+    background-color: rgba(0,0,0,0.05);
+    min-height: 50px;
+    width: calc(100% - 20px);
+    padding: 10px;
+    border-top: solid 1px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.cW-writeMessage textarea{
+    flex: 1;
+    max-height: 75px;
+    min-height: 75px;
+    height: 75px;
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius-small);
+    border: solid 1px rgba(0,0,0,0.1);
+    padding: 15px;
+    outline: 0;
+    margin-right: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    line-height: 20px;
+    font-size: 16px;
+}
+.cW-writeMessage button{
+    background-color: var(--color-accentColor);
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 15px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 65px;
+}
+.cW-writeMessage button img{
+    height: 35px;
+}
+.cW-writeMessage button:hover{
+    background-color: var(--color-pressed);
+}

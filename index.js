@@ -27,6 +27,7 @@ import { modifyKot } from './functions/kots/modifyKot.js';
 import { getKot } from './functions/kots/getKot.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
+import { createConversation } from './functions/message/createConversation.js';
 
 
 ////// Multer
@@ -48,7 +49,9 @@ const DEFAULT_PARAMS = {
     },
     menu: {
         selectedPage: {}
-    }
+    },
+    isResident: false,
+    isLandlord: false,
 }
 
 ////// Express setup
@@ -250,18 +253,42 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     })
 
+    app.get('/conversation/create/fromkot/:kotID/:userID', (req, res, next) => {
+
+        const connectedUserID = getConnectedUserID(req);
+        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
+        
+        createConversation(database, {
+            body: {
+                numberOfUsers: 2,
+                userID0: connectedUserID,
+                userID1: req.params.userID 
+            }
+        }, (result) => {
+            if(Array.isArray(result)){
+                const newConversationID = result[0];
+                return res.redirect("/conversation/messages/" + newConversationID.toString());
+            } else {
+                res.redirect("/kot/profile/" + req.params.kotID + "?error=" + result)
+            }
+        })
+        
+    })
 
     // ------------  VIEWS  ------------
 
     app.get('/', (req, res, next) => {
 
         const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
         params.menu.selectedPage.home = "true";
         params.page.title += "Trouver un kot";
         params.page.description = "Trouver un kot sur LLN";
 
         getUser(database, getConnectedUserID(req), (connectedUser) => {
             params.user = connectedUser;
+            params.isResident = (connectedUser && connectedUser.type==="resident");
+            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
             res.render('index.html', params);
         });
     })
@@ -269,7 +296,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/register', (req, res, next) => {
 
         const params = DEFAULT_PARAMS;
-        params.page.title += "Créer un compte";
+        params.menu.selectedPage = {};
         params.page.description = "Créer un compte";
 
         res.render('register.html', params);
@@ -278,7 +305,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/login', (req, res, next) => {
 
         const params = DEFAULT_PARAMS;
-        params.page.title += "Connexion";
+        params.menu.selectedPage = {};
         params.page.description = "Connexion";
 
         res.render('login.html', params);
@@ -287,30 +314,36 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/account/settings', (req, res, next) => {
 
         const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
         params.page.title += "Paramètres";
         params.page.description = "Paramètres";
 
         getUser(database, getConnectedUserID(req), (connectedUser) => {
             params.user = connectedUser;
+            params.isResident = (connectedUser && connectedUser.type==="resident");
+            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
             res.render('settings.html', params);
         });
     })
 
     app.get('/disconnect', (req, res, next) => {
         logoutUser(req, (done) => {
-            res.redirect('/');
+            res.redirect('/?success=DISCONNECTED');
         });
     })
 
     app.get('/kot/create', (req, res, next) => {
 
         const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
         params.menu.selectedPage.publish = "true";
         params.page.title += "Créer un kot";
         params.page.description = "Créer un kot";
 
         getUser(database, getConnectedUserID(req), (connectedUser) => {
             params.user = connectedUser;
+            params.isResident = (connectedUser && connectedUser.type==="resident");
+            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
             res.render('createKot.html', params);
         });
     })
@@ -318,9 +351,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/kot/modify/:kotID', (req, res, next) => {
 
         const connectedUserID = getConnectedUserID(req);
-        if(!connectedUserID) return res.redirect("/?error=CONNECTION_NEEDED");
+        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
 
         const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
         params.page.title += "Modifier un kot";
         params.page.description = "Modifier un kot";
 
@@ -331,6 +365,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
             getUser(database, connectedUserID, (connectedUser) => {
 
                 if(kotData.creatorID.toString() !== connectedUserID) return res.redirect("/?error=NOT_CREATOR");
+
+                params.user = connectedUser;
+                params.isResident = (connectedUser && connectedUser.type==="resident");
+                params.isLandlord = (connectedUser && connectedUser.type==="landlord");
 
                 // On génère picturesUsableData avec un structure plus facilement utilisable pour afficher les images déja uploadées
                 let picturesUsableData = [];
@@ -401,42 +439,62 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         const connectedUserID = getConnectedUserID(req);
 
         const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
         params.page.description = "Profil d'un kot";
 
-        getKot(database, req.params.kotID, (kotData) => {
+        getUser(database, connectedUserID, (connectedUser) => {
 
-            if(!kotData) return res.redirect("/?error=BAD_KOTID");
-
-            kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
-            kotData.availability = formatDate(kotData.availability)
-            if(kotData.petFriendly==="small"){
-                kotData.petFriendly = "Petits animaux autorisés";
-            } else if(kotData.petFriendly==="big"){
-                kotData.petFriendly = "Grands animaux autorisés";
-            } else {
-                kotData.petFriendly = "Pas d'animaux autorisés";
-            }
-
-            // On génère picturesUsableData avec un structure plus facilement utilisable pour créer le carrousel d'images
-            let picturesUsableData = [];
-            for (let index = 0; index < kotData.pictures.length; index++) {
-                picturesUsableData.push({
-                    imageName: kotData.pictures[index],
-                    index: index,
-                    isMainImage: index===kotData.mainPictureIndex
-                });                 
-            }
-            kotData.pictures = picturesUsableData;
-
-            getUser(database, kotData.creatorID, (creatorData) => {
-                params.isConnectedUserTheCreator = connectedUserID && kotData.creatorID.toString()===connectedUserID
-                params.page.title += kotData.title;
-                params.creatorData = creatorData;
-                params.kot = kotData;
-                res.render('kot_profile.html', params);
-            })
+            params.user = connectedUser;
+            params.isResident = (connectedUser && connectedUser.type==="resident");
+            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
+    
+            getKot(database, req.params.kotID, (kotData) => {
+    
+                if(!kotData) return res.redirect("/?error=BAD_KOTID");
+    
+                kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
+                kotData.availability = formatDate(kotData.availability)
+                if(kotData.petFriendly==="small"){
+                    kotData.petFriendly = "Petits animaux autorisés";
+                } else if(kotData.petFriendly==="big"){
+                    kotData.petFriendly = "Grands animaux autorisés";
+                } else {
+                    kotData.petFriendly = "Pas d'animaux autorisés";
+                }
+    
+                // On génère picturesUsableData avec un structure plus facilement utilisable pour créer le carrousel d'images
+                let picturesUsableData = [];
+                for (let index = 0; index < kotData.pictures.length; index++) {
+                    picturesUsableData.push({
+                        imageName: kotData.pictures[index],
+                        index: index,
+                        isMainImage: index===kotData.mainPictureIndex
+                    });                 
+                }
+                kotData.pictures = picturesUsableData;
+    
+                getUser(database, kotData.creatorID, (creatorData) => {
+                    params.isConnectedUserTheCreator = connectedUserID && kotData.creatorID.toString()===connectedUserID
+                    params.page.title += kotData.title;
+                    params.creatorData = creatorData;
+                    params.kot = kotData;
+                    res.render('kot_profile.html', params);
+                })
+    
+            });
 
         });
+    })
+
+    app.get('/conversations', (req, res, next) => {
+
+        const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
+        params.menu.selectedPage.conversations = "true";
+        params.page.title += "Mes conversations";
+        params.page.description = "Mes conversations";
+
+        res.render('conversations.html', params);
     })
 
     // ------------  FILES  ------------

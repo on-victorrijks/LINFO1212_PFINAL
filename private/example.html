@@ -60,6 +60,9 @@
                         </div>
                     </a>
 
+                    {{#user}}
+                    {{/user}}
+                    {{^user}}
                     <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/view_module_black_24dp.svg"/>
@@ -69,9 +72,10 @@
                             <h2>Présentation</h2>
                         </div>
                     </a>
+                    {{/user}}
                     
                     {{#user}}
-                    {{#user.type=="resident"}}
+                    {{#isResident}}
                     <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
@@ -81,11 +85,11 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
-                    {{/user.type=="resident"}}
+                    {{/isResident}}
                     {{/user}}
     
                     {{#user}}
-                    {{#user.type=="landlord"}}
+                    {{#isLandlord}}
                     <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
@@ -104,7 +108,7 @@
                             <h2>Mes kots</h2>
                         </div>
                     </a>
-                    {{/user.type=="landlord"}}
+                    {{/isLandlord}}
                     {{/user}}
     
                     <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">

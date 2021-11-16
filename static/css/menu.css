@@ -40,7 +40,7 @@
     -webkit-box-shadow: var(--shadow); 
     box-shadow: var(--shadow); 
     cursor: pointer;
-    transition: all .15s;
+    transition: background-color .15s, box-shadow .15s;
     text-decoration: none;
 }
 .registerorlogin:hover{
@@ -60,7 +60,6 @@
     flex-direction: row;
     display: flex;
     cursor: pointer;
-    transition: all .15s;
     text-decoration: none;
     margin-right: 10vh;
 }
@@ -229,7 +228,6 @@
         -webkit-box-shadow: var(--shadow); 
         box-shadow: var(--shadow); 
         cursor: pointer;
-        transition: all .15s;
         text-decoration: none;
     }
     .userImage{

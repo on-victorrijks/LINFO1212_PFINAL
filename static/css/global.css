@@ -19,6 +19,13 @@
     width: 100vw;
     min-height: 100vh;
 }
+.g-content.flexColumn{
+    display: flex;
+    flex-direction: column;
+}
+.g-content.blockHeight{
+    height: 100vh;
+}
 .g-center{
     width: 100%;
     height: 100vh;

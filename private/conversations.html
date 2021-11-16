@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/conversations.css">
+
+</head>
+<body>
+
+    <div class="menuContainer">
+        <div class="fixedBtn" id="mobileOpen">
+            <img src="/imgs/icons/menu_black_24dp.svg" alt="logo"/>
+        </div>
+        <div class="fixedBtn" id="mobileClose" hidden="true">
+            <img src="/imgs/icons/close_black_24dp.svg" alt="logo"/>
+        </div>
+    
+        <div class="menu" id="menu" mobileHidden="true">
+    
+            <div class="menuElms">
+    
+                <div class="menuTopElements">
+                    <a class="logo" href="/">
+                        <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
+                        <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                    </a>
+                    {{#user}}
+                    <a class="user" href="/account">
+                        <div class="userImage">
+                            <img src="https://localhost:8080/users/profilPicture/{{user._id}}" alt="user"/>
+                        </div>
+                        <div class="userText">
+                            <h1>{{user.firstname}} {{user.lastname}}</h1>
+                            <h2>Mon compte</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    {{^user}}
+                    <a class="registerorlogin" href="/login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    {{/user}}
+                </div>
+                <div class="menuOptions">
+    
+                    <a class="option" selected="{{menu.selectedPage.home}}" href="/">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/search_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/search_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Accueil</h2>
+                        </div>
+                    </a>
+
+                    {{#user}}
+                    <a class="option" selected="{{menu.selectedPage.conversations}}" href="/conversations">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/question_answer_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/question_answer_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Messages</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    {{^user}}
+                    <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/view_module_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/view_module_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Présentation</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    
+                    {{#user}}
+                    {{#isResident}}
+                    <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/favorite_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes favoris</h2>
+                        </div>
+                    </a>
+                    {{/isResident}}
+                    {{/user}}
+
+                    {{#user}}
+                    {{#isLandlord}}
+                    <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/add_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Publier un kot</h2>
+                        </div>
+                    </a>
+                    <a class="option" selected="{{menu.selectedPage.mykots}}" href="/kot/my">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/home_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/home_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes kots</h2>
+                        </div>
+                    </a>
+                    {{/isLandlord}}
+                    {{/user}}
+    
+                    <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/call_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/call_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Contact</h2>
+                        </div>
+                    </a>
+    
+                </div>
+                
+                {{#user}}
+                <div class="otherBtns">
+                    <a href="/account/settings">
+                        <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
+                    </a>
+                    <a href="/disconnect">
+                        <img src="/imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
+                    </a>
+                </div>
+                {{/user}}
+    
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="g-background">
+
+        <div class="g-content flexColumn blockHeight">
+
+            <div class="g-topBar">
+                <div class="g-topTitle">
+                    <h1>Mes conversations</b></h1>
+                </div>
+            </div>
+
+            <div class="browsersContainer">
+
+                <div class="conversationsBrowser">
+
+                    <div class="cB-conversation">
+                        <div class="cB-conversation-image">
+                            <img src="/imgs/user.png"/>
+                        </div>
+                        <div class="cB-conversation-text">
+                            <h1>Fistname Lastname</h1>
+                            <h2>Last message blah blah blah...</h2>
+                        </div>
+                    </div>
+                    <div class="cB-conversation">
+                        <div class="cB-conversation-image">
+                            <img src="/imgs/user.png"/>
+                        </div>
+                        <div class="cB-conversation-text">
+                            <h1>Fistname Lastname</h1>
+                            <h2>Last message blah blah blah...</h2>
+                        </div>
+                    </div>
+                    <div class="cB-conversation">
+                        <div class="cB-conversation-image">
+                            <img src="/imgs/user.png"/>
+                        </div>
+                        <div class="cB-conversation-text">
+                            <h1>Fistname Lastname</h1>
+                            <h2>Last message blah blah blah...</h2>
+                        </div>
+                    </div>
+                    <div class="cB-conversation">
+                        <div class="cB-conversation-image">
+                            <img src="/imgs/user.png"/>
+                        </div>
+                        <div class="cB-conversation-text">
+                            <h1>Fistname Lastname</h1>
+                            <h2>Last message blah blah blah...</h2>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="conversationWindow">
+                    <div class="cW-topBar">
+                        <h1>Firstname Lastname</h1>
+                    </div>
+                    <div class="cW-messagesBrowser" id="cW-messagesBrowser">
+
+                        <div class="cW-message" fromUser="false">
+                            <div class="cW-userImage">
+                                <div class="cW-userImageContainer">
+                                    <img src="/imgs/user.png"/>
+                                </div>
+                            </div>
+                            <div class="cW-messageText">
+                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. Vestibulum volutpat pretium libero. Cras id dui. Aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Sed lectus. Donec mollis hendrerit risus. Phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci. Nunc nec neque. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada. Praesent congue erat at massa..</p>
+                                <h5>25 seconds ago</h5>
+                            </div>
+                        </div>
+
+                        <div class="cW-message" fromUser="true">
+                            <div class="cW-userImage">
+                                <div class="cW-userImageContainer">
+                                    <img src="/imgs/user.png"/>
+                                </div>
+                            </div>
+                            <div class="cW-messageText">
+                                <p>Ok great !</p>
+                                <h5>10 seconds ago</h5>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="cW-writeMessage">
+                        <textarea name="message" id="messageInput" placeholder="Ecrivez un message" required></textarea>
+                        <button type="button" id="sendMessage">
+                            <img src="/imgs/icons/send_white_24dp.svg"/>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+<script src="/js/menu.js"></script>

@@ -32,24 +32,26 @@
                         <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
                         <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
                     </div>
-                    <!--
-                    <a class="registerorlogin" href="/register_login">
-                        <h1>Se connecter / S'inscrire</h1>
-                    </a>
-                    -->
+                    {{#user}}
                     <a class="user" href="/account">
                         <div class="userImage">
-                            <img src="/imgs/user.png" alt="user"/>
+                            <img src="https://localhost:8080/users/profilPicture/{{user._id}}" alt="user"/>
                         </div>
                         <div class="userText">
-                            <h1>Firstname Lastname</h1>
+                            <h1>{{user.firstname}} {{user.lastname}}</h1>
                             <h2>Mon compte</h2>
                         </div>
                     </a>
+                    {{/user}}
+                    {{^user}}
+                    <a class="registerorlogin" href="/login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    {{/user}}
                 </div>
                 <div class="menuOptions">
     
-                    <a class="option" selected="false" href="/">
+                    <a class="option" selected="{{menu.selectedPage.home}}" href="/">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/search_black_24dp.svg"/>
                             <img id="selected"   alt="menuOption" src="/imgs/icons/search_black_24dp_selected.svg"/>
@@ -58,8 +60,24 @@
                             <h2>Accueil</h2>
                         </div>
                     </a>
+
+                    {{#user}}
+                    {{/user}}
+                    {{^user}}
+                    <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/view_module_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/view_module_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Présentation</h2>
+                        </div>
+                    </a>
+                    {{/user}}
                     
-                    <a class="option" selected="true" href="/favs">
+                    {{#user}}
+                    {{#isResident}}
+                    <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
                             <img id="selected"   alt="menuOption" src="/imgs/icons/favorite_black_24dp_selected.svg"/>
@@ -68,8 +86,12 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
+                    {{/isResident}}
+                    {{/user}}
     
-                    <a class="option" selected="false" href="/publish">
+                    {{#user}}
+                    {{#isLandlord}}
+                    <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
                             <img id="selected"   alt="menuOption" src="/imgs/icons/add_black_24dp_selected.svg"/>
@@ -78,8 +100,7 @@
                             <h2>Publier un kot</h2>
                         </div>
                     </a>
-    
-                    <a class="option" selected="false" href="/mykots">
+                    <a class="option" selected="{{menu.selectedPage.mykots}}" href="/kot/my">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/home_black_24dp.svg"/>
                             <img id="selected"   alt="menuOption" src="/imgs/icons/home_black_24dp_selected.svg"/>
@@ -88,8 +109,10 @@
                             <h2>Mes kots</h2>
                         </div>
                     </a>
+                    {{/isLandlord}}
+                    {{/user}}
     
-                    <a class="option" selected="false" href="/contact">
+                    <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/call_black_24dp.svg"/>
                             <img id="selected"   alt="menuOption" src="/imgs/icons/call_black_24dp_selected.svg"/>
@@ -100,15 +123,17 @@
                     </a>
     
                 </div>
-    
+                
+                {{#user}}
                 <div class="otherBtns">
-                    <a href="/settings">
+                    <a href="/account/settings">
                         <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
                     </a>
                     <a href="/disconnect">
                         <img src="/imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
                     </a>
                 </div>
+                {{/user}}
     
             </div>
             
@@ -311,7 +336,12 @@
                         {{#isConnectedUserTheCreator}}
                         <a href="/kot/modify/{{kot._id}}">Modifier le kot</a>
                         {{/isConnectedUserTheCreator}}
-
+                        {{^isConnectedUserTheCreator}}
+                        {{#user}}
+                        <a href="/conversation/create/fromkot/{{kot._id}}/{{kot.creatorID}}">Envoyer un message</a>
+                        {{/user}}
+                        {{/isConnectedUserTheCreator}}
+                        
                         {{#kot.availability}}
                         <div class="tag">
                             <img alt="dispo_icon" src="/imgs/icons/done_black_24dp.svg"/>
