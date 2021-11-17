@@ -29,6 +29,7 @@ import { getKot } from './functions/kots/getKot.js';
 import { createConversation } from './functions/message/createConversation.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
+import { getConversations } from './functions/message/getConversations.js';
 
 
 ////// Multer
@@ -495,7 +496,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         params.page.title += "Mes conversations";
         params.page.description = "Mes conversations";
 
-        res.render('conversations.html', params);
+        getConversations(database, req, (result) => {
+            if(Array.isArray(result)){
+                params.conversations = result;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify(result));
+                return;
+                return res.render('conversations.html', params);
+            } else {
+                return res.send(result);
+            }
+        });
+
     })
 
     // ------------  FILES  ------------

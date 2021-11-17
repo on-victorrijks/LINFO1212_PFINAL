@@ -144,3 +144,15 @@ export const formatDate = (date) => {
     const mDate = new Date(date);
     return mDate.getDate() + " " + MONTHS[mDate.getMonth()] + " " + mDate.getFullYear();
 }
+
+export const objectIDsArrayIncludes = (array, toFind, callback) => {
+    /*
+        DEF  : On vérifie si un mongodb.ObjectID est dans un array de mongodb.ObjectID
+        PRE  : array (Array<mongodb.ObjectID>) | toFind (mongodb.ObjectID) | calback (Function(boolean))
+        POST : boolean
+    */  
+    array.forEach((element, index) => {
+        if(element.toString() === toFind.toString()) return callback(true);
+        if((index + 1) === array.length) return callback(false);
+    });
+}
