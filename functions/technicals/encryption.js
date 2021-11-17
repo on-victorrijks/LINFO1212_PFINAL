@@ -1,5 +1,5 @@
 // Imports
-import crypto from crypto;
+import crypto from "crypto";
 
 // Constants
 const algorithm = 'aes-256-ctr';

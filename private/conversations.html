@@ -150,6 +150,8 @@
 
     <div class="g-background">
 
+        <input type="hidden" id="connectedUserID" value="{{user._id}}">
+
         <div class="g-content flexColumn blockHeight">
 
             <div class="g-topBar">
@@ -163,13 +165,21 @@
                 <div class="conversationsBrowser">
 
                     {{#conversations}}
-                    <div class="cB-conversation">
+                    <div class="cB-conversation" 
+                    id="conv_{{_id}}"
+                    onClick="setConversation('conv_{{_id}}')"
+                    convID="{{_id}}"
+                    convName="{{conv_name}}"
+                    isSelected="false"
+                    >
                         <div class="cB-conversation-image">
-                            <img src="/imgs/user.png"/>
+                            {{#conv_image}}
+                            <img src="https://localhost:8080/users/profilPicture/{{.}}"/>
+                            {{/conv_image}}
                         </div>
                         <div class="cB-conversation-text">
-                            <h1>Fistname Lastname</h1>
-                            <h2>Last message blah blah blah...</h2>
+                            <h1>{{conv_name}}</h1>
+                            <h2>{{conv_lastmessage}}</h2>
                         </div>
                     </div>
                     {{/conversations}}
@@ -178,40 +188,17 @@
 
                 <div class="conversationWindow">
                     <div class="cW-topBar">
-                        <h1>Firstname Lastname</h1>
+                        <h1 id="dyn_convName"></h1>
                     </div>
                     <div class="cW-messagesBrowser" id="cW-messagesBrowser">
-
-                        <div class="cW-message" fromUser="false">
-                            <div class="cW-userImage">
-                                <div class="cW-userImageContainer">
-                                    <img src="/imgs/user.png"/>
-                                </div>
-                            </div>
-                            <div class="cW-messageText">
-                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. Vestibulum volutpat pretium libero. Cras id dui. Aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Sed lectus. Donec mollis hendrerit risus. Phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci. Nunc nec neque. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada. Praesent congue erat at massa..</p>
-                                <h5>25 seconds ago</h5>
-                            </div>
-                        </div>
-
-                        <div class="cW-message" fromUser="true">
-                            <div class="cW-userImage">
-                                <div class="cW-userImageContainer">
-                                    <img src="/imgs/user.png"/>
-                                </div>
-                            </div>
-                            <div class="cW-messageText">
-                                <p>Ok great !</p>
-                                <h5>10 seconds ago</h5>
-                            </div>
-                        </div>
 
                     </div>
                     <div class="cW-writeMessage">
                         <textarea name="message" id="messageInput" placeholder="Ecrivez un message" required></textarea>
-                        <button type="button" id="sendMessage">
+                        <button type="button" id="sendMessageButton">
                             <img src="/imgs/icons/send_white_24dp.svg"/>
                         </button>
+                        <input type="hidden" id="dyn_convID" value="">
                     </div>
                 </div>
 
@@ -224,3 +211,104 @@
 
 </body>
 <script src="/js/menu.js"></script>
+<script>
+// Connected user data
+const connectedUserID = document.getElementById("connectedUserID").value;
+
+// Dyn data
+const messagesContainer = document.getElementById("cW-messagesBrowser");
+const dyn_convName      = document.getElementById("dyn_convName");
+const dyn_convID        = document.getElementById("dyn_convID");
+const dyn_messageInput  = document.getElementById("messageInput");
+
+function setConversation(conversationInformationsContainerID) {
+
+    const informationsContainer = document.getElementById(conversationInformationsContainerID);
+    const convID     = informationsContainer.getAttribute("convID");
+    const convName   = informationsContainer.getAttribute("convName");
+    const isSelected = informationsContainer.getAttribute("isSelected");
+
+    const previouslySelectedConversation = document.querySelector(".cB-conversation[isSelected='true']");
+    if(previouslySelectedConversation) previouslySelectedConversation.setAttribute("isSelected", "false");
+
+    informationsContainer.setAttribute("isSelected", "true");
+    dyn_convName.innerHTML = convName;
+    dyn_convID.value = convID;
+    
+}
+
+document.getElementById("sendMessageButton").addEventListener("click", sendMessage);
+
+async function sendMessage(){
+    const message = dyn_messageInput.value;
+    const convID  = dyn_convID.value;
+
+    const data = {
+        "message": message,
+        "conversationID": convID
+    };
+
+    await fetch('https://localhost:8080/api/sendMessage', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const error = result.error;
+        if(!error){
+            dyn_messageInput.value = "";
+            createUIMessage(message);
+        } else {
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
+
+function createUIMessage(message){
+
+    const newUIMessage = document.createElement('div');
+    newUIMessage.setAttribute("class", "cW-message");
+    newUIMessage.setAttribute("fromUser", "true");
+
+    // Image
+    const NUIMSG_userImage = document.createElement('div');
+    NUIMSG_userImage.setAttribute("class", "cW-userImage");
+
+    const NUIMSG_userImageContainer = document.createElement('div');
+    NUIMSG_userImageContainer.setAttribute("class", "cW-userImageContainer");
+
+    const NUIMSG_userImage_img = document.createElement('img');
+    NUIMSG_userImage_img.src = "https://localhost:8080/users/profilPicture/" + connectedUserID;
+
+    NUIMSG_userImageContainer.appendChild(NUIMSG_userImage_img);
+    NUIMSG_userImage.appendChild(NUIMSG_userImageContainer);
+
+    // Text
+    const NUIMSG_messageText = document.createElement('div');
+    NUIMSG_messageText.setAttribute("class", "cW-messageText");
+
+    const NUIMSG_messageText_message = document.createElement('p');
+    NUIMSG_messageText_message.innerHTML = message;
+
+    const NUIMSG_messageText_time = document.createElement('h5');
+    NUIMSG_messageText_time.innerHTML = "Envoyé";
+
+    NUIMSG_messageText.appendChild(NUIMSG_messageText_message);
+    NUIMSG_messageText.appendChild(NUIMSG_messageText_time);
+
+    // Compiling
+    newUIMessage.appendChild(NUIMSG_userImage);
+    newUIMessage.appendChild(NUIMSG_messageText);
+
+    // Adding to UI
+    messagesContainer.appendChild(newUIMessage);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+}
+</script>

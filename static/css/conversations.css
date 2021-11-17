@@ -103,11 +103,28 @@
     display: flex;
     flex-direction: row;
     margin: 8px 0;
+    animation: pop 0.5s ease-out;
 }
 .cW-message[fromUser="true"]{
     margin-left: 50%;
     flex-direction: row-reverse;
 }
+@keyframes pop {
+  0% {
+    opacity: 0;
+    top: 25px;
+    transform: scale(0.7);
+  }
+  20% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    top: 0px;
+    transform: scale(1);
+  }
+}
+
 .cW-userImage{
     width: 20px;
     overflow: hidden;

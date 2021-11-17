@@ -27,6 +27,7 @@ import { modifyKot } from './functions/kots/modifyKot.js';
 import { getKot } from './functions/kots/getKot.js';
 // Conversations imports
 import { createConversation } from './functions/message/createConversation.js';
+import { sendMessage } from './functions/message/sendMessage.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
 import { getConversations } from './functions/message/getConversations.js';
@@ -73,6 +74,7 @@ app.use(session({
     maxAge: 3600000
   }
 }));
+app.use(express.json({limit:'1mb'}))
 
 MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 	const database = db.db("KOTS");
@@ -255,7 +257,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     })
 
-    app.get('/conversation/create/fromkot/:kotID/:userID', (req, res, next) => {
+    app.get('/conversations/create/fromkot/:kotID/:userID', (req, res, next) => {
 
         const connectedUserID = getConnectedUserID(req);
         if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
@@ -269,12 +271,22 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         }, (result) => {
             if(Array.isArray(result)){
                 const newConversationID = result[0];
-                return res.redirect("/conversation/messages/" + newConversationID.toString());
+                return res.redirect("/conversations?conversationID=" + newConversationID.toString());
             } else {
                 res.redirect("/kot/profile/" + req.params.kotID + "?error=" + result)
             }
         })
         
+    })
+
+    app.post('/api/sendMessage', (req, res, next) => {
+        sendMessage(database, req, (error) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                error: error,
+            }));
+            return;
+        })
     })
 
     // ------------  VIEWS  ------------
@@ -490,23 +502,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     app.get('/conversations', (req, res, next) => {
 
+        const connectedUserID = getConnectedUserID(req);
+        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
+
         const params = DEFAULT_PARAMS;
         params.menu.selectedPage = {};
         params.menu.selectedPage.conversations = "true";
         params.page.title += "Mes conversations";
         params.page.description = "Mes conversations";
 
-        getConversations(database, req, (result) => {
-            if(Array.isArray(result)){
-                params.conversations = result;
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify(result));
-                return;
-                return res.render('conversations.html', params);
-            } else {
-                return res.send(result);
-            }
-        });
+        getUser(database, connectedUserID, (connectedUser) => {
+            params.user = connectedUser;
+            getConversations(database, req, (result) => {
+                if(Array.isArray(result)){
+                    params.conversations = result;
+                    console.log(result);
+                    return res.render('conversations.html', params);
+                } else {
+                    return res.send(result);
+                }
+            });
+        })
 
     })
 
