@@ -25,9 +25,10 @@ import { modifyUserProfilPicture } from './functions/users/modifyUserProfilPictu
 import { createKot } from './functions/kots/createKot.js';
 import { modifyKot } from './functions/kots/modifyKot.js';
 import { getKot } from './functions/kots/getKot.js';
+// Conversations imports
+import { createConversation } from './functions/message/createConversation.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
-import { createConversation } from './functions/message/createConversation.js';
 
 
 ////// Multer
