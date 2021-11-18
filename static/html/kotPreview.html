@@ -1,38 +1,43 @@
-<link rel="stylesheet" href="../css/vars.css">
-<link rel="stylesheet" href="../css/global.css">
-<link rel="stylesheet" href="../css/menu.css">
-<link rel="stylesheet" href=".../css/kotPreview.css">
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div class="kotPreview">
+  <link rel="stylesheet" href="../css/vars.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/kotPreview.css">
 
-    <div class="kotPic">
-        <div class="carrousel">
-            <img alt="carrouselImage1" src="../imgs/temp/appart.jpg">
-            <div class="controls">
-                <div class="bubble" selected="false"></div>
-                <div class="bubble" selected="true"></div>
-                <div class="bubble" selected="false"></div>
-                <div class="bubble" selected="false"></div>
-                <div class="bubble" selected="false"></div>
-                <div class="bubble" selected="false"></div>
+</head>
+<body>
+
+    <div class="kotPreview">
+
+        <div class="kotPic">
+            <div class="carrousel">
+                <img alt="carrouselImage1" src="../imgs/temp/appart.jpg">
+                <button class="favBtn" id="fav" inFavs="false">
+                    <img id="fav_true" src="../imgs/icons/favorite_black_24dp_selected.svg" alt="share">
+                    <img id="fav_false" src="../imgs/icons/favorite_border_black_24dp.svg" alt="share">
+                </button>
             </div>
-            <button class="favBtn" id="fav" inFavs="false">
-                <img id="fav_true" src="../imgs/icons/favorite_black_24dp_selected.svg" alt="share">
-                <img id="fav_false" src="../imgs/icons/favorite_border_black_24dp.svg" alt="share">
-            </button>
+        </div>
+
+        <div class="informationsContainer">
+            <div>Nom : Appartement de 100m2 en plein centre de LLN</div>
+        </div>
+        <div class="informationsContainer">
+            <div>Adresse : 18 Grand Place, 1120, Louvain-La-Neuve</div>
+        </div>
+        <div class="informationsContainer">
+            <div>Prix : 1000€ + 50€</div>
+        </div>
+        <div class="tagsAndButtonsContainer">
+            <a href="/kotProfile?kotId=TO_BE_DEFINED">Voir le Kot</a>
         </div>
     </div>
-
-    <div class="informationsContainer">
-        <div>Nom : Appartement de 100m2 en plein centre de LLN</div>
-    </div>
-    <div class="informationsContainer">
-        <div>Adresse : 18 Grand Place, 1120, Louvain-La-Neuve</div>
-    </div>
-    <div class="informationsContainer">
-        <div>Prix : 1000€ + 50€</div>
-    </div>
-    <div class="tagsAndButtonsContainer">
-        <a href="/kotProfile?kotId=TO_BE_DEFINED">Voir le Kot</a>
-    </div>
-</div>
+</body>

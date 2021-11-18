@@ -3,7 +3,7 @@
     border-radius: var(--border-radius);
     -webkit-box-shadow: var(--shadow);
     box-shadow: var(--shadow);
-    width: 20%;
+    width: 100%;
     height: auto;
     flex: 1;
     display: column;
@@ -93,39 +93,6 @@
     position: absolute;
     top: 0;bottom: 0;left: 0;right: 0;
     margin: auto;
-}
-.carrousel .controls{
-    position: absolute;
-    left: 15px;
-    padding: 15px;
-    bottom: 15px;
-    display: flex;
-    flex-direction: row;
-    width: 40%;
-    justify-content: center;
-    background-color: rgba(0,0,0,0.7);
-    border-radius: var(--border-radius-small);
-}
-.carrousel .controls .bubble{
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-    background: rgba(255,255,255,0.6);
-    border: solid 1px transparent;
-}
-.carrousel .controls .bubble[selected="true"]{
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-    background: var(--color-accentColor);
-    border: solid 1px white;
-}
-.carrousel .controls .bubble:hover{
-    opacity: 0.7;
 }
 .favBtn{
     position: absolute;

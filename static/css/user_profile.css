@@ -1,0 +1,65 @@
+.infoUser {
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    padding: 30px;
+    width: 50%;
+    background-color: var(--color-bg-light);
+    margin: 25px;
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+}
+.picContainer{
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 500px;
+    overflow: hidden;
+    -webkit-box-shadow: var(--shadow); 
+    box-shadow: var(--shadow);   
+}
+.picContainer img{
+    width: 100%;
+}
+.infoContainer {
+    margin: 10px;
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.labelContainer {
+    padding: 5px;
+}
+.button {
+    border: 0;
+    outline: none;
+    margin: 5px;
+    padding: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: var(--color-accentColor);
+    color: var(--color-font-op);
+    border-radius: var(--border-radius-small);
+    text-align: center;
+    cursor: pointer;
+}
+.buttonContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.subtitle {
+    padding: 30px;
+}
+.kotContainer {
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: row;
+    margin: 15px; 
+}
+.kotPreviewBox {
+    margin: 10px;
+}
