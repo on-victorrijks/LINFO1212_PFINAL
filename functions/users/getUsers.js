@@ -33,8 +33,6 @@ export const getUsers = (database, userIDs, ignoreID, callback) => {
 
         if(err) return callback([]);      // Erreur reliée à mongoDB
         if(!users) return callback([]);   // Pas d'utilisateur dans la db
-
-        log("Users fetched : " + userIDs);
         
         let filteredUsers = [];
         users.forEach((user, index) => {
@@ -46,12 +44,14 @@ export const getUsers = (database, userIDs, ignoreID, callback) => {
                             hashedPassword: undefined
                         });
                     }
-            }
+                }
             });
             if((index + 1) === users.length){
                 return callback(filteredUsers);
             }
         });
+
+        log("Users fetched : " + userIDs);
  
     });
 

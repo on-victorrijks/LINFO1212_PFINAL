@@ -103,7 +103,7 @@
 .informationsContainer {
     display: flex;
     flex-direction: column;
-    background: var(--color-bg);
+    background: var(--color-bg-light);
     margin-top: calc(var(--border-radius) * -1);
     padding-top: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
@@ -149,8 +149,6 @@
     overflow: hidden;
     background-color: var(--color-unloaded);
     border-radius: var(--border-radius);
-    -webkit-box-shadow: var(--shadow); 
-    box-shadow: var(--shadow); 
     border: solid 2px #eee;
     margin: 0;
     aspect-ratio: 1;
@@ -257,8 +255,6 @@
 .creatorBox {
     background-color: var(--color-bg-light);
     border-radius: var(--border-radius);
-    -webkit-box-shadow: var(--shadow);
-    box-shadow: var(--shadow);
     padding: 15px;
     align-self: flex-start;
     display: flex;
@@ -325,7 +321,7 @@
 .tagsAndButtonsContainer .tag{
     display: flex;
     flex-direction: row;
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-light);
     padding: 10px;
     border: 0;
     border-radius: 45px;
@@ -435,8 +431,6 @@
     .creatorBox{
         background-color: var(--color-bg-light);
         border-radius: var(--border-radius);
-        -webkit-box-shadow: var(--shadow); 
-        box-shadow: var(--shadow); 
         padding: 15px;
         align-self: flex-start;
         width: unset;

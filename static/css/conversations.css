@@ -1,93 +1,196 @@
 .browsersContainer{
     display: flex;
-    flex-direction: row;
-    margin: 25px;
+    flex-direction: column;
+    margin: 5px;
     flex: 1;
-    max-height: calc(100% - 125px);
+    max-height: calc(100% - 10px);
 }
 
 .conversationsBrowser{
-    width: 330px;
-    background-color: var(--color-bg);
-    border-radius: var(--border-radius);
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    margin-right: 15px;
 }
 .cB-conversation{
-    margin: 25px;
-    margin-bottom: 0;
+    margin: 5px;
     display: flex;
     flex-direction: row;
     cursor: pointer;
-    transition: all .5s;
     opacity: 1;
-    margin-left: 25px;
+    transition: opacity .5s, margin-left .5s, margin-right .5s;
 }
 .cB-conversation:hover{
-    opacity: .9;
-    margin-left: 30px;
-    margin-right: 20px;
+    opacity: .7;
 }
 .cB-conversation .cB-conversation-image{
-    display: block;
     height: 50px;
     width: 50px;
     margin: 5px;
     border-radius: 50%;
     overflow: hidden;
-    flex-shrink: 0;
-    margin-right: 15px;
+    border: solid 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
 }
-.cB-conversation .cB-conversation-image img{
+.cB-conversation .cB-conversation-image .cB-conversation-imageContainer img{
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-.cB-conversation .cB-conversation-text{
-    flex: 1;
+/* 1 user */
+.cB-conversation .cB-conversation-image[numberOfUsers="1"]{}
+.cB-conversation .cB-conversation-image[numberOfUsers="1"] .cB-conversation-imageContainer{
+    width: 100%;
+    height: 100%;
+}
+/* 2 users */
+.cB-conversation .cB-conversation-image[numberOfUsers="2"]{
     display: flex;
-    flex-direction: column;
-    margin: 5px 0;
+    flex-direction: row;
 }
-.cB-conversation .cB-conversation-text h1{
-    color: var(--color-accentColor);
-    font-size: 15px;
-    line-height: 25px;
-    font-weight: 600;
+.cB-conversation .cB-conversation-image[numberOfUsers="2"] .cB-conversation-imageContainer{
+    width: 50%;
+    height: 100%;
 }
-.cB-conversation .cB-conversation-text h2{
-    color: var(--color-font-subtitle);
-    font-size: 12px;
-    line-height: 25px;
-    font-weight: 600;
+/* 3 users */
+.cB-conversation .cB-conversation-image[numberOfUsers="3"]{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+.cB-conversation .cB-conversation-image[numberOfUsers="3"] .cB-conversation-imageContainer{
+    width: 100%;
+}
+.cB-conversation .cB-conversation-image[numberOfUsers="3"] .cB-conversation-imageContainer:nth-child(3){
+    width: 50%;
+    grid-column: 1 / 3;
+}
+/* 4 users */
+.cB-conversation .cB-conversation-image[numberOfUsers="4"]{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+.cB-conversation .cB-conversation-image[numberOfUsers="4"] .cB-conversation-imageContainer{
+    width: 100%;
+}
+
+
+
+
+.cB-conversation .cB-conversation-text{
+    display: none;
 }
 
 .conversationWindow{
     flex: 1;
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-light);
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    -webkit-box-shadow: var(--shadow-strong); 
+    box-shadow: var(--shadow-strong); 
+}
+.cW-info-Container{
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.noConvSelectedBox{
+    max-width: 330px;
+    display: none;
+    flex-direction: column;
+}
+.noMessageSelectedBox{
+    max-width: 330px;
+    display: none;
+    flex-direction: column;
+}
+.conversationWindow[noConversationSelected] .noConvSelectedBox{
+    display: flex;
+}
+.conversationWindow[noMessage] .noMessageSelectedBox{
+    display: flex;
+}
+.conversationWindow.noConvSelected, .conversationWindow.noMessageSelectedBox{
+    justify-content: center;
+    align-items: center;
+}
+.conversationWindow[noConversationSelected] .cW-info-Container, .conversationWindow[noMessage] .cW-info-Container{
+    display: flex;
+}
+.conversationWindow[noConversationSelected] .cW-messagesBrowser, .conversationWindow[noMessage] .cW-messagesBrowser{
+    display: none;
+}
+.conversationWindow[noConversationSelected] .cW-topBar{
+    display: none;
+}
+.conversationWindow[noConversationSelected] .cW-writeMessage{
+    display: none;
+}
+.noMessageSelectedBox h1, .noConvSelectedBox h1{
+    color: var(--color-font-title);
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.noMessageSelectedBox h3, .noConvSelectedBox h3{
+    color: var(--color-font-subtitle);
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
 }
 .cW-topBar{
-    background-color: var(--color-accentColor);
     height: 50px;
-    width: 100%;
-    padding: 10px 22px;
+    width: calc(100% - 20px);
+    padding: 10px;
     -webkit-box-shadow: var(--shadow); 
     box-shadow: var(--shadow); 
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: row;
 }
-.cW-topBar h1{
+.cW-topBar h1 {
+    background-color: var(--color-accentColor);
     color: var(--color-font-op);
+    border-radius: 25px;
     line-height: 50px;
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 600;
+    width: fit-content;
+    padding: 0 22px;
+}
+.cW-topBar-iconButton {
+    background: transparent;
+    border: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.cW-topBar-iconButton.onlyMobile{
+    display: block;
+}
+.cW-topBar-iconButton:hover{
+    opacity: .5;
+}
+.cW-topBar-iconButton img{
+    width: 30px;
+    height: 30px;
 }
 .cW-messagesBrowser{
     overflow-y: auto;
@@ -99,30 +202,41 @@
 
 .cW-message{
     position: relative;
-    width: 50%;
+    max-width: 75%;
     display: flex;
     flex-direction: row;
     margin: 8px 0;
     animation: pop 0.5s ease-out;
 }
 .cW-message[fromUser="true"]{
-    margin-left: 50%;
     flex-direction: row-reverse;
+    margin-left: auto;
+    margin-right: 0;
+    animation: pop_fromUSer 0.5s ease-out;
+}
+@keyframes pop_fromUSer {
+    0% {
+      opacity: 0;
+      top: 10px;
+      right: -15px;
+    }
+    100% {
+      opacity: 1;
+      top: 0px;
+      right: 0px;
+    }
 }
 @keyframes pop {
-  0% {
-    opacity: 0;
-    top: 25px;
-    transform: scale(0.7);
-  }
-  20% {
-    transform: scale(1.05);
-  }
-  100% {
-    opacity: 1;
-    top: 0px;
-    transform: scale(1);
-  }
+    0% {
+      opacity: 0;
+      top: 10px;
+      left: -15px;
+    }
+    100% {
+      opacity: 1;
+      top: 0px;
+      left: 0px;
+    }
 }
 
 .cW-userImage{
@@ -143,11 +257,10 @@
     object-fit: cover;
 }
 .cW-messageText{
-    background: var(--color-bg-light);
+    background: var(--color-bg);
     border-radius: var(--border-radius-small);
-    -webkit-box-shadow: var(--shadow-light); 
-    box-shadow: var(--shadow-light); 
     padding: 15px;
+    max-width: 100%;
 }
 .cW-message[fromUser="true"] .cW-messageText{
     background-color: var(--color-accentColor);
@@ -157,6 +270,7 @@
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 8px;
+    text-overflow: clip;
 }
 .cW-messageText h5{
     color: var(--color-font-subtitle);
@@ -168,10 +282,8 @@
 .cW-message[fromUser="true"] .cW-messageText h5{ color: rgba(255, 255, 255, 0.5);}
 
 .cW-writeMessage{
-    background-color: rgba(0,0,0,0.05);
     min-height: 50px;
-    width: calc(100% - 20px);
-    padding: 10px;
+    padding: 15px;
     border-top: solid 1px rgba(0,0,0,0.1);
     position: relative;
     z-index: 2;
@@ -181,12 +293,14 @@
 }
 .cW-writeMessage textarea{
     flex: 1;
-    max-height: 75px;
-    min-height: 75px;
-    height: 75px;
-    background-color: var(--color-bg-light);
-    border-radius: var(--border-radius-small);
-    border: solid 1px rgba(0,0,0,0.1);
+    max-height: 100px;
+    min-height: 20px;
+    min-width: unset;
+    max-width: unset;
+    height: 20px;
+    background-color: var(--color-bg);
+    border: 0;
+    border-radius: var(--border-radius);
     padding: 15px;
     outline: 0;
     margin-right: 10px;
@@ -207,11 +321,192 @@
     letter-spacing: 1px;
     font-weight: 600;
     cursor: pointer;
-    height: 65px;
+    height: 50px;
 }
 .cW-writeMessage button img{
-    height: 35px;
+    height: 20px;
 }
 .cW-writeMessage button:hover{
     background-color: var(--color-pressed);
+}
+#fetchMoreMessagesButton {
+    width: 200px;
+    height: 50px;
+    border: 0;
+    position: relative;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background: var(--color-bg);
+    border-bottom-left-radius: var(--border-radius-small);
+    border-bottom-right-radius: var(--border-radius-small);
+    cursor: pointer;
+    font-weight: 600;
+    top: -10px;
+    transition: top .4s, color .4s;
+    -webkit-box-align:center;
+    -webkit-box-pack:center;
+    display:-webkit-box;
+    color: var(--color-font-title-unfocused);
+}
+#fetchMoreMessagesButton[hidden]{
+    display: none;
+}
+#fetchMoreMessagesButton:hover{
+    top: 0;
+    color: var(--color-font-title);
+}
+.messagesLoaderContainer{
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+.messagesLoaderContainer[hidden]{
+    display: none;
+}
+.cB-noConversation{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px;
+    height: 100%;
+}
+.cB-noConversation h2{
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.usersList{
+    max-height: 50vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.userListElement{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+.userListElement .userImage{
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    overflow: hidden;
+    border-radius: 25px;
+    margin-right: 15px;
+}
+.userListElement .userImage img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.userListElement .userName{
+    flex: 1;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.userListElement .userName h1{
+    font-size: 15px;
+    color: var(--color-font-title);
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-align: left;
+}
+.userListElement .userButtons{
+    display: flex;
+    flex-direction: row;
+    margin-left: 15px;
+    height: 50px;
+}
+.userListElement .userButtons button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    margin: 5px;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+}
+.userListElement .userButtons button:hover{
+    opacity: .5;
+}
+.userListElement .userButtons button img{
+    width: 30px;
+    height: 30px;
+}
+.usersList-loader{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.usersList-loader[hidden]{
+    display: none;
+}
+.usersList-loader h2{
+    font-size: 17px;
+    margin-top: 25px;
+    color: var(--color-accentColor);
+    font-weight: 600;
+    max-width: 250px;
+    letter-spacing: .5px;
+    text-align: center;
+}
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .cB-conversation{
+        margin: 25px;
+        margin-left: 25px;
+        margin-bottom: 0;
+    }
+    .cB-conversation:hover{
+        margin-left: 30px;
+        margin-right: 20px;
+    }
+    .cB-conversation .cB-conversation-text{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin: 5px 0;
+        display: block;
+    }
+    .cB-conversation .cB-conversation-text h1{
+        color: var(--color-accentColor);
+        font-size: 15px;
+        line-height: 25px;
+        font-weight: 600;
+    }
+    .cB-conversation .cB-conversation-text h2{
+        color: var(--color-font-subtitle);
+        font-size: 12px;
+        line-height: 25px;
+        font-weight: 600;
+    }
+    .cB-conversation .cB-conversation-image{
+        margin-right: 15px;
+        border: none;
+    }
+    .conversationsBrowser{
+        width: 330px;
+        background-color: var(--color-bg-light);
+        border-radius: var(--border-radius);
+        margin-right: 15px;
+    }
+    .browsersContainer{
+        flex-direction: row;
+        margin: 25px;
+        max-height: calc(100% - 200px);
+    }
+    .conversationWindow{
+        -webkit-box-shadow: unset; 
+        box-shadow: unset; 
+    }
+    .cW-topBar-iconButton.onlyMobile{
+        display: none;
+    }
 }

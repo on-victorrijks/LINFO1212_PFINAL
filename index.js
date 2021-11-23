@@ -28,9 +28,14 @@ import { getKot } from './functions/kots/getKot.js';
 // Conversations imports
 import { createConversation } from './functions/message/createConversation.js';
 import { sendMessage } from './functions/message/sendMessage.js';
+import { getMessages } from './functions/message/getMessages.js';
+import { getConversations } from './functions/message/getConversations.js';
+import { getConversation } from './functions/message/getConversation.js';
+import { joinConversation } from './functions/message/joinConversation.js';
+import { getUsersDataFromConvID } from './functions/message/getUsersDataFromConvID.js';
+import { removeUserFromConversation } from './functions/message/removeUserFromConversation.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
-import { getConversations } from './functions/message/getConversations.js';
 
 
 ////// Multer
@@ -91,15 +96,15 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     app.post('/api/loginUser', (req, res, next) => {
         loginUser(database, req, (error) => {
-            if(error) return res.send(error);
-            return res.send("user logged");
+            if(error) return res.redirect("/login?error="+error);
+            return res.redirect("/?success=CONNECTED");
         })
     })
 
     app.post('/api/modifyUser', (req, res, next) => {
         modifyUser(database, req, (error) => {
-            if(error) return res.send(error);
-            return res.send("user modified");
+            if(error) return res.redirect("/account/settings?error="+error);
+            return res.redirect("/account");
         })
     })
 
@@ -115,16 +120,16 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
         if ([".png", ".jpeg", ".jpg"].includes(imageExtension)) {
             fs.rename(tempPath, targetPath, (err) => {
-                if(err) return res.send('ERROR WHILE UPLOADING');
+                if(err) return res.redirect("/account/settings?error="+error);
                 modifyUserProfilPicture(database, req, imageName, profilPicturesPath, (error) => {
                     if(error) return res.send(error);
-                    return res.send("user profil picture modified");
+                    return res.redirect("/account");
                 });
             });
 
         } else {
             fs.unlink(tempPath, (err) => {
-                return res.send("BAD IMAGE FORMAT");
+                return res.redirect("/account/settings?error=BAD_FORMAT");
             });
         }
     })
@@ -133,7 +138,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
         const userID = getConnectedUserID(req);
         if(userID==="") return res.redirect("/login?error=CONNECTION_NEEDED");
-        if(!(req && req.body)) return res.redirect("/?error=BAD_REQUEST");
+        if(!(req && req.body)) return res.redirect("/kot/create/?error=BAD_REQUEST");
 
         let pictures = req.files;
         let filteredPicturesName = [];
@@ -176,13 +181,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 return res.redirect("/kot/profile/"+newKotID.toString());
 
             } else {
-                return res.send(result.toString()); //FIX
+                return res.redirect("/kot/create/?error=" + result);
             }
         });
 
     })
-
-
 
     app.post('/api/kot/modify', upload.array("pictures", 10), (req, res, next) => {
 
@@ -193,8 +196,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
         getKot(database, req.body.kotID, (kotData) => {
 
-            if(kotData.creatorID.toString() !== userID) return res.redirect("/?error=NOT_CREATOR");
-            if(req.body.binNames===undefined) return res.redirect("/?error=BAD_REQUEST");
+            if(kotData.creatorID.toString() !== userID) return res.redirect("/kot/profile/" + req.body.kotID + "?error=NOT_CREATOR");
+            if(req.body.binNames===undefined) return res.redirect("/kot/modify/" + req.body.kotID + "?error=BAD_REQUEST");
 
             const binNames = req.body.binNames.split("|");
 
@@ -246,10 +249,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                         }
                     });
     
-                    return res.redirect("/kot/profile/"+req.body.kotID);
+                    return res.redirect("/kot/profile/" + req.body.kotID);
     
                 } else {
-                    return res.send(result.toString()); //FIX
+                    return res.redirect("/kot/profile/" + req.body.kotID + "?error=" + result.toString());
                 }
             });
 
@@ -271,7 +274,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         }, (result) => {
             if(Array.isArray(result)){
                 const newConversationID = result[0];
-                return res.redirect("/conversations?conversationID=" + newConversationID.toString());
+                return res.redirect("/conversations?selectedConversationID=" + newConversationID.toString());
             } else {
                 res.redirect("/kot/profile/" + req.params.kotID + "?error=" + result)
             }
@@ -286,6 +289,52 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 error: error,
             }));
             return;
+        })
+    })
+
+    app.post('/api/getMessages', (req, res, next) => {
+        getMessages(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    app.post('/api/getUsersDataFromConvID', (req, res, next) => {
+        getUsersDataFromConvID(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    app.post('/api/removeUserFromConversation', (req, res, next) => {
+        removeUserFromConversation(database, req, (error) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                error: error,
+            }));
+            return;
+        });
+    })
+
+    app.post('/api/invitations/join', (req, res, next) => {
+        joinConversation(database, req, (error) => {
+            let convID = "";
+            if(req && req.body && req.body.convID){
+                convID = req.body.convID;
+            }
+            if(error){
+                return res.redirect("/invitations/" + convID + "?error="+error)
+            } else {
+                return res.redirect("/conversations?selectedConversationID=" + convID);
+            }
         })
     })
 
@@ -515,11 +564,39 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
             params.user = connectedUser;
             getConversations(database, req, (result) => {
                 if(Array.isArray(result)){
+                    params.selectedConversationID = req.query.selectedConversationID;
                     params.conversations = result;
-                    console.log(result);
                     return res.render('conversations.html', params);
                 } else {
                     return res.send(result);
+                }
+            });
+        })
+
+    })
+
+    app.get('/invitations/:convID', (req, res, next) => {
+
+        const connectedUserID = getConnectedUserID(req);
+        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED&redirectTo=/invitations/" + req.params.convID);
+
+        const convID = req.params.convID;
+        if(!convID) return res.redirect("/?error=BAD_REQUEST");
+
+        const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
+        params.menu.selectedPage.conversations = "true";
+        params.page.title += "Invitation à rejoindre une conversation";
+        params.page.description = "Invitation à rejoindre une conversation";
+
+        getUser(database, connectedUserID, (connectedUser) => {
+            params.user = connectedUser;
+            getConversation(database, req, convID, ([status, content]) => {
+                if(status==="OK"){
+                    params.toJoinConversation = content;
+                    return res.render('conversation_invitations.html', params);
+                } else {
+                    return res.redirect("/?error="+content)
                 }
             });
         })

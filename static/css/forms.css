@@ -12,6 +12,48 @@ input, select, textarea{
 input[type="file"]{
     display: none;
 }
+
+.form-copy{
+    background: white;
+    padding: 10px 22px;
+    border-radius: var(--border-radius-small);
+    background-color: var(--color-bg);
+    border: solid 2px var(--color-accentColor);
+    font-size: 13px;
+    outline: none;
+    display: flex;
+    flex-direction: row;
+    color: var(--color-accentColor);
+}
+.form-copy[copied]{
+    border-color: var(--color-submit);
+    color: var(--color-submit);
+}
+.form-copy[copied] button{
+    border-color: var(--color-submit);
+}
+.form-copy input.copy{
+    flex: 1;
+    background-color: transparent;
+    font-weight: 500;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+}
+.form-copy button{
+    background-color: transparent;
+    border: 0;
+    margin: 10px 0;
+    color: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 60px;
+    border-left: solid 1px var(--color-accentColor);
+    margin-left: 5px;
+}
+
+
 textarea{
     min-width: calc(100% - 48px);
     max-width: calc(100% - 48px);
@@ -52,6 +94,18 @@ form:first-child {
 label{
     margin-top: 25px;
 }
+button.validate{
+    background-color: var(--color-submit);
+    border-radius: var(--border-radius-small);
+    padding: 22px;
+    font-size: 15px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    cursor: pointer;
+}
 button.submit{
     background-color: var(--color-submit);
     border-radius: var(--border-radius-small);
@@ -67,7 +121,11 @@ button.submit{
     max-width: 250px;
     cursor: pointer;
 }
-button.submit:hover{
+button.submit.full{
+    width: 100%;
+    max-width: unset;
+}
+button.submit:hover, button.validate:hover{
     background-color: var(--color-submit-pressed);
 }
 hr{

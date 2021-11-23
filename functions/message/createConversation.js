@@ -6,7 +6,7 @@ role  : 1) vérifier la requête POST
 */
 
 // Imports
-import { isRequestPOST, log, toInt, toObjectID } from '../technicals/technicals.js';
+import { generateRandomToken, isRequestPOST, log, toInt, toObjectID } from '../technicals/technicals.js';
 
 const isCreateConversationFormDataValid = (req) => {
     /*
@@ -69,6 +69,7 @@ export const createConversation = (database, req, callback) => {
 
         const newConversation = {
             "participants"  : participantsObjectIDs,
+            "passwordToJoin": generateRandomToken(),
             "createdOn"     : (new Date()).getTime()
         };
     

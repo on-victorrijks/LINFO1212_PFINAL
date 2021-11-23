@@ -32,6 +32,7 @@ export const sendMessage = (database, req, callback) => {
     if(userID_toObjectID==="") return callback(true);                   // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
     if(!isRequestPOST(req)) return callback(true);                      // est-ce que req.body est défini (POST)
     if(!isSendMessageFormDataValid(req)) return callback(true);         // est-ce que les données nécessaires pour créer un message sont dans la requête POST et utilisables
+    //FIX VERIFY EMPTY MESSAGE
 
     const conversationID_toObjectID = toObjectID(req.body.conversationID);
 

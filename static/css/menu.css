@@ -70,7 +70,9 @@
     overflow: hidden;
 }
 .userImage img{
-    width: 6vh;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .userText{
     display: none;
@@ -183,6 +185,9 @@
     z-index: 200;
     cursor: pointer;
 }
+.fixedBtn.hiddenOnMobile{
+    display: none !important;
+}
 .fixedBtn img{
     width: 3vh;
     height: 3vh;
@@ -222,11 +227,9 @@
         margin-top: 30px;
         flex-direction: row; 
         display: flex;
-        background-color: var(--color-bg-light);
+        background-color: var(--color-bg);
         padding: 15px;
         border-radius: var(--border-radius);
-        -webkit-box-shadow: var(--shadow); 
-        box-shadow: var(--shadow); 
         cursor: pointer;
         text-decoration: none;
     }
@@ -375,4 +378,7 @@
     #logo_mini{
         display: none;
     }    
+    .fixedBtn.hiddenOnMobile{
+        display: block;
+    }
 }

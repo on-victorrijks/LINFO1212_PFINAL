@@ -6,13 +6,15 @@ Interfaces:
 ConversationObject: {
     _id: mongodb.ObjectID,
     participants: Array<mongodb.ObjectID>,
+    passwordToJoin: string,
     createdOn: number (date)
 }
 */
 
 // Imports
-import { log, toObjectID, getConnectedUserID, objectIDsArrayIncludes } from '../technicals/technicals.js';
+import { log, toObjectID, getConnectedUserID, objectIDsArrayIncludes, cutString } from '../technicals/technicals.js';
 import { getUsers } from '../users/getUsers.js';
+import { getLastMessage } from './getLastMessage.js';
 
 export const getConversations = (database, req, callback) => {
     /*
@@ -39,28 +41,41 @@ export const getConversations = (database, req, callback) => {
         if(connectedUsersConversations.length===0) return callback([]);  // Pas de conversations dans la db
 
         connectedUsersConversations.forEach((conversation, index) => {
+
             getUsers(database, conversation.participants, userID_toObjectID, (usersData) => {
-                
-                const isDuo = usersData.length==1;
+            
                 conversation.usersData = usersData.reduce((a, v) => ({ ...a, [v._id.toString()]: v}), {});
                 conversation.participantsIDs = usersData.map((userData) => userData._id.toString());
                 
-                conversation.conv_lastmessage = "Salut mon pote =)"; 
-                conversation.conv_image = [];
-                conversation.conv_name = "";
+                getLastMessage(database, req, conversation._id.toString(), ([status, content]) => {
+                    
+                    if(status==="ERROR") {
+                        conversation.conv_lastmessage = "..."; 
+                        conversation.isLastMessageFromUser = false; 
+                    } else {
+                        conversation.conv_lastmessage = cutString(content.message, 23) + "..."; 
+                        conversation.isLastMessageFromUser = content.isFromUser; 
+                    }
+                    conversation.conv_image = [];
+                    conversation.conv_name = "";
+    
+                    for (let userIndex = 0; (userIndex < usersData.length && userIndex < 4); userIndex++) {
+                        const participant = usersData[userIndex];
+                        if(participant){
+                            conversation.conv_image.push(participant._id.toString());
+                            conversation.conv_name += ", " + participant.firstname + " " + participant.lastname;
+                        }
+                    }
+    
+                    conversation.conv_name = conversation.conv_name.substring(2);
+    
+                    if((index + 1) === connectedUsersConversations.length) {
+                        log("Conversations fetched for connected user, ID:"+userID_toObjectID.toString());
+                        return callback(connectedUsersConversations); // Aucune erreur     
+                    }
 
-                for (let userIndex = 0; (userIndex < usersData.length && userIndex < 4); userIndex++) {
-                    const participant = usersData[index];
-                    conversation.conv_image.push(participant._id.toString());
-                    conversation.conv_name += ", " + usersData[0].firstname + " " + usersData[0].lastname;
-                }
-
-                conversation.conv_name = conversation.conv_name.substring(2);
-
-                if((index + 1) === connectedUsersConversations.length) {
-                    log("Conversations fetched for connected user, ID:"+userID_toObjectID.toString());
-                    return callback(connectedUsersConversations); // Aucune erreur     
-                }
+                })
+                
             });
         });
  

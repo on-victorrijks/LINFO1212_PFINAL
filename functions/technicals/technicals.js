@@ -1,4 +1,6 @@
+// Imports
 import { ObjectId } from 'mongodb';
+import crypto from "crypto";
 
 // Constants
 const MONTHS = [
@@ -15,6 +17,7 @@ const MONTHS = [
     "novembre",
     "décembre"
 ];
+const charactersToUseForTokens = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$";
 
 export const isPasswordValid = (password) => {
     /*
@@ -64,7 +67,7 @@ export const isRequestGET = (req) => {
 
 export const log = (elm) => {
     //FIX
-    console.log(elm);
+    //console.log(elm);
 }
 
 export const getConnectedUserID = (req) => {
@@ -151,8 +154,21 @@ export const objectIDsArrayIncludes = (array, toFind, callback) => {
         PRE  : array (Array<mongodb.ObjectID>) | toFind (mongodb.ObjectID) | calback (Function(boolean))
         POST : boolean
     */  
-    array.forEach((element, index) => {
-        if(element.toString() === toFind.toString()) return callback(true);
-        if((index + 1) === array.length) return callback(false);
-    });
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if(element.toString() === toFind.toString()) {
+            callback(true);
+            break;
+        };
+        if((index + 1) === array.length) {
+            callback(false);
+        };
+    }
+
+}
+
+export const generateRandomToken = () => {
+    return Array.from(crypto.randomFillSync(new Uint32Array(26)))
+    .map((x) => charactersToUseForTokens[x % charactersToUseForTokens.length])
+    .join('')
 }

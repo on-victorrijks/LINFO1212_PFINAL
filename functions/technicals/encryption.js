@@ -13,9 +13,12 @@ export const encrypt = (text) => {
         POST : string
     */
     const cipher = crypto.createCipheriv('aes-256-ctr', key, iv);
-    const encryptedText = Buffer.concat([cipher.update(text), cipher.final()]);
+    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
 
-    return encryptedText.toString('hex');
+    return {
+        iv: iv.toString('hex'),
+        content: encrypted.toString('hex')
+    };
 };
 
 export const decrypt = (hash) => {
@@ -24,6 +27,7 @@ export const decrypt = (hash) => {
         PRE  : hash (string)
         POST : string
     */
+
     const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(hash.iv, 'hex'));
     const decryptedText = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
 

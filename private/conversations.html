@@ -9,13 +9,14 @@
   <link rel="stylesheet" href="/css/vars.css">
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/forms.css">
   <link rel="stylesheet" href="/css/conversations.css">
 
 </head>
 <body>
 
     <div class="menuContainer">
-        <div class="fixedBtn" id="mobileOpen">
+        <div class="fixedBtn hiddenOnMobile" id="mobileOpen">
             <img src="/imgs/icons/menu_black_24dp.svg" alt="logo"/>
         </div>
         <div class="fixedBtn" id="mobileClose" hidden="true">
@@ -148,13 +149,15 @@
         </div>
     </div>
 
-    <div class="g-background">
+    <div class="g-background bgColor">
 
         <input type="hidden" id="connectedUserID" value="{{user._id}}">
+        <input type="hidden" id="dyn_lastNumID" value="5000">
+        <input type="hidden" id="selectedConversationID" value="{{selectedConversationID}}">
 
         <div class="g-content flexColumn blockHeight">
 
-            <div class="g-topBar">
+            <div class="g-topBar hiddenOnMobile">
                 <div class="g-topTitle">
                     <h1>Mes conversations</b></h1>
                 </div>
@@ -171,28 +174,75 @@
                     convID="{{_id}}"
                     convName="{{conv_name}}"
                     isSelected="false"
+                    passwordToJoin="{{passwordToJoin}}"
                     >
-                        <div class="cB-conversation-image">
+                        <div class="cB-conversation-image" numberOfUsers="{{conv_image.length}}">
                             {{#conv_image}}
-                            <img src="https://localhost:8080/users/profilPicture/{{.}}"/>
+                            <div class="cB-conversation-imageContainer">
+                                <img src="https://localhost:8080/users/profilPicture/{{.}}"/>
+                            </div>
                             {{/conv_image}}
                         </div>
                         <div class="cB-conversation-text">
                             <h1>{{conv_name}}</h1>
-                            <h2>{{conv_lastmessage}}</h2>
+                            <h2>
+                                {{#isLastMessageFromUser}}
+                                <i>Vous: </i>
+                                {{/isLastMessageFromUser}}
+                                {{conv_lastmessage}}
+                            </h2>
                         </div>
+                    </div>
+                    {{/conversations}}
+                    {{^conversations}}
+                    <div class="cB-noConversation">
+                        <h2>Vous n'avez pas de conversation</h2>
                     </div>
                     {{/conversations}}
 
                 </div>
 
-                <div class="conversationWindow">
+                <div class="conversationWindow" id="conversationWindow" noConversationSelected>
                     <div class="cW-topBar">
                         <h1 id="dyn_convName"></h1>
+                        <div style="flex:1"></div>
+                        <button class="cW-topBar-iconButton" onClick="openModal('leaveGroupValidate')">
+                            <img src="/imgs/icons/person_remove_black_24dp.svg"/>
+                        </button>
+                        <button class="cW-topBar-iconButton" onClick="openModal('removePeopleFromConversationModal');clearUsersInUsersList();getUsersFromConversation()">
+                            <img src="/imgs/icons/group_remove_black_24dp.svg"/>
+                        </button>
+                        <button class="cW-topBar-iconButton" onClick="openModal('addPeopleToConversationModal')">
+                            <img src="/imgs/icons/person_add_alt_black_24dp.svg"/>
+                        </button>
+                        <button class="cW-topBar-iconButton onlyMobile" onClick="openMenu()">
+                            <img src="/imgs/icons/menu_black_24dp.svg"/>
+                        </button>
                     </div>
+
+                    <div class="cW-info-Container">
+                        <div class="noConvSelectedBox">
+                            <img src="imgs/illustration_messages.png"/>
+                            <h1>Aucune conversation selectionnée</h1>
+                            <h3>Vous pouvez créer une conversation en clickant sur "Envoyer un message" sur le profil d'un kot qui vous intérèsse</h3>
+                        </div>
+                        <div class="noMessageSelectedBox">
+                            <img src="imgs/illustration_messages.png"/>
+                            <h1>Oh non</h1>
+                            <h3>Cette conversation ne contient pas de message, vous pouvez envoyer le premier !</h3>
+                        </div>
+                    </div>
+
                     <div class="cW-messagesBrowser" id="cW-messagesBrowser">
 
+                        <button onClick="getMessages()" id="fetchMoreMessagesButton">Plus de messages</button>
+                        <div class="messagesLoaderContainer" id="messagesLoaderContainer" hidden>
+                            <div class="g-loader"><div></div><div></div></div>
+                        </div>
+                        <div id="messagesAnchor"></div>
+
                     </div>
+
                     <div class="cW-writeMessage">
                         <textarea name="message" id="messageInput" placeholder="Ecrivez un message" required></textarea>
                         <button type="button" id="sendMessageButton">
@@ -208,25 +258,307 @@
 
     </div>
 
+    <div class="g-modalContainer" hidden id="modalContainer">
+
+        <div class="g-modal" hidden id="addPeopleToConversationModal">
+            <div class="g-modal-topBar">
+                <h1>Ajouter des personnes à cette conversation</h1>
+                <button class="close" onClick="closeModal('addPeopleToConversationModal')">
+                    <img src="/imgs/icons/close_black_24dp.svg"/>
+                </button>
+            </div>
+            <div class="g-modal-content">
+                <p>Pour ajouter des personnes, il vous suffit de leur partager cette combinaison lien et mot de passe. En clickant dessus, ils pourront utiliser le mot de passe à garder secret ci-dessous et accepter votre invitation pour rejoindre cette discussion.</p>
+                <br />
+                <div class="form-copy">
+                    <input class="copy" type="text" id="toCopy_invitationUrl" value="https://locahost:8080/invitations/..." readonly>
+                    <button type="button" contentID="toCopy_invitationUrl" id="button_invitationUrl">Copier</button>
+                </div>
+                <br />
+                <div class="form-copy">
+                    <input class="copy" type="text" id="toCopy_password" value="..." readonly>
+                    <button type="button" contentID="toCopy_password" id="button_invitationPassword">Copier</button>
+                </div>
+                <br />
+                <div class="g-info-box noMargin">
+                    <img src="/imgs/icons/info_accentColor_24dp.svg">
+                    <p>
+                        Attention : Le mot de passe ci-dessous est <b>UNIQUE</b> à cette conversation et <b>NON-MODIFIABLE</b>. Veillez donc à le partager d'une manière sécurisée.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="g-modal" hidden id="removePeopleFromConversationModal">
+            <div class="g-modal-topBar">
+                <h1>Enlever des personnes de cette conversation</h1>
+                <button class="close" onClick="closeModal('removePeopleFromConversationModal')">
+                    <img src="/imgs/icons/close_black_24dp.svg"/>
+                </button>
+            </div>
+            <div class="g-modal-content">
+                <div class="usersList" id="usersListContainer">
+
+                    <div class="usersList-loader" id="usersLoaderContainer" hidden>
+                        <div class="g-loader"><div></div><div></div></div>
+                        <h2>Chargement des utilisateurs...</h2>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="g-modal" hidden id="leaveGroupValidate">
+            <div class="g-modal-topBar">
+                <h1>Etes-vous sur de quitter cette conversation ?</h1>
+                <button class="close" onClick="closeModal('leaveGroupValidate')">
+                    <img src="/imgs/icons/close_black_24dp.svg"/>
+                </button>
+            </div>
+            <div class="g-modal-content">
+                <p>En quittant cette conversation vous n'aurez plus accès au messages précédemments envoyés.</p>
+                <br />
+                <button class="validate" onClick="leaveConversation()">Oui, je souhaite quitter cette conversation</button>
+            </div>
+        </div>
+
+    </div>
+
 
 </body>
 <script src="/js/menu.js"></script>
 <script>
-// Connected user data
+// Constant data
 const connectedUserID = document.getElementById("connectedUserID").value;
+const selectedConversationID = document.getElementById("selectedConversationID").value;
+
+const messagesContainer       = document.getElementById("cW-messagesBrowser");
+const messagesLoaderContainer = document.getElementById("messagesLoaderContainer");
+const fetchMoreMessagesButton = document.getElementById("fetchMoreMessagesButton");
+
+const invitationURLCopyButton = document.getElementById("button_invitationUrl");
+const passwordCopyButton      = document.getElementById("button_invitationPassword");
+
+const usersListContainer      = document.getElementById("usersListContainer");
+const usersLoaderContainer    = document.getElementById("usersLoaderContainer");
+
 
 // Dyn data
-const messagesContainer = document.getElementById("cW-messagesBrowser");
 const dyn_convName      = document.getElementById("dyn_convName");
 const dyn_convID        = document.getElementById("dyn_convID");
 const dyn_messageInput  = document.getElementById("messageInput");
+const dyn_lastNumID     = document.getElementById("dyn_lastNumID");
+
+
+function openModal(id){
+    document.getElementById("modalContainer").removeAttribute("hidden");
+    document.getElementById(id).removeAttribute("hidden");
+}
+
+function closeModal(id){
+    document.getElementById("modalContainer").setAttribute("hidden", "true");
+    document.getElementById(id).setAttribute("hidden", "true");
+}
+
+invitationURLCopyButton.addEventListener("click", copyContent);
+passwordCopyButton.addEventListener("click", copyContent);
+
+function copyContent(e){
+    
+    var toCopy_invitationUrl = document.getElementById(e.target.getAttribute("contentID"));
+
+    toCopy_invitationUrl.select();
+    toCopy_invitationUrl.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(toCopy_invitationUrl.value);
+
+    e.target.innerHTML = "Copié";
+    e.target.parentElement.setAttribute("copied", "true");
+}
+
+
+
+async function leaveConversation(){
+
+    const convID  = dyn_convID.value;
+    
+    const data = {
+        "conversationID": convID,
+        "userToRemoveID": connectedUserID
+    };
+
+    await fetch('https://localhost:8080/api/removeUserFromConversation', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const error = result.error;
+        if(!error){
+            location.reload(); //FIX ONLY UI CHANGES ?
+        } else {
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
+
+
+
+function clearUsersInUsersList(){
+    usersListContainer.querySelectorAll(".userListElement").forEach((userListElement) => {
+        userListElement.remove();
+    })
+}
+
+
+
+
+async function getUsersFromConversation(){
+
+    usersLoaderContainer.removeAttribute("hidden");
+
+    setTimeout(async() => {
+
+        const convID  = dyn_convID.value;
+
+        const data = {
+            "conversationID": convID,
+        };
+
+        await fetch('https://localhost:8080/api/getUsersDataFromConvID', {
+            method: 'post',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            const status = result.status;
+            const content = result.content;
+            if(status==="OK"){
+                const usersData = content;
+                usersData.forEach(userData => {
+                    createUIUser(userData);
+                });
+                usersLoaderContainer.setAttribute("hidden", "");
+            } else {
+                console.error('Error:', content); //FIX SHOW ERROR
+                usersLoaderContainer.setAttribute("hidden", "");
+            }
+        }).catch((error) => {
+            console.error('Error:', error); //FIX SHOW ERROR
+            usersLoaderContainer.setAttribute("hidden", "");
+        });
+
+    }, 500); //TO FIX
+
+}
+
+async function removeUserFromConversation(userID){
+
+    const convID  = dyn_convID.value;
+
+    const data = {
+        "conversationID": convID,
+        "userToRemoveID": userID
+    };
+
+    await fetch('https://localhost:8080/api/removeUserFromConversation', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const error = result.error;
+        if(!error){
+            usersListContainer.querySelector(".userListElement[userid='" + userID + "']").remove();
+        } else {
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
+
+
+function createUIUser(userData){
+
+    const newUIUser = document.createElement('div');
+    newUIUser.setAttribute("class", "userListElement");
+    newUIUser.setAttribute("userID", userData._id.toString());
+
+    // Image
+    const NUIUSER_userImage = document.createElement('div');
+    NUIUSER_userImage.setAttribute("class", "userImage");
+
+    const NUIUSER_userImage_img = document.createElement('img');
+    NUIUSER_userImage_img.src = "https://localhost:8080/users/profilPicture/" + userData._id.toString();
+
+    NUIUSER_userImage.appendChild(NUIUSER_userImage_img);
+
+    // Text
+    const NUIUSER_userName = document.createElement('div');
+    NUIUSER_userName.setAttribute("class", "userName");
+
+    const NUIUSER_userName_text = document.createElement('h1');
+    NUIUSER_userName_text.innerHTML = userData.firstname + " " + userData.lastname;
+
+    NUIUSER_userName.appendChild(NUIUSER_userName_text);
+
+    ///// Buttons
+    const NUIUSER_buttonsContainer = document.createElement('div');
+    NUIUSER_buttonsContainer.setAttribute("class", "userButtons");
+
+    // Remove btn
+    const NUIUSER_buttonsContainer_removeBtn = document.createElement('button');
+    NUIUSER_buttonsContainer_removeBtn.setAttribute("onClick", "removeUserFromConversation('" + userData._id.toString() + "')")
+
+    const NUIUSER_buttonsContainer_removeBtn_icon = document.createElement('img');
+    NUIUSER_buttonsContainer_removeBtn_icon.src = "/imgs/icons/person_remove_black_24dp.svg";
+
+    NUIUSER_buttonsContainer_removeBtn.appendChild(NUIUSER_buttonsContainer_removeBtn_icon);
+
+
+    NUIUSER_buttonsContainer.appendChild(NUIUSER_buttonsContainer_removeBtn);
+
+    // Compiling
+    newUIUser.appendChild(NUIUSER_userImage);
+    newUIUser.appendChild(NUIUSER_userName);
+    newUIUser.appendChild(NUIUSER_buttonsContainer);
+
+    // Adding to UI
+    usersListContainer.appendChild(newUIUser);
+
+}
+
+
+
+
+
+
+if(selectedConversationID) setConversation("conv_" + selectedConversationID);
 
 function setConversation(conversationInformationsContainerID) {
 
+    // Reset conversation window
+    messagesContainer.querySelectorAll(".cW-message").forEach((UIMessage) => {
+        UIMessage.remove();
+    });
+    fetchMoreMessagesButton.removeAttribute("hidden");
+
     const informationsContainer = document.getElementById(conversationInformationsContainerID);
-    const convID     = informationsContainer.getAttribute("convID");
-    const convName   = informationsContainer.getAttribute("convName");
-    const isSelected = informationsContainer.getAttribute("isSelected");
+    const convID            = informationsContainer.getAttribute("convID");
+    const convName          = informationsContainer.getAttribute("convName");
+    const isSelected        = informationsContainer.getAttribute("isSelected");
+    const passwordToJoin    = informationsContainer.getAttribute("passwordToJoin");
 
     const previouslySelectedConversation = document.querySelector(".cB-conversation[isSelected='true']");
     if(previouslySelectedConversation) previouslySelectedConversation.setAttribute("isSelected", "false");
@@ -234,10 +566,23 @@ function setConversation(conversationInformationsContainerID) {
     informationsContainer.setAttribute("isSelected", "true");
     dyn_convName.innerHTML = convName;
     dyn_convID.value = convID;
+    document.getElementById("toCopy_invitationUrl").value = "https://localhost:8080/invitations/" + convID;
+    document.getElementById("toCopy_password").value = passwordToJoin;
+
+    document.getElementById("conversationWindow").setAttribute("noMessage", "true");
+    document.getElementById("conversationWindow").removeAttribute("noConversationSelected");
+    dyn_lastNumID.value = 5000;
+    getMessages();
     
 }
 
 document.getElementById("sendMessageButton").addEventListener("click", sendMessage);
+dyn_messageInput.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
 
 async function sendMessage(){
     const message = dyn_messageInput.value;
@@ -259,7 +604,13 @@ async function sendMessage(){
         const error = result.error;
         if(!error){
             dyn_messageInput.value = "";
-            createUIMessage(message);
+            createUIMessage({
+                message: message,
+                isFromUser: true,
+                createdOn: (new Date()).getTime(),
+                fromUserID: connectedUserID
+            }, true);
+            document.getElementById("conversationWindow").removeAttribute("noMessage");
         } else {
             console.error('Error:', error); //FIX SHOW ERROR
         }
@@ -270,11 +621,58 @@ async function sendMessage(){
 
 }
 
-function createUIMessage(message){
+async function getMessages(){
+
+    messagesLoaderContainer.removeAttribute("hidden");
+
+    const convID  = dyn_convID.value;
+
+    const data = {
+        "conversationID": convID,
+        "lastNumID": parseInt(dyn_lastNumID.value),
+    };
+
+    await fetch('https://localhost:8080/api/getMessages', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        const content = result.content;
+        if(status==="OK"){
+            const messages = content;
+            if(messages.length > 0) document.getElementById("conversationWindow").removeAttribute("noMessage");
+            const oldestMessage = messages[messages.length - 1];
+            dyn_lastNumID.value = oldestMessage.numID - 1;
+            messages.forEach(message => {
+                createUIMessage(message);
+            });
+            messagesLoaderContainer.setAttribute("hidden", "");
+        } else {
+            if(content==="NOMSG"){
+                // Plus de message fetchable
+                fetchMoreMessagesButton.setAttribute("hidden", "");
+            } else {
+                console.error('Error:', content); //FIX SHOW ERROR
+            }
+            messagesLoaderContainer.setAttribute("hidden", "");
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+        messagesLoaderContainer.setAttribute("hidden", "");
+    });
+
+}
+
+function createUIMessage(messageData, isNewMessage=false){
 
     const newUIMessage = document.createElement('div');
     newUIMessage.setAttribute("class", "cW-message");
-    newUIMessage.setAttribute("fromUser", "true");
+    newUIMessage.setAttribute("fromUser", messageData.isFromUser.toString());
 
     // Image
     const NUIMSG_userImage = document.createElement('div');
@@ -284,7 +682,7 @@ function createUIMessage(message){
     NUIMSG_userImageContainer.setAttribute("class", "cW-userImageContainer");
 
     const NUIMSG_userImage_img = document.createElement('img');
-    NUIMSG_userImage_img.src = "https://localhost:8080/users/profilPicture/" + connectedUserID;
+    NUIMSG_userImage_img.src = "https://localhost:8080/users/profilPicture/" + messageData.fromUserID;
 
     NUIMSG_userImageContainer.appendChild(NUIMSG_userImage_img);
     NUIMSG_userImage.appendChild(NUIMSG_userImageContainer);
@@ -294,10 +692,10 @@ function createUIMessage(message){
     NUIMSG_messageText.setAttribute("class", "cW-messageText");
 
     const NUIMSG_messageText_message = document.createElement('p');
-    NUIMSG_messageText_message.innerHTML = message;
+    NUIMSG_messageText_message.innerHTML = messageData.message;
 
     const NUIMSG_messageText_time = document.createElement('h5');
-    NUIMSG_messageText_time.innerHTML = "Envoyé";
+    NUIMSG_messageText_time.innerHTML = formatDate(new Date(messageData.createdOn));
 
     NUIMSG_messageText.appendChild(NUIMSG_messageText_message);
     NUIMSG_messageText.appendChild(NUIMSG_messageText_time);
@@ -307,8 +705,16 @@ function createUIMessage(message){
     newUIMessage.appendChild(NUIMSG_messageText);
 
     // Adding to UI
-    messagesContainer.appendChild(newUIMessage);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if(isNewMessage){
+        messagesContainer.appendChild(newUIMessage);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    } else {
+        messagesContainer.insertBefore(newUIMessage, document.getElementById("messagesAnchor").nextSibling);
+    }
 
+}
+
+const formatDate = (date) => {
+    return date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();
 }
 </script>
