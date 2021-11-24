@@ -4,7 +4,7 @@ import consolidate from "consolidate";
 import session from "express-session";
 import bodyParser from "body-parser";
 import https from "https";
-import fs from "fs";
+import fs, { stat } from "fs";
 import multer from "multer";
 import path from "path";
 import url from 'url';
@@ -36,6 +36,7 @@ import { getUsersDataFromConvID } from './functions/message/getUsersDataFromConv
 import { removeUserFromConversation } from './functions/message/removeUserFromConversation.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
+import { search } from './functions/searchEngine/search.js';
 
 
 ////// Multer
@@ -600,6 +601,21 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 }
             });
         })
+
+    })
+
+    app.get('/search', (req, res, next) => {
+
+        search(database, req, ([status, content]) => {
+            if(status === "OK"){
+
+            } else {
+                
+            }
+        })
+
+        res.send("no");
+        return;
 
     })
 
