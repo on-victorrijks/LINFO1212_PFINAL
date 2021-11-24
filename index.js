@@ -34,9 +34,10 @@ import { getConversation } from './functions/message/getConversation.js';
 import { joinConversation } from './functions/message/joinConversation.js';
 import { getUsersDataFromConvID } from './functions/message/getUsersDataFromConvID.js';
 import { removeUserFromConversation } from './functions/message/removeUserFromConversation.js';
+// Search engine
+import { search } from './functions/searchEngine/search.js';
 // Technicals imports
 import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
-import { search } from './functions/searchEngine/search.js';
 
 
 ////// Multer
@@ -606,17 +607,23 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     app.get('/search', (req, res, next) => {
 
+        const params = DEFAULT_PARAMS;
+        params.menu.selectedPage = {};
+        params.menu.selectedPage.conversations = "true";
+        params.page.title += "Recherche - ";
+        params.page.description = "Recherche";
+
         search(database, req, ([status, content]) => {
-            if(status === "OK"){
 
-            } else {
-                
-            }
+            const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
+            params.page.title += searchQuery;
+            params.text_search = searchQuery;
+
+            params.results = content;
+
+            return res.render('search_results.html', params);
+
         })
-
-        res.send("no");
-        return;
-
     })
 
     // ------------  FILES  ------------

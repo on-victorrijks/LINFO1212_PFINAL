@@ -16,6 +16,8 @@
     --color-unloaded: #e6e6e6;
     --color-submit: #10ac84;
     --color-submit-pressed: #128f6f;
+    --color-cancel: #e05f08;
+    --color-cancel-pressed: rgb(124, 31, 15);
 
     --width-menu: 350px;
     --padding-menu: 25px;

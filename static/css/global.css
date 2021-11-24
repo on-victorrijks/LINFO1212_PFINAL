@@ -68,6 +68,7 @@
     display: flex;
     flex-direction: row;
     text-decoration: none;
+    align-items: center;
 }
 .g-topTitle b{
     color: var(--color-accentColor);
@@ -85,6 +86,10 @@ a.g-topTitle:hover{
 }
 a.g-topTitle h1{
     display: none;
+}
+.g-topTitle h1{
+    font-weight: 500;
+    font-size: 25px;
 }
 .g-topIcons{
     width: 6vh;

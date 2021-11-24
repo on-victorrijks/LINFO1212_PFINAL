@@ -5,7 +5,12 @@ role  : 1) vérifier la requête GET
 */
 
 // Imports
-import { getConnectedUserID, isRequestGET, toObjectID } from '../technicals/technicals.js';
+import moment from "moment";
+import { getConnectedUserID, isRequestGET, toInt, toObjectID } from '../technicals/technicals.js';
+
+// Constants
+const ENTRY_TYPES = ["flat", "house"];
+const ENTRY_PETFRIENDLY = ["false", "small", "big"];
 
 const isSearchFormDataValid = (req) => {
     /*
@@ -27,6 +32,24 @@ const isSearchFormDataValid = (req) => {
             req.query.petfriendly !== undefined
 }
 
+const convertPostedSinceToDate = (postedSince) => {
+    let actualDate = new Date();
+    switch(postedSince){
+        case "1week":
+            return moment(actualDate).subtract(7, 'days');
+        case "1month":
+            return moment(actualDate).subtract(1, 'months');
+        case "3month":
+            return moment(actualDate).subtract(3, 'months');
+        case "6month":
+            return moment(actualDate).subtract(6, 'months');
+        case "1year":
+            return moment(actualDate).subtract(1, 'years');
+        default:
+            return moment(actualDate).subtract(10, 'years');
+    }
+}
+
 export const search = (database, req, callback) => {
     /*
         DEF  : On récupère les kots pour les filtres présents dans la requête GET, on callback [type de callback, résultats]
@@ -45,15 +68,15 @@ export const search = (database, req, callback) => {
         let count = 0;
         words.forEach(word => {
             levenshtein_dist_equi(t, word, (dist) => {
-                if(dist < 0.5) count++;
+                if(dist && dist < 3) count += (3 - dist) ** 2;
+                if(word.toLowerCase()===t.toLowerCase() && t.length > 2) count += 5;
             });
         });
         return count;
     }
 
     function tf(t, d){
-        const words = d;
-        return countAppearances(words, t)/words.length;
+        return countAppearances(d, t)/d.length;
     }
 
     function df(t, docs){
@@ -129,31 +152,101 @@ export const search = (database, req, callback) => {
                 }
             }
     
-            return callback(d[m - 1][n - 1]/Math.max(n, m));
+            return callback(d[m - 1][n - 1]);
 
         });
 
     }
 
-    database.collection("kots").find({
-        
-    }).sort({ createdOn: -1 }).toArray(function(err, kots) {
+    // FIX LOCALISATION
+
+    ////// Création de la query
+    const query = {};
+    query.basePrice     = {$gte: 0, $lte: 100000};
+    query.createdOn     = { $gte: 0 };
+    query.bedrooms      = { $gte: 0 };
+    query.bathrooms     = { $gte: 0 };
+    query.surface       = { $gte: 0 };
+    query.parking       = { $gte: 0 };
+
+    ////// Choix des filtres
+    const filter_minValue       = req.query.minValue !== "";
+    const filter_maxValue       = req.query.maxValue !== "";
+    const filter_isOpen         = req.query.isOpen !== "";
+    const filter_bedrooms       = req.query.bedrooms !== "";
+    const filter_bathrooms      = req.query.bathrooms !== "";
+    const filter_type           = req.query.type !== "";
+    const filter_surfacemin     = req.query.surfacemin !== "";
+    const filter_nbparkings     = req.query.nbparking !== "";
+    const filter_petfriendly    = req.query.petfriendly !== "";
+
+    ////// On convertit les valeurs dans des formats facilement utilisables
+    if(filter_minValue){
+        const basePriceMin = toInt(req.query.minValue, 0, 100000, 0);
+        query.basePrice.$gte = basePriceMin;
+    }
+    if(filter_maxValue){
+        const basePriceMax = toInt(req.query.maxValue, 0, 100000, 100000);
+        query.basePrice.$lte = basePriceMax;
+    }
+    if(filter_isOpen){
+        query.isOpen = req.query.isOpen==="opened" ? true : false;
+    }
+    if(filter_bedrooms){
+        query.bedrooms.$gte = toInt(req.query.bedrooms, 0, 25, 0);
+    }
+    if(filter_bathrooms){
+        query.bathrooms.$gte = toInt(req.query.bathrooms, 0, 25, 0);
+    }
+    if(filter_type){
+        query.type = ENTRY_TYPES.includes(req.query.type) ? req.query.type : ENTRY_TYPES[0];
+    }
+    if(filter_surfacemin){
+        query.surface.$gte = toInt(req.query.surfacemin, 0, 200, 0);
+    }
+    if(filter_nbparkings){
+        query.parking.$gte = toInt(req.query.nbparking, 0, 50, 0);
+    }
+    if(filter_petfriendly){
+        query.petFriendly = ENTRY_PETFRIENDLY.includes(req.query.petfriendly) ? req.query.petfriendly : ENTRY_PETFRIENDLY[0];
+    }
+    query.createdOn.$gte = convertPostedSinceToDate(req.query.postedsince).valueOf();
+
+    database.collection("kots").find(query).sort({ createdOn: -1 }).toArray(function(err, kots) {
+
+        const queryWords = req.query.text_search.split(" ");
+        const docs = kots.map((inside_kot) => { 
+            return [...inside_kot.title.split(" "), ...inside_kot.description.split(" ")]
+        })
+
+        const kotWithScores = [];
+        const actualDateInMilliseconds = (new Date()).getTime();
 
         for (let index = 0; index < kots.length; index++) {
             const kot = kots[index];
-            
-            const queryWords = req.query.text_search.split(" ");
-            const title = kot.title;
-            const docs = kots.map((inside_kot) => { 
-                return [...inside_kot.title.split(" "), ...inside_kot.description.split(" ")]
-            })
 
             const tf_idf_weight = tf_idf_multiwords(queryWords, docs, [...kot.title.split(" "), ...kot.description.split(" ")]);
-            console.log(title + ": " + tf_idf_weight);
-            
+            kotWithScores.push({
+                score: tf_idf_weight,
+                kot: {
+                    ...kot,
+                    mainPictureName: kot.pictures[kot.mainPictureIndex]
+                },
+                kotTags: {
+                    new: (actualDateInMilliseconds - kot.createdOn) < 1000*60*60*24*7, // Kot publié il y a moins d'une semaine
+                    owner: kot.creatorID.toString()===userID_toObjectID.toString()
+                }
+            });
+
+            if(kotWithScores.length === kots.length){
+                kotWithScores.sort((a, b) => b.score - a.score);
+
+                return callback(['OK', kotWithScores]);
+            }
+
         }
 
-        return callback(['OK', []])
+
 
     });
 
