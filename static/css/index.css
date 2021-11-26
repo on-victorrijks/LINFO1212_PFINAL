@@ -113,6 +113,8 @@ label.filtersTitle {
     box-shadow: var(--shadow-strong);
     border: solid 2px #eee; 
     z-index: 8;
+    letter-spacing: 1px;
+    margin: 0;
 }
 .customSelector label:hover{
     border: solid 2px #000;
@@ -175,6 +177,23 @@ label.filtersTitle {
 
 /*DESKTOP VERSION*/
 @media only screen and (min-width: 1280px) {
+    /* selector */
+    .customSelector{
+        width: 200px;
+    }
+    .customSelector.long{
+        width: 300px;
+    }
+    .customSelector .elements {
+        width: 196px;
+    }
+    .customSelector.long .elements {
+        width: 296px;
+    }
+    .searchForm button{
+        width: unset;
+        margin: 5px;
+    }
     .centerTitle{
         margin: 40px 0;
         font-size: 50px;
@@ -222,21 +241,5 @@ label.filtersTitle {
         margin: 5px;
     }
     
-    /* selector */
-    .customSelector{
-        width: 200px;
-    }
-    .customSelector.long{
-        width: 300px;
-    }
-    .customSelector .elements {
-        width: 196px;
-    }
-    .customSelector.long .elements {
-        width: 296px;
-    }
-    .searchForm button{
-        width: unset;
-        margin: 5px;
-    }
+
 }

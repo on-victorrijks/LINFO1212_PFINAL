@@ -217,8 +217,7 @@
         z-index: 100;
         border-top-right-radius: 50px;
         border-bottom-right-radius: 50px;
-        -webkit-box-shadow: var(--shadow);
-        box-shadow: var(--shadow);
+        border: solid 1px var(--color-bg-dark);
     }
     .user{
         margin: 0;

@@ -154,10 +154,191 @@
 
         <div class="g-content">
 
-            <div class="g-topBar">
-                <div class="g-topTitle">
-                    <h1>Résultats de recherche pour : <b>{{text_search}}</b></h1>
-                </div>
+            <div class="searchParams">
+                <form class="searchForm" action="search" method="GET">
+                    <input class="searchBar" type="text" placeholder="Trouver un kot..." value="{{query.text_search}}" name="text_search">
+                    <div class="filtersContainer">
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="minValue" value=""/>
+                            <label id="res">
+                                <h2>Prix minimum</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Prix minimum</div>
+                                <div class="element" value="100">100€</div>
+                                <div class="element" value="200">200€</div>
+                                <div class="element" value="300">300€</div>
+                                <div class="element" value="400">400€</div>
+                                <div class="element" value="500">500€</div>
+                                <div class="element" value="600">600€</div>
+                                <div class="element" value="700">700€</div>
+                                <div class="element" value="800">800€</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="maxValue" value=""/>
+                            <label id="res">
+                                <h2>Prix maximum</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Prix maximum</div>
+                                <div class="element" value="300">300€</div>
+                                <div class="element" value="400">400€</div>
+                                <div class="element" value="500">500€</div>
+                                <div class="element" value="600">600€</div>
+                                <div class="element" value="700">700€</div>
+                                <div class="element" value="800">800€</div>
+                                <div class="element" value="900">900€</div>
+                                <div class="element" value="1000">1000€</div>
+                                <div class="element" value="1100">1100€</div>
+                                <div class="element" value="1200">1200€</div>
+                                <div class="element" value="1300">1300€</div>
+                                <div class="element" value="1400">1400€</div>
+                                <div class="element" value="1500">1500€</div>
+                                <div class="element" value="1600">1600€</div>
+                                <div class="element" value="1700">1700€</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="postedsince" value=""/>
+                            <label id="res">
+                                <h2>Postée depuis</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Postée depuis</div>
+                                <div class="element" value="1week">1 semaine</div>
+                                <div class="element" value="1month">1 mois</div>
+                                <div class="element" value="3month">3 mois</div>
+                                <div class="element" value="6month">6 mois</div>
+                                <div class="element" value="1year">1 an</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="localisation" value=""/>
+                            <label id="res">
+                                <h2>Localisation</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Localisation</div>
+                                <div class="element" value="sciences">A moins de 500m de la place des sciences</div>
+                                <div class="element" value="agora">A moins de 500m de l'Agora</div>
+                                <div class="element" value="esplanade">A moins de 500m de l'Espalanade</div>
+                                <div class="element" value="lac">A moins de 500m du lac</div>
+                                <div class="element" value="grandplace">A moins de 500m de la grand place</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="isOpen" value=""/>
+                            <label id="res">
+                                <h2>Disponibilitée</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Disponibilitée</div>
+                                <div class="element" value="opened">Disponible</div>
+                                <div class="element" value="closed">Non-disponible</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="nbbedrooms" value=""/>
+                            <label id="res">
+                                <h2>Nb. chambres min.</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Nb. chambres min.</div>
+                                <div class="element" value="1">1 +</div>
+                                <div class="element" value="2">2 +</div>
+                                <div class="element" value="3">3 +</div>
+                                <div class="element" value="4">4 +</div>
+                                <div class="element" value="5">5 +</div>
+                                <div class="element" value="6">6 +</div>
+                                <div class="element" value="7">7 +</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="nbbathrooms" value=""/>
+                            <label id="res">
+                                <h2>Nb. salle de bain min.</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Nb. salle de bain min.</div>
+                                <div class="element" value="1">1 +</div>
+                                <div class="element" value="2">2 +</div>
+                                <div class="element" value="3">3 +</div>
+                                <div class="element" value="4">4 +</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector long" opened="false">
+                            <input type="hidden" name="type" value=""/>
+                            <label id="res">
+                                <h2>Type de batîment</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Type de batîment</div>
+                                <div class="element" value="flat">Appartement</div>
+                                <div class="element" value="house">Maison</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="surfacemin" value=""/>
+                            <label id="res">
+                                <h2>Surface min.</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Surface min.</div>
+                                <div class="element" value="10">10m²</div>
+                                <div class="element" value="15">15m²</div>
+                                <div class="element" value="20">20m²</div>
+                                <div class="element" value="25">15m²</div>
+                                <div class="element" value="30">30m²</div>
+                                <div class="element" value="50">50m²</div>
+                                <div class="element" value="75">75m²</div>
+                                <div class="element" value="100">100m²</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="nbparking" value=""/>
+                            <label id="res">
+                                <h2>Nb. parking</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Nb. parking</div>
+                                <div class="element" value="0">0+</div>
+                                <div class="element" value="1">1+</div>
+                                <div class="element" value="2">2+</div>
+                                <div class="element" value="3">3+</div>
+                                <div class="element" value="4">4+</div>
+                            </div>
+                        </div>
+
+                        <div class="customSelector" opened="false">
+                            <input type="hidden" name="petfriendly" value=""/>
+                            <label id="res">
+                                <h2>Animaux</h2>
+                            </label>
+                            <div class="elements">
+                                <div class="element" value="">Animaux</div>
+                                <div class="element" value="small">Petits animaux</div>
+                                <div class="element" value="big">Grands animaux</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="height: 25px;"></div>
+
+                    <button type="submit">Rechercher</button>
+
+                </form>
             </div>
 
             <div class="kotsPreviewsContainer">
@@ -253,3 +434,4 @@
 
 </body>
 <script src="/js/menu.js"></script>
+<script src="/js/search_results.js"></script>

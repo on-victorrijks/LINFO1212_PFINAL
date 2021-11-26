@@ -1,15 +1,14 @@
 .kotPreview {
     background-color: var(--color-bg-light);
     border-radius: var(--border-radius);
-    -webkit-box-shadow: var(--shadow);
-    box-shadow: var(--shadow);
-    margin: 15px;
+    margin: 5px;
     height: auto;
     flex: 1;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
     padding: 0;
+    border: solid 1px var(--color-bg-dark);
 }
 .kotPic {
     border-top-left-radius: var(--border-radius);
@@ -143,7 +142,7 @@
 }
 .informationsContainer{
     flex: 1;
-    background-color: var(--color-bg);
+    background-color: rgba(0,0,0,0.03);
     padding: 15px;
     border-bottom: solid 1px rgba(0, 0, 0, 0.05);
     display: flex;
@@ -165,11 +164,12 @@
 .twoColumnsInfosContainer{
     display: flex;
     flex-direction: row;
-    background-color: var(--color-bg);
+    background-color: rgba(0,0,0,0.03);
     border-bottom: solid 1px rgba(0, 0, 0, 0.05);
 }
 .twoColumnsInfosContainer .informationsContainer{
     border-bottom: unset;
+    background: transparent;
 }
 .twoColumnsInfosContainer .informationsContainer:first-child{
     border-right: solid 1px rgba(0, 0, 0, 0.05);
@@ -208,4 +208,10 @@
 }
 .kotInfos{
     flex: 1;
+}
+
+@media only screen and (min-width: 840px) {
+    .kotPreview {
+        margin: 15px;
+    }
 }

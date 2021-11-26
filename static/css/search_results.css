@@ -1,7 +1,203 @@
 .kotsPreviewsContainer{
     display: grid;
-    grid-template-columns: 33% 33% 33%;
+    grid-template-columns: 100%;
     margin: 20px;
     margin-top: 0;
     align-items: flex-start;
+}
+.searchParams{
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin: 25px;
+    border: solid 1px var(--color-bg-dark);
+}
+.searchForm{
+    margin: 0;
+}
+.searchForm button {
+    width: 100%;
+    position: relative;
+    background: var(--color-accentColor);
+    border-radius: var(--border-radius);
+    border: 0;
+    padding: 16px 32px;
+    color: var(--color-font-op);
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 5px;
+    margin-bottom: 100px;
+    cursor: pointer;
+    padding-right: 57px;
+}
+.searchForm button:hover{
+    background-color: var(--color-pressed);
+}
+.searchForm button::after {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    content: "";
+    width: 25px;
+    height: 25px;
+    background-image: url(../imgs/icons/search_white_24dp.svg);
+    background-size: contain;
+}
+.searchBar {
+    width: calc(100% - 44px);
+    background: var(--color-bg);
+    padding: 10px 22px;
+    border-radius: var(--border-radius);
+    height: 25px;
+    font-weight: 500;
+    border: solid 2px #eee;
+    font-size: 13px;
+    outline: none;
+}
+.searchBar:focus{
+    border: solid 2px #000;
+}
+
+.filtersContainer {
+    width: 100%;
+    margin-top: 5px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+}
+
+
+/*selector*/
+.customSelector{
+    font-weight: 500;
+    cursor: pointer;
+    width: calc(100% - 10px);
+    margin: 5px;
+    position: relative;
+}
+.customSelector.long{
+    width: calc(100% - 10px);
+}
+.customSelector[opened="true"]{
+    z-index: 15;
+}
+.customSelector label{
+    position: relative;
+    display: block;
+    cursor: pointer;
+    padding: 8px 16px;
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius-small);
+    border: solid 2px #eee; 
+    z-index: 8;
+    letter-spacing: 1px;
+    margin: 0;
+}
+.customSelector label:hover{
+    border: solid 2px #000;
+}
+.customSelector label h2{
+    text-align: center;
+    line-height: 25px;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 25px;
+}
+.customSelector label::after {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    content: "";
+    width: 25px;
+    height: 25px;
+    background-image: url(../imgs/icons/expand_more_black_24dp.svg);
+    background-size: contain;
+}
+.customSelector .elements {
+    position: absolute;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    background: var(--color-bg-light);
+    border-bottom-left-radius: var(--border-radius-small);
+    border-bottom-right-radius: var(--border-radius-small);
+    border: solid 2px#eee;
+    padding-top: 15px;
+    margin-top: -15px;
+    overflow: hidden;
+    display: none;
+    width: calc(100% - 4px);
+    max-height: 100px;
+    overflow-y: auto;
+}
+.customSelector.long .elements {
+    width: calc(100% - 4px);
+}
+.customSelector .elements .element {
+    text-align: center;
+    font-weight: 500;
+    padding: 5px 0;
+    cursor: pointer;
+    background: var(--color-bg-light);
+}
+.customSelector .elements .element:hover {
+    color: var(--color-accentColor);
+}
+
+
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    /* selector */
+    .customSelector{
+        width: 200px;
+    }
+    .customSelector.long{
+        width: 300px;
+    }
+    .customSelector .elements {
+        width: 196px;
+    }
+    .customSelector.long .elements {
+        width: 296px;
+    }
+    .searchForm button{
+        width: unset;
+        margin: 5px;
+    }
+    .searchBar {
+        height: 45px;
+        font-weight: 500;
+        font-size: 17px;
+    }
+}
+
+/*Grid*/
+.kotsPreviewsContainer{
+    grid-template-columns: 100%;
+    margin: 0;
+}
+@media only screen and (min-width: 840px) {
+    .kotsPreviewsContainer{
+        grid-template-columns: 50% 50%;
+        margin: 20px;
+    }
+}
+@media only screen and (min-width: 1720px) {
+    .kotsPreviewsContainer{
+        grid-template-columns: 33% 33% 33%;
+    }
+}
+@media only screen and (min-width: 2100px) {
+    .kotsPreviewsContainer{
+        grid-template-columns: 25% 25% 25% 25%;
+    }
 }

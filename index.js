@@ -617,7 +617,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
             const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
             params.page.title += searchQuery;
-            params.text_search = searchQuery;
+            params.query = {
+                text_search: searchQuery,
+            };
 
             params.results = content;
 
