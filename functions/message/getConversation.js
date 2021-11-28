@@ -25,16 +25,16 @@ export const getConversation = (database, req, convID, callback) => {
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
     const convID_toObjectID = toObjectID(convID);
 
-    if(userID_toObjectID==="") return callback(["ERROR", "BAD_REQUEST"]);  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
-    if(convID_toObjectID==="") return callback(["ERROR", "BAD_REQUEST"]);  // la convID fournie ne peut pas être transformé en mongodb.ObjectID
+    if(userID_toObjectID==="") throw "BAD_REQUEST";  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
+    if(convID_toObjectID==="") throw "BAD_REQUEST";  // la convID fournie ne peut pas être transformé en mongodb.ObjectID
 
     database.collection("conversations").findOne({ _id: convID_toObjectID }, function(err, conversation) {
 
-        if(err) return callback(["ERROR", "SERVICE_ERROR"]);                // Erreur reliée à mongoDB
-        if(!conversation) return callback(["ERROR", "BAD_REQUEST"]);       // Pas de conversation pour ce convID dans la db
+        if(err) throw "SERVICE_ERROR";               // Erreur reliée à mongoDB
+        if(!conversation) throw "BAD_REQUEST";       // Pas de conversation pour ce convID dans la db
 
         objectIDsArrayIncludes(conversation.participants, userID_toObjectID, (isConnectedUserInConversation) => {
-            if(isConnectedUserInConversation) return callback(["ERROR", "ALREADY_IN_CONVERSATION"]);       // L'utilisateur connecté est déja dans cette conversation
+            if(isConnectedUserInConversation) throw "ALREADY_IN_CONVERSATION";       // L'utilisateur connecté est déja dans cette conversation
 
             getUsers(database, conversation.participants, "", (usersData) => {
             

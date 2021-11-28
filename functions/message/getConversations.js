@@ -16,7 +16,7 @@ import { log, toObjectID, getConnectedUserID, objectIDsArrayIncludes, cutString 
 import { getUsers } from '../users/getUsers.js';
 import { getLastMessage } from './getLastMessage.js';
 
-export const getConversations = (database, req, callback) => {
+export const getConversations = (database, req, success, error) => {
     /*
         DEF  : On récupère toutes les conversations de l'utilisateur connecté et on les callback, on callback aussi en cas d'erreur
         PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(False|string))
@@ -25,12 +25,12 @@ export const getConversations = (database, req, callback) => {
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
 
-    if(userID_toObjectID==="") return callback("BAD_REQUEST");  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
+    if(userID_toObjectID==="") return error("BAD_REQUEST");  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
 
     database.collection("conversations").find({}).toArray(function(err, conversations) {
 
-        if(err) return callback([]);                // Erreur reliée à mongoDB
-        if(!conversations) return callback([]);     // Pas de conversations dans la db
+        if(err) return error("SERVICE_ERROR");                // Erreur reliée à mongoDB
+        if(!conversations) return success([]);       // Pas de conversations dans la db
 
         let connectedUsersConversations = [];
         conversations.forEach((conversation) => {
@@ -38,7 +38,7 @@ export const getConversations = (database, req, callback) => {
                 if (result) connectedUsersConversations.push(conversation);
             });
         })
-        if(connectedUsersConversations.length===0) return callback([]);  // Pas de conversations dans la db
+        if(connectedUsersConversations.length===0) return success([]);  // Pas de conversations dans la db pour l'utilisateur connecté
 
         connectedUsersConversations.forEach((conversation, index) => {
 
@@ -71,7 +71,7 @@ export const getConversations = (database, req, callback) => {
     
                     if((index + 1) === connectedUsersConversations.length) {
                         log("Conversations fetched for connected user, ID:"+userID_toObjectID.toString());
-                        return callback(connectedUsersConversations); // Aucune erreur     
+                        return success(connectedUsersConversations); // Aucune erreur     
                     }
 
                 })

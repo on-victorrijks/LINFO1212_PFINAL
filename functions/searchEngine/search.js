@@ -50,7 +50,7 @@ const convertPostedSinceToDate = (postedSince) => {
     }
 }
 
-export const search = (database, req, callback) => {
+export const search = (database, req, success, error) => {
     /*
         DEF  : On récupère les kots pour les filtres présents dans la requête GET, on callback [type de callback, résultats]
         PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(False|string))
@@ -59,9 +59,9 @@ export const search = (database, req, callback) => {
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
 
-    if(userID_toObjectID==="") return callback(['ERROR', 'REQUEST']);           // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
-    if(!isRequestGET(req)) return callback(['ERROR', 'REQUEST']);               // est-ce que req.body est défini (GET)
-    if(!isSearchFormDataValid(req)) return callback(['ERROR', 'REQUEST']);      // est-ce que les données nécessaires pour récupérer les kots sont dans la requête GET et utilisables
+    if(userID_toObjectID==="") return error("REQUEST")      // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
+    if(!isRequestGET(req)) return error("REQUEST")          // est-ce que req.body est défini (GET)
+    if(!isSearchFormDataValid(req)) return error("REQUEST") // est-ce que les données nécessaires pour récupérer les kots sont dans la requête GET et utilisables
     
 
     function countAppearances(words, t){
@@ -214,6 +214,8 @@ export const search = (database, req, callback) => {
 
     database.collection("kots").find(query).sort({ createdOn: -1 }).toArray(function(err, kots) {
 
+        if(err) return error("SERVICE_ERROR");
+
         const queryWords = req.query.text_search.split(" ");
         const docs = kots.map((inside_kot) => { 
             return [...inside_kot.title.split(" "), ...inside_kot.description.split(" ")]
@@ -241,7 +243,7 @@ export const search = (database, req, callback) => {
             if(kotWithScores.length === kots.length){
                 kotWithScores.sort((a, b) => b.score - a.score);
 
-                return callback(['OK', kotWithScores]);
+                return success(kotWithScores);
             }
 
         }

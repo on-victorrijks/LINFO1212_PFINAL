@@ -37,8 +37,11 @@ import { removeUserFromConversation } from './functions/message/removeUserFromCo
 // Search engine
 import { search } from './functions/searchEngine/search.js';
 // Technicals imports
-import { formatDate, getConnectedUserID } from './functions/technicals/technicals.js';
-
+import { formatDate, getConnectedUserID, log } from './functions/technicals/technicals.js';
+import { isUserConnected } from './protections/isUserConnected.js';
+import { isRequestWithConvID } from './protections/isRequestWithConvID.js';
+import { isRequestWithKotID } from './protections/isRequestWithKotID.js';
+import { isRequestWithUserID } from './protections/isRequestWithUserID.js';
 
 ////// Multer
 const profilPicturesPath = path.join(__dirname, "/users/uploads/");
@@ -49,8 +52,11 @@ const upload = multer({
 
 ////// Data import
 const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
+import { ERRORS } from "./data/errors.js";
+import { PAGES_METAS } from "./data/pages_metas.js";
 
 ////// Constants
+const language = "fr";
 const DEFAULT_PARAMS = {
     user: null,
     page: {
@@ -82,6 +88,56 @@ app.use(session({
   }
 }));
 app.use(express.json({limit:'1mb'}))
+
+
+
+const errorHandler = (errorCode) => {
+
+
+    const errorData = ERRORS[errorCode];
+    if (errorData) {
+        log(errorCode, true);
+        return errorData.redirectTo + "?error=" + errorCode;
+    } else {
+
+    }
+
+    return "/?error=UNKNOWN_ERROR"
+
+}
+
+const generateParams = (pageCode) => {
+    const params = {
+        user: null,
+        page: {
+            title: "SITENAME - ",
+            description: "",
+            icon: "defaultIcon.png",
+            keywords: "",
+            copyright: "//FIX",
+            charset: "UTF-8"
+        },
+        menu: {
+            selectedPage: {}
+        },
+        isResident: false,
+        isLandlord: false,
+    };
+
+    const pageMetas = PAGES_METAS[language][pageCode];
+    if (pageMetas) {
+        params.page.title       += pageMetas["title"];
+        params.page.description  = pageMetas["description"];
+        params.page.icon         = pageMetas["icon"];
+        params.page.keywords     = pageMetas["keywords"];
+        params.page.copyright    = pageMetas["copyright"];
+        params.page.charset      = pageMetas["charset"];
+        params.menu.selectedPage[  pageMetas["selectedPage"]  ] = true;
+    }
+
+    return params
+}
+
 
 MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 	const database = db.db("KOTS");
@@ -196,7 +252,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
         if(!(req && req.body)) return res.redirect("/?error=BAD_REQUEST");
 
-        getKot(database, req.body.kotID, (kotData) => {
+        getKot(database, req, req.body.kotID, true, (kotData) => {
 
             if(kotData.creatorID.toString() !== userID) return res.redirect("/kot/profile/" + req.body.kotID + "?error=NOT_CREATOR");
             if(req.body.binNames===undefined) return res.redirect("/kot/modify/" + req.body.kotID + "?error=BAD_REQUEST");
@@ -343,52 +399,31 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     // ------------  VIEWS  ------------
 
     app.get('/', (req, res, next) => {
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.menu.selectedPage.home = "true";
-        params.page.title += "Trouver un kot";
-        params.page.description = "Trouver un kot sur LLN";
-
-        getUser(database, getConnectedUserID(req), (connectedUser) => {
+        const params = generateParams("/");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
             params.user = connectedUser;
+
             params.isResident = (connectedUser && connectedUser.type==="resident");
             params.isLandlord = (connectedUser && connectedUser.type==="landlord");
             res.render('index.html', params);
-        });
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
 
     app.get('/register', (req, res, next) => {
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.page.description = "Créer un compte";
-
+        if(isUserConnected(req)) return res.redirect(errorHandler("ALREADY_CONNECTED"));
+        const params = generateParams("/register");
+        
         res.render('register.html', params);
     })
 
     app.get('/login', (req, res, next) => {
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.page.description = "Connexion";
-
+        if(isUserConnected(req)) return res.redirect(errorHandler("ALREADY_CONNECTED"));
+        const params = generateParams("/login");
+        
         res.render('login.html', params);
-    })
-
-    app.get('/account/settings', (req, res, next) => {
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.page.title += "Paramètres";
-        params.page.description = "Paramètres";
-
-        getUser(database, getConnectedUserID(req), (connectedUser) => {
-            params.user = connectedUser;
-            params.isResident = (connectedUser && connectedUser.type==="resident");
-            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
-            res.render('settings.html', params);
-        });
     })
 
     app.get('/disconnect', (req, res, next) => {
@@ -398,40 +433,33 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     })
 
     app.get('/kot/create', (req, res, next) => {
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.menu.selectedPage.publish = "true";
-        params.page.title += "Créer un kot";
-        params.page.description = "Créer un kot";
-
-        getUser(database, getConnectedUserID(req), (connectedUser) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        const params = generateParams("/kot/create");
+        
+        getUser(database, getConnectedUserID(req), true, 
+        (connectedUser) => {
             params.user = connectedUser;
+
             params.isResident = (connectedUser && connectedUser.type==="resident");
             params.isLandlord = (connectedUser && connectedUser.type==="landlord");
-            res.render('createKot.html', params);
-        });
+            return res.render('createKot.html', params);
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
 
     app.get('/kot/modify/:kotID', (req, res, next) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        if(!isRequestWithKotID(req)) return res.redirect(errorHandler("BAD_KOTID"));
+        const params = generateParams("/kot/modify/:kotID");
+        
+        getUser(database, getConnectedUserID(req), true, 
+        (connectedUser) => {
+            params.user = connectedUser;
 
-        const connectedUserID = getConnectedUserID(req);
-        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
+            getKot(database, req, req.params.kotID, true, 
+            (kotData) => {
+                params.page.title += kotData.title;
 
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.page.title += "Modifier un kot";
-        params.page.description = "Modifier un kot";
-
-        getKot(database, req.params.kotID, (kotData) => {
-
-            if(!kotData) return res.redirect("/?error=BAD_KOTID");
-
-            getUser(database, connectedUserID, (connectedUser) => {
-
-                if(kotData.creatorID.toString() !== connectedUserID) return res.redirect("/?error=NOT_CREATOR");
-
-                params.user = connectedUser;
                 params.isResident = (connectedUser && connectedUser.type==="resident");
                 params.isLandlord = (connectedUser && connectedUser.type==="landlord");
 
@@ -460,63 +488,63 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 params.user = connectedUser;
                 params.kot = kotData;
                 params.formPreloader = {
-                    mainPictureName: kotData.pictures[kotData.mainPictureIndex],
-                    isOpen: {
-                        opt1: kotData.isOpen,
-                        opt2: !kotData.isOpen
-                    },
-                    availability: preloadedDate,
-                    isCollocation: {
-                        opt1: kotData.isCollocation,
-                        opt2: !kotData.isCollocation
-                    },
-                    type: {
-                        opt1: kotData.type==="flat",
-                        opt2: kotData.type==="house",
-                    },
-                    furnished: {
-                        opt1: kotData.furnished,
-                        opt2: !kotData.furnished
-                    },
-                    petFriendly: {
-                        opt1: kotData.petFriendly==="false",
-                        opt2: kotData.petFriendly==="small",
-                        opt3: kotData.petFriendly==="big"
-                    },
-                    garden: {
-                        opt1: kotData.garden,
-                        opt2: !kotData.garden
-                    },
-                    terrace: {
-                        opt1: kotData.terrace,
-                        opt2: !kotData.terrace
-                    }
+                        mainPictureName: kotData.pictures[kotData.mainPictureIndex],
+                        isOpen: {
+                            opt1: kotData.isOpen,
+                            opt2: !kotData.isOpen
+                        },
+                        availability: preloadedDate,
+                        isCollocation: {
+                            opt1: kotData.isCollocation,
+                            opt2: !kotData.isCollocation
+                        },
+                        type: {
+                            opt1: kotData.type==="flat",
+                            opt2: kotData.type==="house",
+                        },
+                        furnished: {
+                            opt1: kotData.furnished,
+                            opt2: !kotData.furnished
+                        },
+                        petFriendly: {
+                            opt1: kotData.petFriendly==="false",
+                            opt2: kotData.petFriendly==="small",
+                            opt3: kotData.petFriendly==="big"
+                        },
+                        garden: {
+                            opt1: kotData.garden,
+                            opt2: !kotData.garden
+                        },
+                        terrace: {
+                            opt1: kotData.terrace,
+                            opt2: !kotData.terrace
+                        }
                 };
 
-                res.render('modifyKot.html', params);
-
-            });
-        });
+                return res.render('modifyKot.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) });
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
 
     app.get('/kot/profile/:kotID', (req, res, next) => {
-
-        const connectedUserID = getConnectedUserID(req);
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.page.description = "Profil d'un kot";
-
-        getUser(database, connectedUserID, (connectedUser) => {
-
+        if(!isRequestWithKotID(req)) return res.redirect(errorHandler("BAD_KOTID"));
+        const params = generateParams("/kot/profile/:kotID");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
             params.user = connectedUser;
-            params.isResident = (connectedUser && connectedUser.type==="resident");
-            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
-    
-            getKot(database, req.params.kotID, (kotData) => {
-    
-                if(!kotData) return res.redirect("/?error=BAD_KOTID");
-    
+
+            getKot(database, req, req.params.kotID, false, 
+            (kotData) => {
+                params.page.title += kotData.title;
+                params.page.description += kotData.description;
+                params.page.keywords += kotData.description.replace(" ", ",");
+
+                params.isResident = (connectedUser && connectedUser.type==="resident");
+                params.isLandlord = (connectedUser && connectedUser.type==="landlord");
+
                 kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
                 kotData.availability = formatDate(kotData.availability)
                 if(kotData.petFriendly==="small"){
@@ -538,106 +566,164 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 }
                 kotData.pictures = picturesUsableData;
     
-                getUser(database, kotData.creatorID, (creatorData) => {
-                    params.isConnectedUserTheCreator = connectedUserID && kotData.creatorID.toString()===connectedUserID
-                    params.page.title += kotData.title;
+                getUser(database, kotData.creatorID, true, 
+                (creatorData) => {
+                    params.isConnectedUserTheCreator = getConnectedUserID(req) && kotData.creatorID.toString()===getConnectedUserID(req);
+                    params.page.title = kotData.title;
                     params.creatorData = creatorData;
                     params.kot = kotData;
-                    res.render('kot_profile.html', params);
-                })
-    
-            });
 
-        });
+                    res.render('kot_profile.html', params);
+                },
+                (error) => { return res.redirect(errorHandler(error)) });
+            },
+            (error) => { return res.redirect(errorHandler(error)) });
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
 
     app.get('/conversations', (req, res, next) => {
-
-        const connectedUserID = getConnectedUserID(req);
-        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.menu.selectedPage.conversations = "true";
-        params.page.title += "Mes conversations";
-        params.page.description = "Mes conversations";
-
-        getUser(database, connectedUserID, (connectedUser) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        const params = generateParams("/conversations");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
             params.user = connectedUser;
-            getConversations(database, req, (result) => {
-                if(Array.isArray(result)){
-                    params.selectedConversationID = req.query.selectedConversationID;
-                    params.conversations = result;
-                    return res.render('conversations.html', params);
-                } else {
-                    return res.send(result);
-                }
-            });
-        })
 
+            getConversations(database, req,
+            (conversations) => {
+                params.selectedConversationID = req.query.selectedConversationID;
+                params.conversations = conversations;
+
+                return res.render('conversations.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) });
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
-
+    
     app.get('/invitations/:convID', (req, res, next) => {
-
-        const connectedUserID = getConnectedUserID(req);
-        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED&redirectTo=/invitations/" + req.params.convID);
-
-        const convID = req.params.convID;
-        if(!convID) return res.redirect("/?error=BAD_REQUEST");
-
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.menu.selectedPage.conversations = "true";
-        params.page.title += "Invitation à rejoindre une conversation";
-        params.page.description = "Invitation à rejoindre une conversation";
-
-        getUser(database, connectedUserID, (connectedUser) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        if(!isRequestWithConvID(req)) return res.redirect(errorHandler("CONVERSATION_INCORRECT"));
+        const params = generateParams("/invitations/:convID");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
             params.user = connectedUser;
-            getConversation(database, req, convID, ([status, content]) => {
-                if(status==="OK"){
-                    params.toJoinConversation = content;
-                    return res.render('conversation_invitations.html', params);
-                } else {
-                    return res.redirect("/?error="+content)
-                }
-            });
-        })
+            getConversation(database, req, req.params.convID,
+            (conversation) => {
+                params.toJoinConversation = conversation;
 
+                return res.render('conversation_invitations.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) });
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
 
     app.get('/search', (req, res, next) => {
+        const params = generateParams("/search");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
+            search(database, req, 
+            (results) => {
+                const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
+                params.page.title += searchQuery;
+                params.page.description.replace("$text_search", searchQuery);
+                params.query = {
+                    text_search: searchQuery,
+                };
+                params.results = results;
+    
+                return res.render('search_results.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) })
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    })
 
-        const params = DEFAULT_PARAMS;
-        params.menu.selectedPage = {};
-        params.menu.selectedPage.conversations = "true";
-        params.page.title += "Recherche - ";
-        params.page.description = "Recherche";
+    app.get('/user/:userID', (req, res, next) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        if(!isRequestWithUserID(req)) return res.redirect(errorHandler("BAD_USERID"));
+        const params = generateParams("/user/:userID");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
+            getUser(database, req.params.userID, false, 
+            (requestedUser) => {
 
-        search(database, req, ([status, content]) => {
+                if(requestedUser===null) return res.redirect(errorHandler("BAD_USERID"));
+                if(requestedUser._id.toString()===getConnectedUserID(req)) return res.redirect(errorHandler("OWN_ACCOUNT"));
 
-            const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
-            params.page.title += searchQuery;
-            params.query = {
-                text_search: searchQuery,
-            };
+                params.profilUser = requestedUser;
+                params.ownAccount = false;
+                params.isResident = (profilUser && profilUser.type==="resident");
+                params.isLandlord = (profilUser && profilUser.type==="landlord");
 
-            params.results = content;
+                params.page.title += requestedUser.firstname + " " + requestedUser.lastname;
+                params.page.description.replace("$fistname", requestedUser.firstname);
+                params.page.description.replace("$lastname", requestedUser.lastname);
+                params.page.keywords.replace("$fistname", requestedUser.firstname);
+                params.page.keywords.replace("$lastname", requestedUser.lastname);
+    
+                return res.render('user_profile.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) });
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    })
 
-            return res.render('search_results.html', params);
+    app.get('/account', (req, res, next) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        const params = generateParams("/account");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
 
-        })
+            params.profilUser = connectedUser;
+            params.ownAccount = true;
+            params.isResident = (connectedUser && connectedUser.type==="resident");
+            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
+
+            return res.render('user_profile.html', params);
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    })
+
+    app.get('/account/settings', (req, res, next) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        const params = generateParams("/account/settings");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
+            params.isResident = (connectedUser && connectedUser.type==="resident");
+            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
+
+            return res.render('settings.html', params);
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
     })
 
     // ------------  FILES  ------------
 
     app.get('/users/profilPicture/:userID', function (req, res) {
-        getUser(database, req.params.userID, (user) => {
-            if(user && user.profilPicture !== "$DEFAULT"){
-                res.sendFile(path.join(profilPicturesPath, user.profilPicture));
+        getUser(database, req.params.userID, false, 
+        (requestedUser) => {
+            if(requestedUser && requestedUser.profilPicture !== "$DEFAULT"){
+                return res.sendFile(path.join(profilPicturesPath, requestedUser.profilPicture));
             } else {
                 // No user for that userID, or the user with that userID doesn't have a profil picture set
-                res.sendFile(defaultProfilPicture);
+                return res.sendFile(defaultProfilPicture);
             }
+        },
+        (error) => { 
+            errorHandler(error);
+            return res.sendFile(defaultProfilPicture);
         });
     });
 

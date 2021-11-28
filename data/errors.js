@@ -1,0 +1,113 @@
+export const ERRORS = {
+    "EXAMPLE": {
+        type: "client",
+        importance: "error", /* {error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5} */
+        title: "",
+        description: "",
+        redirectTo: "",
+        buttons: [
+            {
+                title: "Button1_title",
+                action: {
+                    type: "redirect",
+                    redirectTo: "/"
+                }
+            },
+            {
+                title: "Button2_title",
+                action: {
+                    type: "onClick",
+                    function: "doSomething()"
+                }
+            }
+        ]
+    },
+    "CONNECTION_NEEDED": {
+        type: "client",
+        importance: "silly",
+        title: "Veuillez vous connectez",
+        description: "Une connexion est nécessaire pour accéder à cette page",
+        redirectTo: "/login",
+        buttons: []
+    },
+    "ALREADY_CONNECTED": {
+        type: "client",
+        importance: "silly",
+        title: "Vous êtes connecté",
+        description: "Vous êtes déja connecté / Vous ne pouvez pas effectuer cette action en étant connecté",
+        redirectTo: "/",
+        buttons: [
+            {
+                title: "Se déconnecter",
+                action: {
+                    type: "redirect",
+                    redirectTo: "/disconnect"
+                }
+            },
+        ]
+    },
+    "CONVERSATION_INCORRECT": {
+        type: "client",
+        importance: "silly",
+        title: "Code de conversation incorrect",
+        description: "Le code de conversation donné n'est pas correct",
+        redirectTo: "/login"
+    },
+    "ALREADY_IN_CONVERSATION": {
+        type: "client",
+        importance: "silly",
+        title: "Déja dans la conversation",
+        description: "Vous faites déja parti de cette conversation",
+        redirectTo: "/conversations"
+    },
+    "SERVICE_ERROR": {
+        type: "server",
+        importance: "error",
+        title: "Erreur mongoDB",
+        description: "Requête DB non conclue",
+        redirectTo: "/"
+    },
+    "BAD_KOTID": {
+        type: "client",
+        importance: "silly",
+        title: "Mauvais code de kot",
+        description: "Le code de kot donné n'est pas correct",
+        redirectTo: "/"
+    },
+    "BAD_USERID": {
+        type: "client",
+        importance: "silly",
+        title: "Mauvais code de l'utilisateur",
+        description: "Le code de l'utilisateur donné n'est pas correct",
+        redirectTo: "/"
+    },
+    "NOT_LANDLORD": {
+        type: "client",
+        importance: "silly",
+        title: "Vous n'êtes pas un propriétaire",
+        description: "Le type de compte n'est pas celui requis pour créer/modifier un kot",
+        redirectTo: "/"
+    },
+    "NOT_CREATOR": {
+        type: "client",
+        importance: "silly",
+        title: "Vous n'êtes pas le créateur de ce contenu",
+        description: "Pour pouvoir modifier ce contenu vous devez en être le créateur",
+        redirectTo: "/"
+    },
+    "OWN_ACCOUNT": {
+        type: "client",
+        importance: "silly",
+        title: "",
+        description: "",
+        redirectTo: "/account"      
+    },
+    "UNKNOWN_ERROR": {
+        type: "server",
+        importance: "error",
+        title: "Une erreur inattendue est survenue",
+        description: "Veuillez nous excusez de ce contre-temps, nous travaillons à résoudre ce problème au plus vite",
+        redirectTo: "/",
+        buttons: []
+    }
+}

@@ -23,10 +23,9 @@ const isModifyUserFormDataValid = (req) => {
             req.body.firstname!==undefined && 
             req.body.lastname!==undefined &&
             req.body.phonenumber!==undefined &&
-            req.body.companyName!==undefined &&
             req.body.password!==undefined &&
             req.body.password_verif!==undefined &&
-            req.body.password===req.body.password_verif 
+            req.body.password===req.body.password_verif
 }
 
 export const modifyUser = (database, req, callback) => {
@@ -60,7 +59,8 @@ export const modifyUser = (database, req, callback) => {
                 firstname: req.body.firstname!=="" ? req.body.firstname : user.firstname,
                 lastname: req.body.lastname!=="" ? req.body.lastname : user.lastname,
                 phonenumber: req.body.phonenumber!=="" ? req.body.phonenumber : user.phonenumber,
-                companyName: req.body.companyName!=="" ? req.body.companyName : user.companyName,
+                companyName: req.body.companyName ? req.body.companyName : user.companyName,
+                preferences: req.body.preferences ? req.body.preferences : user.preferences,
                 hashedPassword: hashedPassword,
             }
         } 

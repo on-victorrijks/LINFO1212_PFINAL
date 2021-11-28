@@ -1,65 +1,155 @@
 .infoUser {
+    margin: 25px;
     display: flex;
     flex-direction: row;
     height: auto;
-    padding: 30px;
-    width: 50%;
+    padding: 25px;
     background-color: var(--color-bg-light);
-    margin: 25px;
-    box-shadow: var(--shadow);
+    border: solid 1px var(--color-bg-dark);
     border-radius: var(--border-radius);
 }
 .picContainer{
-    width: 100%;
+    max-width: 200px;
+    max-height: 200px;
+    width: 15%;
     aspect-ratio: 1;
-    border-radius: 500px;
+    border-radius: 100px;
+    margin: 15px;
     overflow: hidden;
-    -webkit-box-shadow: var(--shadow); 
-    box-shadow: var(--shadow);   
+    -webkit-box-shadow: var(--shadow-strong); 
+    box-shadow: var(--shadow-strong);   
 }
 .picContainer img{
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .infoContainer {
-    margin: 10px;
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-.labelContainer {
-    padding: 5px;
-}
-.button {
-    border: 0;
-    outline: none;
-    margin: 5px;
-    padding: 5px;
-    font-size: 15px;
-    font-weight: bold;
-    background-color: var(--color-accentColor);
-    color: var(--color-font-op);
-    border-radius: var(--border-radius-small);
-    text-align: center;
-    cursor: pointer;
-}
-.buttonContainer {
+    margin: 15px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    margin-top: auto;
-    margin-bottom: auto;
+    justify-content: center;
 }
-.subtitle {
-    padding: 30px;
+.infoContainer h1{
+    font-size: 32px;
+    line-height: 36px;
+    color: var(--color-font-title);
+    font-weight: 600;
+    margin-bottom: 8px;
 }
-.kotContainer {
-    box-shadow: var(--shadow);
-    border-radius: var(--border-radius);
+.subInfo {
     display: flex;
     flex-direction: row;
-    margin: 15px; 
+    align-items: center;
+    margin: 8px 0;
 }
-.kotPreviewBox {
-    margin: 10px;
+.subInfo img{
+    width: 18px;
+    height: 18px;
+}
+.subInfo h2{
+    margin-left: 8px;
+    font-size: 15px;
+    line-height: 18px;
+    color: var(--color-font-subtitle);
+    font-weight: 600;
+}
+.buttonContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 15px;
+}
+.buttonContainer a {
+    width: calc(100% - 64px);
+    position: relative;
+    background: var(--color-accentColor);
+    border-radius: var(--border-radius);
+    border: 0;
+    padding: 16px 32px;
+    color: var(--color-font-op);
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 5px;
+    cursor: pointer;
+    padding-left: 57px;
+    text-decoration: none;
+}
+.buttonContainer a:hover{
+    background-color: var(--color-pressed);
+}
+.buttonContainer a::after {
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    content: "";
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+}
+.buttonContainer a.modify::after{
+    background-image: url(../imgs/icons/edit_white_24dp.svg);
+}
+.buttonContainer a.sendMessage::after{
+    background-image: url(../imgs/icons/question_answer_white_24dp.svg);
+}
+
+.userPreferences{
+    margin: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: 25px;
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius);
+}
+.favouritesKots{
+    margin: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: 25px;
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius);
+}
+
+.userPreferences h2, .favouritesKots h2{
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--color-font-title);
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+.userPreferences p, .favouritesKots p{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    color: var(--color-font-text);
+    white-space: pre-line;
+}
+
+.kotsContainer{
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    margin-top: 0;
+    align-items: flex-start;
+}
+.noKot{
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.noKot h3{
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-font-title);
 }

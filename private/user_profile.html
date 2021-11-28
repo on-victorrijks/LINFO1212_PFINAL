@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/menu.css">
   <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/user_profile.css">
+  <link rel="stylesheet" href="/css/kotPreview.css">
 
 </head>
 <body>
@@ -148,67 +150,166 @@
         </div>
     </div>
 
-    <div class="g-background">
+    <div class="g-background bgColor">
 
         <div class="g-content">
+            
+            <div class="infoUser">
 
-            <div class="g-topBar">
-                <div class="g-topTitle">
-                    <h1>Paramètres</b></h1>
+                <div class="picContainer">
+                    <img alt="creator_profilPic" src="https://localhost:8080/users/profilPicture/{{profilUser._id}}"/>
                 </div>
+
+                <div class="infoContainer">
+                    <h1>{{profilUser.firstname}} {{profilUser.lastname}}</h1>
+                    <div class="subInfo">
+                        <img alt="email" src="/imgs/icons/mail_black_24dp.svg"/>
+                        <h2>{{profilUser.email}}</h2>
+                    </div>
+                    <div class="subInfo">
+                        <img alt="phonenumber" src="/imgs/icons/call_black_24dp.svg"/>
+                        <h2>{{profilUser.phonenumber}}</h2>
+                    </div>
+                    {{#isLandlord}}
+                    <div class="subInfo">
+                        <img alt="accountType" src="/imgs/icons/done_black_24dp.svg"/>
+                        <h2>Propriétaire</h2>
+                    </div>
+                    {{/isLandlord}}
+                </div>
+
+                <div class="buttonContainer">
+                    {{#ownAccount}}
+                    <a class="icon modify" href="/account/settings">Modifier le compte</a>
+                    {{/ownAccount}}
+                    {{^ownAccount}}
+                    <a class="icon sendMessage" href="/conversations/create/fromprofile/{{profilUser._id}}">Envoyer un message</a>
+                    {{/ownAccount}}
+                </div>
+
             </div>
 
-            <form action="/api/modifyUser" method="POST">
+            {{#isResident}}
+            <div class="userPreferences">
+                {{#ownAccount}}
+                <h2>Vos préférences</h2>
+                {{/ownAccount}}
+                {{^ownAccount}}
+                <h2>Préférences de l'utilisateur</h2>
+                {{/ownAccount}}
+                <p>           
+                    {{#profilUser.preferences}}
+                        {{profilUser.preferences}}
+                    {{/profilUser.preferences}}
+                    {{^profilUser.preferences}}
+                        <i>L'utilisateur n'a pas renseigné de préférences</i>
+                    {{/profilUser.preferences}}
+                </p>
+            </div>
+            {{/isResident}}
 
-                <label for="firstname">Mot de passe actuel</label>
-                <input type="password" name="actual_password" placeholder="********" required/>
-        
-                <hr />
-        
-                <label for="firstname">Prénom</label>
-                <input type="text" name="firstname" placeholder="Prénom" value="{{user.firstname}}"/>
-        
-                <label for="lastname">Nom</label>
-                <input type="text" name="lastname" placeholder="Nom" value="{{user.lastname}}"/>
-        
-                <label for="phonenumber">Numéro de téléphone</label>
-                <input type="number" name="phonenumber" placeholder="0450675036" value="{{user.phonenumber}}"/>
-        
-                {{#isLandlord}}
-                <label for="companyName">Nom de votre société</label>
-                <input type="text" name="companyName" placeholder="Nom de votre société" value="{{user.companyName}}"/>
-                {{/isLandlord}}
+            {{#isLandlord}}
+            <h1>Landlord's kots</h1> <!--//FIX-->
+            {{/isLandlord}}
+            {{^isLandlord}}
+            <div class="favouritesKots">
+                <h2>Kots favoris</h2>
 
-                {{#isResident}}
-                <label for="preferences">Vos préférences</label>
-                <textarea name="preferences" placeholder="Vos préférences, que cherchez-vous dans un kot ? Quel est votre collocataire parfait ?" value="{{user.preferences}}" required></textarea>
-                {{/isResident}}
-        
-                <hr />
-        
-                <h2>Changer le mot de passe</h2>
-        
-                <label for="password">Mot de passe</label>
-                <input type="password" name="password" placeholder="********"/>
-        
-                <label for="password_verif">Vérification du mot de passe</label>
-                <input type="password" name="password_verif" placeholder="********"/>
+                <div class="kotsContainer">
+                {{#results}}
+                <div class="kotPreview">
+
+                    <div class="kotPic">
+                        <div class="carrousel">
+                            <img alt="mainImage" src="https://localhost:8080/users/kots/images/{{kot._id}}_{{kot.mainPictureName}}">
+                        </div>
+                        <div class="titleContainer">
+                            <h1>{{kot.title}}</h1>
+                        </div>
+                        <div class="priceContainer">
+                            <h2>{{kot.basePrice}}€</h2>
+                            <h3>+ {{kot.chargePrice}}€</h3>
+                        </div>
+                        <div class="tagsContainer">
+                            {{#kotTags.new}}
+                            <div class="tag new">
+                                <img src="../imgs/icons/new_releases_white_24dp.svg">
+                                <p>NOUVEAU</p>
+                                <div class="shine"></div>
+                            </div>
+                            {{/kotTags.new}}
+                            {{#kotTags.owner}}
+                            <div class="tag owner">
+                                <img src="../imgs/icons/front_hand_white_24dp.svg">
+                                <p>PROPRIO</p>
+                                <div class="shine"></div>
+                            </div>
+                            {{/kotTags.owner}}
+                        </div>
+                    </div>
+            
+                    <div class="informationsContainer address">
+                        <img src="../imgs/icons/near_me_black_24dp.svg">
+                        <h2>{{kot.location.address}}</h2>
+                    </div>
+
+                    <div class="twoColumnsInfosContainer">
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/bedroom_parent_black_24dp.svg">
+                            <h2>
+                                {{kot.bedrooms}} chambres
+                            </h2>
+                        </div>
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/bathroom_black_24dp.svg">
+                            <h2>
+                                {{kot.bathrooms}} salles de bain
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="twoColumnsInfosContainer">
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/lock_open_black_24dp.svg">
+                            <h2>
+                                {{#kot.isOpen}}
+                                Disponible
+                                {{/kot.isOpen}}
+                                {{^kot.isOpen}}
+                                Indisponible
+                                {{/kot.isOpen}}
+                            </h2>
+                        </div>
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/groups_black_24dp.svg">
+                            <h2>
+                                {{#kot.isCollocation}}
+                                Collocation
+                                {{/kot.isCollocation}}
+                                {{^kot.isCollocation}}
+                                Ce n'est pas une collocation
+                                {{/kot.isCollocation}}
+                            </h2>
+                        </div>
+                    </div>
+                    
+                    <div class="tagsAndButtonsContainer">
+                        <a href="/kot/profile/{{kot._id}}">Voir le Kot</a>
+                    </div>
+                    
+                </div>
+                {{/results}}
+                {{^results}}
+                <div class="noKot">
+                    <h3>Cet utilisateur n'a pas mit de kot dans ses favoris</h3>
+                </div>
+                {{/results}}
+                </div>
                 
-                <button type="submit" class="submit">Modifier le compte</button>
-            </form>
-        
-            <hr>
+            </div>
+            {{/isLandlord}}
 
-            <form method="post" enctype="multipart/form-data" action="/api/upload/profilPicture">
-                <h2>Uploader une image de profil</h2>
-                <label for="profilPicture" class="uploadImageLabel">
-                    Choisir une image
-                </label>
-                <input type="file" name="profilPicture" id="profilPicture">
-                <button type="submit" class="submit">Uploader</button>
-            </form>
 
-            <!--Contenu-->
         
         </div>
     

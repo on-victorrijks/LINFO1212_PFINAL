@@ -57,6 +57,7 @@ export const registerUser = (database, req, callback) => {
             "profilPicture" : "$DEFAULT",
             "type"          : req.body.type==="landlord" ? "landlord" : "resident",
             "companyName"   : req.body.companyName,
+            "preferences"   : "",
             "hashedPassword": hashedPassword
         };
     

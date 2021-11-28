@@ -1,6 +1,8 @@
 // Imports
 import { ObjectId } from 'mongodb';
 import crypto from "crypto";
+import { ERRORS } from "./../../data/errors.js";
+import winston from "winston";
 
 // Constants
 const MONTHS = [
@@ -18,6 +20,57 @@ const MONTHS = [
     "décembre"
 ];
 const charactersToUseForTokens = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$";
+
+
+const logConfiguration = {
+    'transports': [
+        new winston.transports.Console(),
+        new winston.transports.File({
+            level: 'error',
+            filename: 'logs/errors.log'
+        })
+    ],
+    format: winston.format.combine(
+        winston.format.label({
+            label: `LOG`
+        }),
+        winston.format.timestamp({
+           format: 'MMM-DD-YYYY HH:mm:ss'
+       }),
+        winston.format.printf(info => `${info.level}: ${info.label}: ${[info.timestamp]}: ${info.message}`),
+    )
+};
+
+const logger = winston.createLogger(logConfiguration);
+
+
+export const log = (code, isError=false) => {
+    if(isError){
+        const errorData = ERRORS[code];
+        switch(errorData.importance){
+            case "error":
+                logger.error(code);
+                break;
+            case "warn":
+                logger.warn(code);
+                break;
+            case "info":
+                logger.info(code);
+                break;
+            case "verbose":
+                logger.verbose(code);
+                break;
+            case "debug":
+                logger.debug(code);
+                break;
+            case "silly":
+                logger.silly(code);
+                break;
+        }
+    } else {
+        logger.debug(code);
+    }
+}
 
 export const isPasswordValid = (password) => {
     /*
@@ -63,11 +116,6 @@ export const isRequestGET = (req) => {
         POST : boolean
     */
     return req.query!==undefined
-}
-
-export const log = (elm) => {
-    //FIX
-    //console.log(elm);
 }
 
 export const getConnectedUserID = (req) => {
