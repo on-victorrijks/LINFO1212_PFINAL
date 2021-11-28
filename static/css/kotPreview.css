@@ -156,6 +156,7 @@
     color: var(--color-font-subtitle);
     font-weight: 500;
     font-size: 12px;
+    margin: 0 !important;
 }
 .informationsContainer img{
     width: 25px;
@@ -197,6 +198,9 @@
     cursor: pointer;
     text-decoration: none;
     text-align: center;
+}
+.tagsAndButtonsContainer .separator{
+    height: 8px;
 }
 .tagsAndButtonsContainer a:hover{
     opacity: .7;

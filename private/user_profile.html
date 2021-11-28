@@ -86,7 +86,7 @@
                     {{/user}}
                     
                     {{#user}}
-                    {{#isResident}}
+                    {{#user.isResident}}
                     <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
@@ -96,11 +96,11 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
-                    {{/isResident}}
+                    {{/user.isResident}}
                     {{/user}}
 
                     {{#user}}
-                    {{#isLandlord}}
+                    {{#user.isLandlord}}
                     <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
@@ -119,7 +119,7 @@
                             <h2>Mes kots</h2>
                         </div>
                     </a>
-                    {{/isLandlord}}
+                    {{/user.isLandlord}}
                     {{/user}}
     
                     <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
@@ -170,12 +170,12 @@
                         <img alt="phonenumber" src="/imgs/icons/call_black_24dp.svg"/>
                         <h2>{{profilUser.phonenumber}}</h2>
                     </div>
-                    {{#isLandlord}}
+                    {{#profilUser.isLandlord}}
                     <div class="subInfo">
                         <img alt="accountType" src="/imgs/icons/done_black_24dp.svg"/>
                         <h2>Propriétaire</h2>
                     </div>
-                    {{/isLandlord}}
+                    {{/profilUser.isLandlord}}
                 </div>
 
                 <div class="buttonContainer">
@@ -189,7 +189,7 @@
 
             </div>
 
-            {{#isResident}}
+            {{#profilUser.isResident}}
             <div class="userPreferences">
                 {{#ownAccount}}
                 <h2>Vos préférences</h2>
@@ -206,12 +206,94 @@
                     {{/profilUser.preferences}}
                 </p>
             </div>
-            {{/isResident}}
+            {{/profilUser.isResident}}
 
-            {{#isLandlord}}
-            <h1>Landlord's kots</h1> <!--//FIX-->
-            {{/isLandlord}}
-            {{^isLandlord}}
+            {{#profilUser.isLandlord}}
+            <div class="publishedKots">
+                <h2>Kots publiés</h2>
+
+                <div class="kotsContainer">
+                {{#kotsPublishedByUser}}
+                <div class="kotPreview">
+
+                    <div class="kotPic">
+                        <div class="carrousel">
+                            <img alt="mainImage" src="https://localhost:8080/users/kots/images/{{_id}}_{{mainPictureName}}">
+                        </div>
+                        <div class="titleContainer">
+                            <h1>{{title}}</h1>
+                        </div>
+                        <div class="priceContainer">
+                            <h2>{{basePrice}}€</h2>
+                            <h3>+ {{chargePrice}}€</h3>
+                        </div>
+                    </div>
+            
+                    <div class="informationsContainer address">
+                        <img src="../imgs/icons/near_me_black_24dp.svg">
+                        <h2>{{location.address}}</h2>
+                    </div>
+
+                    <div class="twoColumnsInfosContainer">
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/bedroom_parent_black_24dp.svg">
+                            <h2>
+                                {{bedrooms}} chambres
+                            </h2>
+                        </div>
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/bathroom_black_24dp.svg">
+                            <h2>
+                                {{bathrooms}} salles de bain
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="twoColumnsInfosContainer">
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/lock_open_black_24dp.svg">
+                            <h2>
+                                {{#isOpen}}
+                                Disponible
+                                {{/isOpen}}
+                                {{^isOpen}}
+                                Indisponible
+                                {{/isOpen}}
+                            </h2>
+                        </div>
+                        <div class="informationsContainer">
+                            <img src="../imgs/icons/groups_black_24dp.svg">
+                            <h2>
+                                {{#isCollocation}}
+                                Collocation
+                                {{/isCollocation}}
+                                {{^isCollocation}}
+                                Ce n'est pas une collocation
+                                {{/isCollocation}}
+                            </h2>
+                        </div>
+                    </div>
+                    
+                    <div class="tagsAndButtonsContainer">
+                        <a href="/kot/profile/{{_id}}">Voir le Kot</a>
+                        {{#ownAccount}}
+                        <div class="separator"></div>
+                        <a href="/kot/modify/{{_id}}">Modifier le Kot</a>
+                        {{/ownAccount}}
+                    </div>
+                    
+                </div>
+                {{/kotsPublishedByUser}}
+                {{^kotsPublishedByUser}}
+                <div class="noKot">
+                    <h3>Cet utilisateur n'a pas posté de kot</h3>
+                </div>
+                {{/kotsPublishedByUser}}
+                </div>
+                
+            </div>
+            {{/profilUser.isLandlord}}
+            {{^profilUser.isLandlord}}
             <div class="favouritesKots">
                 <h2>Kots favoris</h2>
 
@@ -307,7 +389,7 @@
                 </div>
                 
             </div>
-            {{/isLandlord}}
+            {{/profilUser.isLandlord}}
 
 
         

@@ -28,10 +28,10 @@
             <div class="menuElms">
     
                 <div class="menuTopElements">
-                    <div class="logo">
+                    <a class="logo" href="/">
                         <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
                         <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
-                    </div>
+                    </a>
                     {{#user}}
                     <a class="user" href="/account">
                         <div class="userImage">
@@ -62,6 +62,15 @@
                     </a>
 
                     {{#user}}
+                    <a class="option" selected="{{menu.selectedPage.conversations}}" href="/conversations">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/question_answer_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/question_answer_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Messages</h2>
+                        </div>
+                    </a>
                     {{/user}}
                     {{^user}}
                     <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
@@ -76,7 +85,7 @@
                     {{/user}}
                     
                     {{#user}}
-                    {{#isResident}}
+                    {{#user.isResident}}
                     <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
@@ -86,11 +95,11 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
-                    {{/isResident}}
+                    {{/user.isResident}}
                     {{/user}}
-    
+
                     {{#user}}
-                    {{#isLandlord}}
+                    {{#user.isLandlord}}
                     <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
@@ -109,7 +118,7 @@
                             <h2>Mes kots</h2>
                         </div>
                     </a>
-                    {{/isLandlord}}
+                    {{/user.isLandlord}}
                     {{/user}}
     
                     <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
