@@ -1,0 +1,75 @@
+.kotPreviewList{
+    background-color: var(--color-bg-light);
+    border: solid 1px var(--color-bg-dark);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.kotPreviewList .imageContainer{
+    width: 180px;
+    height: 120px;
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+    margin: 15px;
+}
+.kotPreviewList .imageContainer img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.kotPreviewList .twoRowsInfosContainer{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    flex-shrink: 0;
+}
+.kotPreviewList .twoRowsInfosContainer .infoContainer:first-child, .kotPreviewList .twoRowsInfosContainer .buttonContainer:first-child{
+    border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+}
+.kotPreviewList .twoRowsInfosContainer .infoContainer{
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+.kotPreviewList .twoRowsInfosContainer .infoContainer h2{
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--color-font-title);
+    text-align: center;
+}
+
+.kotPreviewList .twoRowsInfosContainer .buttonContainer{
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+.kotPreviewList .twoRowsInfosContainer .buttonContainer a{
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--color-bg-dark);
+    border-radius: var(--border-radius-small);
+    padding: 8px 16px;
+    color: var(--color-font-title);
+    cursor: pointer;
+    height: 35px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.kotPreviewList .twoRowsInfosContainer .buttonContainer a.delete{
+    color: var(--color-font-op);
+    background: var(--color-cancel);
+}
+.kotPreviewList .twoRowsInfosContainer .buttonContainer a:hover{
+    opacity: .7;
+}

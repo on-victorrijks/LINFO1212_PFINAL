@@ -216,7 +216,7 @@
 }
 
 /**/
-.creatorInfos{
+.sideInfos{
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -243,12 +243,8 @@
     height: 100%;
     object-fit: cover;
 }
-.creatorInfos{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
+.sideInfos{
+
 }
 .creatorBox {
     background-color: var(--color-bg-light);
@@ -277,8 +273,10 @@
     width: 100%;
     margin-bottom: 5px;
 }
-.creatorBox button:hover{
-    opacity: 0.7;
+.creatorInfos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .lineSeparator{
@@ -289,55 +287,64 @@
 }
 
 .tagsAndButtonsContainer {
+    width: calc(100% - 30px);
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    align-self: flex-start;
+    max-width: 250px;
     display: flex;
     flex-direction: column;
-    width: calc(100% - 30px);
-    margin: 0 15px;
-    margin-top: 25px;
-    align-self: flex-start;
+    margin: 0;
+    margin-top: 15px;
+    padding: 15px;
 }
 .tagsAndButtonsContainer a{
-    background-color: var(--color-accentColor);
-    padding: 10px 22px;
     border: 0;
-    color: var(--color-font-op);
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 45px;
-    border-radius: 45px;
+    margin: 0;
+    background-color: var(--color-accentColor);
+    border-radius: var(--border-radius);
+    padding: 15px 25px;
     cursor: pointer;
+    font-weight: 600;
+    line-height: 18px;
+    font-size: 13px;
+    color: var(--color-font-op);
     text-decoration: none;
     text-align: center;
-    margin-bottom: 15px;
-    transform: scale(1);
-    transition: transform .2s;
+}
+.tags-separator{
+    height: 10px;
 }
 .tagsAndButtonsContainer a:hover{
-    transform: scale(1.05);
-    opacity: .8;
+    background-color: var(--color-pressed);
 }
 .tagsAndButtonsContainer .tag{
+    border: 0;
+    margin: 0;
+    background-color: var(--color-bg);
+    border: solid 1px var(--color-bg-dark);
+    border-radius: var(--border-radius);
+    padding: 15px 25px;
+    font-weight: 600;
+    line-height: 18px;
+    font-size: 13px;
+    color: var(--color-font-op);
+    text-decoration: none;
+    text-align: center;
     display: flex;
     flex-direction: row;
-    background-color: var(--color-bg-light);
-    padding: 10px;
-    border: 0;
-    border-radius: 45px;
-    cursor: pointer;
-    margin-bottom: 15px;
 }
 .tagsAndButtonsContainer .tag h2{
     color: var(--color-font-subtitle);
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 45px;
+    font-weight: 600;
+    line-height: 18px;
+    font-size: 13px;
     text-align: center;
     flex: 1;
 }
 .tagsAndButtonsContainer .tag img{
-    height: 25px;
-    width: 25px;
-    margin: 10px;
+    height: 18px;
+    width: 18px;
 }
 .no-kot{
     position: absolute;
@@ -353,6 +360,70 @@
     width: 330px;
     line-height: 100px;
 }
+
+.collocation-infos{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.collocation-box{
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    align-self: flex-start;
+    width: 100%;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    margin-top: 15px;
+}
+.collocation-box h3{
+    line-height: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin: 25px 15px;
+    text-align: center;
+}
+.collocation-box button{
+    border: 0;
+    margin: 15px;
+    margin-top: 0;
+    background-color: var(--color-accentColor);
+    border-radius: var(--border-radius);
+    padding: 15px 25px;
+    cursor: pointer;
+    font-weight: 600;
+    line-height: 18px;
+    font-size: 13px;
+    color: var(--color-font-op);
+}
+.collocation-box button[visible="false"]{
+    display: none;
+}
+.collocation-box button.cancel{
+    color: var(--color-font-op);
+    background-color: var(--color-cancel);
+}
+.collocation-box button.disabled{
+    border: solid 1px var(--color-bg-dark);
+    background-color: var(--color-bg);
+    color: var(--color-font-subtitle);
+    cursor: not-allowed;
+}
+.collocation-box button:hover{
+    background-color: var(--color-pressed);
+    color: var(--color-font-op);
+}
+.collocation-box button.cancel:hover{
+    background-color: var(--color-cancel-pressed);
+}
+.collocation-box button.disabled:hover{
+    background-color: var(--color-bg);
+    color: var(--color-font-subtitle);
+}
+
 
 /*TABLET VERSION*/
 @media only screen and (min-width: 720px) {
@@ -396,11 +467,12 @@
     }
 
     /**/
-    .creatorInfos{
+    .sideInfos{
         flex: 1;
         display: flex;
+        width: 100%;
         flex-direction: column;
-        justify-content: unset;
+        align-items: center;
     }
     .creatorProfilPicContainer{
         display: flex;
@@ -419,12 +491,6 @@
         margin-bottom: 15px;
         -webkit-box-shadow: var(--shadow); 
         box-shadow: var(--shadow); 
-    }
-    .creatorInfos{
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
     .creatorBox{
         background-color: var(--color-bg-light);
@@ -454,12 +520,6 @@
         color: var(--color-font-text);
         font-size: 13px;
         text-align: center;
-    }
-    .tagsAndButtonsContainer {
-        width: 100%;
-        margin: 0;
-        margin-top: 25px;   
-        max-width: 280px;
     }
 
 }

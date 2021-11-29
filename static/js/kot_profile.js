@@ -101,9 +101,9 @@ function initMap() {
     
 }
 
-const fav = document.getElementById("fav");
 const kotID = document.getElementById("kotID").value;
 
+const fav = document.getElementById("fav");
 async function switchFav(){
     const isInFav = fav.getAttribute("inFavs")==="true";
 
@@ -130,6 +130,71 @@ async function switchFav(){
     });
 
 }
+
+const buttonAskToJoinCollocation = document.getElementById("askToJoinCollocation");
+const buttonCancelAskToJoinCollocation = document.getElementById("cancelAskToJoinCollocation");
+
+async function askToJoinCollocation(){
+
+    const data = {
+        "kotID": kotID
+    };
+
+    await fetch('https://localhost:8080/api/collocation/askToJoin', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            buttonAskToJoinCollocation.setAttribute("visible", "false");
+            buttonCancelAskToJoinCollocation.setAttribute("visible", "true");
+        } else {
+            const error = result.content;
+            if(error==="ALREADY_ASKEDTOJOIN"){
+                buttonAskToJoinCollocation.setAttribute("visible", "false");
+                buttonCancelAskToJoinCollocation.setAttribute("visible", "true");
+            }
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
+
+async function cancelAskToJoinCollocation(e){
+
+    const data = {
+        "kotID": kotID
+    };
+
+    await fetch('https://localhost:8080/api/collocation/cancelAskToJoinKot', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            buttonAskToJoinCollocation.setAttribute("visible", "true");
+            buttonCancelAskToJoinCollocation.setAttribute("visible", "false");
+        } else {
+            const error = result.content;
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
+
+
 
 function setCarrouselImage(index) {
     document.querySelector('.carrousel img[main="true"]').setAttribute("main", "false");

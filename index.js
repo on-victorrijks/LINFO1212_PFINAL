@@ -21,10 +21,13 @@ import { getUser } from './functions/users/getUser.js';
 import { logoutUser } from './functions/users/logoutUser.js';
 import { modifyUser } from './functions/users/modifyUser.js';
 import { modifyUserProfilPicture } from './functions/users/modifyUserProfilPicture.js';
+import { switchKotToFavourites } from './functions/users/kots/switchKotToFavourites.js';
 // Kots imports
 import { createKot } from './functions/kots/createKot.js';
 import { modifyKot } from './functions/kots/modifyKot.js';
 import { getKot } from './functions/kots/getKot.js';
+import { getKotsPublishedByUser } from './functions/kots/getKotsPublishedByUser.js';
+import { getUserFavouritesKots } from './functions/users/kots/getUserFavouritesKots.js';
 // Conversations imports
 import { createConversation } from './functions/message/createConversation.js';
 import { sendMessage } from './functions/message/sendMessage.js';
@@ -42,6 +45,9 @@ import { isUserConnected } from './protections/isUserConnected.js';
 import { isRequestWithConvID } from './protections/isRequestWithConvID.js';
 import { isRequestWithKotID } from './protections/isRequestWithKotID.js';
 import { isRequestWithUserID } from './protections/isRequestWithUserID.js';
+// Collocation
+import { askToJoinKot } from './functions/users/kots/askToJoinKot.js';
+import { cancelAskToJoinKot } from './functions/users/kots/cancelAskToJoinKot.js';
 
 ////// Multer
 const profilPicturesPath = path.join(__dirname, "/users/uploads/");
@@ -54,9 +60,6 @@ const upload = multer({
 const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
 import { ERRORS } from "./data/errors.js";
 import { PAGES_METAS } from "./data/pages_metas.js";
-import { getKotsPublishedByUser } from './functions/kots/getKotsPublishedByUser.js';
-import { switchKotToFavourites } from './functions/users/kots/switchKotToFavourites.js';
-import { getUserFavouritesKots } from './functions/users/kots/getUserFavouritesKots.js';
 
 ////// Constants
 const language = "fr";
@@ -410,6 +413,28 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         })
     })
 
+    app.post('/api/collocation/askToJoin', (req, res, next) => {
+        askToJoinKot(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    app.post('/api/collocation/cancelAskToJoinKot', (req, res, next) => {
+        cancelAskToJoinKot(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
     // ------------  VIEWS  ------------
 
     app.get('/', (req, res, next) => {
@@ -616,6 +641,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
             (kots) => {
                 params.favsKots = kots;
                 return res.render('kots_favs.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) })
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    })
+
+    app.get('/kot/my', (req, res, next) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        const params = generateParams("/kot/my");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
+            getKotsPublishedByUser(database, getConnectedUserID(req),
+            (kots) => {
+                params.ownKots = kots;
+                return res.render('mykots.html', params);
             },
             (error) => { return res.redirect(errorHandler(error)) })
         },

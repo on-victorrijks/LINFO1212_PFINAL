@@ -1,0 +1,6 @@
+.kotsContainer{
+    display: flex;
+    flex-direction: column;
+    margin: 25px;
+    margin-top: 0;
+}

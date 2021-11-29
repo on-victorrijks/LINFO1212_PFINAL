@@ -127,6 +127,15 @@ export const PAGES_METAS = {
             "copyright": "//FIX",
             "charset": "UTF-8",
             "selectedPage": "favs"       
-        }
+        },
+        "/kot/my": {
+            "title": "Vos kots",
+            "description": "Vos kots publiés sur //FIX_SITENAME",
+            "icon": "default.png",
+            "keywords": "publiés, kots publiés, kot, kots, mes kots",
+            "copyright": "//FIX",
+            "charset": "UTF-8",
+            "selectedPage": "mykots"       
+        },
     }
 }

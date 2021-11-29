@@ -27,7 +27,11 @@ export const getKot = (database, req, kotID, connectedUserShouldBeCreator, succe
         }
 
         log("Kot fetched, ID:"+kot._id.toString());
-        return success(kot); // Aucune erreur
+        
+        return success({
+            ...kot,
+            canJoinCollocation: kot.isCollocation && (kot.collocationData.tenantsID.length < kot.collocationData.maxTenant)
+        }); // Aucune erreur
  
     });
 

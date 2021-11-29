@@ -153,8 +153,6 @@
 
         <div class="g-content">
 
-            {{#kot}}
-
             <input type="hidden" id="kot_localisation_lat" value="{{kot.location.lat}}"/>
             <input type="hidden" id="kot_localisation_lng" value="{{kot.location.lng}}"/>
             <input type="hidden" id="kotID" value="{{kot._id}}"/>
@@ -289,7 +287,7 @@
                             {{#kot.isCollocation}}
                             <div class="infoRow">
                                 <img alt="" src="/imgs/icons/person_add_black_24dp.svg">
-                                <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} collocataire(s) trouvé(s)</h3>
+                                <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} colocataire(s) trouvé(s)</h3>
                             </div>
                             {{/kot.isCollocation}}
 
@@ -327,60 +325,80 @@
                     </div>
                     
                 </div>
-                <div class="creatorInfos">
+
+                <div class="sideInfos">
                     <div class="creatorBox">
-                        <div class="creatorProfilPicContainer">
-                            <div class="creatorProfilPic">
-                                <img alt="creator_profilPic" src="https://localhost:8080/users/profilPicture/{{creatorData._id}}"/>
+                            <div class="creatorProfilPicContainer">
+                                <div class="creatorProfilPic">
+                                    <img alt="creator_profilPic" src="https://localhost:8080/users/profilPicture/{{creatorData._id}}"/>
+                                </div>
                             </div>
-                        </div>
-                        <div class="creatorInfos">
-                            <h1>{{creatorData.firstname}} {{creatorData.lastname}}</h1>
-                            <h3>(+32) {{creatorData.phonenumber}}</h3>
-                            <h3>{{creatorData.email}}</h3>
-                        </div>
+                            <div class="creatorInfos">
+                                <h1>{{creatorData.firstname}} {{creatorData.lastname}}</h1>
+                                <h3>(+32) {{creatorData.phonenumber}}</h3>
+                                <h3>{{creatorData.email}}</h3>
+                            </div>
                     </div>
                     <div class="tagsAndButtonsContainer">
-                        <a href="/user/{{creatorData._id}}">Voir le profil</a>
-
-                        {{#isConnectedUserTheCreator}}
-                        <a href="/kot/modify/{{kot._id}}">Modifier le kot</a>
-                        {{/isConnectedUserTheCreator}}
-                        {{^isConnectedUserTheCreator}}
-                        {{#user}}
-                        <a href="/conversations/create/fromkot/{{kot._id}}/{{kot.creatorID}}">Envoyer un message</a>
-                        {{/user}}
-                        {{/isConnectedUserTheCreator}}
-                        
-                        {{#kot.availability}}
-                        <div class="tag">
-                            <img alt="dispo_icon" src="/imgs/icons/done_black_24dp.svg"/>
-                            <h2>Kot disponible</h2>
-                        </div>
-                        {{/kot.availability}}
-                        {{^kot.availability}}
-                        <div class="tag">
-                            <img alt="dispo_icon" src="/imgs/icons/close_black_24dp.svg"/>
-                            <h2>Kot non-disponible</h2>
-                        </div>
-                        {{/kot.availability}}
-
-                        {{#kot.hasBeenModified}}
-                        <div class="tag">
-                            <img alt="dispo_icon" src="/imgs/icons/edit_black_24dp.svg"/>
-                            <h2>Annonce modifiée</h2>
-                        </div>
-                        {{/kot.hasBeenModified}}
-
+                            <a href="/user/{{creatorData._id}}">Voir le profil</a>
+    
+                            {{#isConnectedUserTheCreator}}
+                            <div class="tags-separator"></div>
+                            <a href="/kot/modify/{{kot._id}}">Modifier le kot</a>
+                            {{/isConnectedUserTheCreator}}
+                            {{^isConnectedUserTheCreator}}
+                            {{#user}}
+                            <div class="tags-separator"></div>
+                            <a href="/conversations/create/fromkot/{{kot._id}}/{{kot.creatorID}}">Envoyer un message</a>
+                            {{/user}}
+                            {{/isConnectedUserTheCreator}}
+                            
+                            {{#kot.availability}}
+                            <div class="tags-separator"></div>
+                            <div class="tag">
+                                <img alt="dispo_icon" src="/imgs/icons/done_black_24dp.svg"/>
+                                <h2>Kot disponible</h2>
+                            </div>
+                            {{/kot.availability}}
+                            {{^kot.availability}}
+                            <div class="tags-separator"></div>
+                            <div class="tag">
+                                <img alt="dispo_icon" src="/imgs/icons/close_black_24dp.svg"/>
+                                <h2>Kot non-disponible</h2>
+                            </div>
+                            {{/kot.availability}}
+    
+                            {{#kot.hasBeenModified}}
+                            <div class="tags-separator"></div>
+                            <div class="tag">
+                                <img alt="dispo_icon" src="/imgs/icons/edit_black_24dp.svg"/>
+                                <h2>Annonce modifiée</h2>
+                            </div>
+                            {{/kot.hasBeenModified}}
+    
                     </div>
+                    {{#kot.isCollocation}}
+                    <div class="collocation-box">
+                        <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} colocataire(s) trouvé(s)</h3>
+                        {{#kot.canJoinCollocation}}
+                            {{#user}}
+                                <button class="joinCollocation" onClick="askToJoinCollocation()" id="askToJoinCollocation" visible="true">Demander à rejoindre</a>
+                                <button class="joinCollocation cancel" onClick="cancelAskToJoinCollocation()" id="cancelAskToJoinCollocation" visible="false">Annuler la demande à rejoindre</a>
+                            {{/user}}
+                            {{^user}}
+                                <button disabled type="button" class="disabled">Vous devez être connecté pour rejoindre cette colocation</a>
+                            {{/user}}
+                        {{/kot.canJoinCollocation}}
+                        {{^kot.canJoinCollocation}}
+                            <button disabled type="button" class="disabled">Colocation remplie</a>
+                        {{/kot.canJoinCollocation}}
+                    </div>
+                    {{/kot.isCollocation}}
                 </div>
+
+
+
             </div>
-            {{/kot}}
-            {{^kot}}
-            <div class="no-kot">
-                <h2>Ce kot n'existe pas</h2>
-            </div>
-            {{/kot}}
                 
         </div>
 

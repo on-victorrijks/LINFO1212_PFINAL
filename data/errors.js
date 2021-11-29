@@ -109,5 +109,13 @@ export const ERRORS = {
         description: "Veuillez nous excusez de ce contre-temps, nous travaillons à résoudre ce problème au plus vite",
         redirectTo: "/",
         buttons: []
-    }
+    },
+    "ALREADY_ASKEDTOJOIN": {
+        type: "client",
+        importance: "silly",
+        title: "Vous avez déja introduit une demande pour rejoindre ce kot",
+        description: "",
+        redirectTo: "/",
+        buttons: []
+    },
 }
