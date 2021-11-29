@@ -38,7 +38,7 @@ export const PAGES_METAS = {
             "charset": "UTF-8",
             "selectedPage": undefined   
         },
-        "conversations": {
+        "/conversations": {
             "title": "Vos conversations",
             "description": "Vos conversations sur //FIX_SITENAME",
             "icon": "default_conversations.png",
@@ -119,5 +119,14 @@ export const PAGES_METAS = {
             "charset": "UTF-8",
             "selectedPage": undefined      
         },
+        "/kot/favs": {
+            "title": "Vos favoris sur //FIX_SITENAME",
+            "description": "Vos kots favoris",
+            "icon": "default.png",
+            "keywords": "favoris, kots, mes favoris, liké",
+            "copyright": "//FIX",
+            "charset": "UTF-8",
+            "selectedPage": "favs"       
+        }
     }
 }

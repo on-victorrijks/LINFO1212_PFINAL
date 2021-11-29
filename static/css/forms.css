@@ -3,7 +3,7 @@ input, select, textarea{
     background: white;
     padding: 18px 22px;
     border-radius: var(--border-radius-small);
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-light);
     font-weight: 500;
     border: solid 2px #eee;
     font-size: 13px;
@@ -17,7 +17,7 @@ input[type="file"]{
     background: white;
     padding: 10px 22px;
     border-radius: var(--border-radius-small);
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-light);
     border: solid 2px var(--color-accentColor);
     font-size: 13px;
     outline: none;
@@ -88,7 +88,7 @@ form{
     flex-direction: column;
     margin: 25px;
 }
-form:first-child {
+form label:first-child {
     margin-top: 0;
 }
 label{
@@ -209,4 +209,22 @@ hr{
 }
 .uploadImageLabel:hover{
     opacity: .7;
+}
+.form-separator{
+    height: 1px;
+    margin: 25px 0;
+    background-color: rgba(0,0,0,0.05);
+}
+.form-separator.sideMargin{
+    margin-left: 25px;
+    margin-right: 25px;
+}
+.form-separator + label {
+    margin-top: 0;
+}
+h2.form-category{
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 30px;
+    color: var(--color-font-subtitle);
 }

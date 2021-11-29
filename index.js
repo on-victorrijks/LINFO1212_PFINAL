@@ -55,6 +55,8 @@ const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
 import { ERRORS } from "./data/errors.js";
 import { PAGES_METAS } from "./data/pages_metas.js";
 import { getKotsPublishedByUser } from './functions/kots/getKotsPublishedByUser.js';
+import { switchKotToFavourites } from './functions/users/kots/switchKotToFavourites.js';
+import { getUserFavouritesKots } from './functions/users/kots/getUserFavouritesKots.js';
 
 ////// Constants
 const language = "fr";
@@ -397,6 +399,17 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         })
     })
 
+    app.post('/api/switchFavourite', (req, res, next) => {
+        switchKotToFavourites(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
     // ------------  VIEWS  ------------
 
     app.get('/', (req, res, next) => {
@@ -405,8 +418,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             res.render('index.html', params);
         },
@@ -440,8 +455,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), true, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             return res.render('createKot.html', params);
         },
@@ -456,8 +473,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), true, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             getKot(database, req, req.params.kotID, true, 
             (kotData) => {
@@ -534,8 +553,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             getKot(database, req, req.params.kotID, false, 
             (kotData) => {
@@ -580,6 +601,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { return res.redirect(errorHandler(error)) });
     })
 
+    app.get('/kot/favs', (req, res, next) => {
+        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        const params = generateParams("/kot/favs");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
+            getUserFavouritesKots(database, getConnectedUserID(req),
+            (kots) => {
+                params.favsKots = kots;
+                return res.render('kots_favs.html', params);
+            },
+            (error) => { return res.redirect(errorHandler(error)) })
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    })
+
     app.get('/conversations', (req, res, next) => {
         if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
         const params = generateParams("/conversations");
@@ -587,8 +629,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             getConversations(database, req,
             (conversations) => {
@@ -610,8 +654,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
+
             getConversation(database, req, req.params.convID,
             (conversation) => {
                 params.toJoinConversation = conversation;
@@ -629,8 +676,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
+
             search(database, req, 
             (results) => {
                 const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
@@ -656,8 +706,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.user.isResident = (connectedUser && connectedUser.type==="resident");
-            params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
+
             getUser(database, req.params.userID, false, 
             (requestedUser) => {
 
@@ -685,6 +738,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                     (error) => { return res.redirect(errorHandler(error)) })
                 } else {
                     // L'user demandé est un résident
+                    getUserFavouritesKots(database, req.params.userID,
+                    (kots) => {
+                        params.favsKots = kots;
+                        return res.render('user_profile.html', params);
+                    },
+                    (error) => { return res.redirect(errorHandler(error)) })
                 }
             },
             (error) => { return res.redirect(errorHandler(error)) });
@@ -699,13 +758,39 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             params.profilUser = connectedUser;
             params.ownAccount = true;
-            params.isResident = (connectedUser && connectedUser.type==="resident");
-            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            params.profilUser.isResident = (connectedUser && connectedUser.type==="resident");
+            params.profilUser.isLandlord = (connectedUser && connectedUser.type==="landlord");
 
-            return res.render('user_profile.html', params);
+            params.page.title += connectedUser.firstname + " " + connectedUser.lastname;
+            params.page.description.replace("$fistname", connectedUser.firstname);
+            params.page.description.replace("$lastname", connectedUser.lastname);
+            params.page.keywords.replace("$fistname", connectedUser.firstname);
+            params.page.keywords.replace("$lastname", connectedUser.lastname);
+
+            if(params.profilUser.isLandlord){
+                // L'user demandé est un propriétaire
+                getKotsPublishedByUser(database, getConnectedUserID(req),
+                (kots) => {
+                    params.kotsPublishedByUser = kots;
+                    return res.render('user_profile.html', params);
+                },
+                (error) => { return res.redirect(errorHandler(error)) })
+            } else {
+                // L'user demandé est un résident
+                getUserFavouritesKots(database, getConnectedUserID(req),
+                (kots) => {
+                    params.favsKots = kots;
+                    return res.render('user_profile.html', params);
+                },
+                (error) => { return res.redirect(errorHandler(error)) })
+            }
         },
         (error) => { return res.redirect(errorHandler(error)) });
     })
@@ -717,8 +802,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             params.user = connectedUser;
-            params.isResident = (connectedUser && connectedUser.type==="resident");
-            params.isLandlord = (connectedUser && connectedUser.type==="landlord");
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
 
             return res.render('settings.html', params);
         },

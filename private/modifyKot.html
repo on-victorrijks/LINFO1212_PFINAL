@@ -149,7 +149,7 @@
         </div>
     </div>
 
-    <div class="g-background">
+    <div class="g-background bgColor">
 
         <div class="g-content">
 
@@ -228,7 +228,7 @@
                 <label for="availability" required>Date de disponibilité</label>
                 <input type="date" name="availability" required min="2021-01-12" value="{{formPreloader.availability}}"/>
         
-                <hr>
+                <div class="form-separator"></div>   
         
                 <label for="isCollocation" required>Est-ce une collocation</label>
                 <select name="isCollocation" required>
@@ -239,7 +239,7 @@
                 <label for="maxTenant" required>Nombres de places de collocation disponibles</label>
                 <input type="number" name="maxTenant" placeholder="3" min="0" max="25" required value="{{kot.collocationData.maxTenant}}"/>
         
-                <hr>
+                <div class="form-separator"></div>   
         
                 <label for="basePrice" required>Prix sans les charges</label>
                 <input type="number" name="basePrice" placeholder="350" min="0" max="20000" required value="{{kot.basePrice}}"/>
@@ -247,7 +247,7 @@
                 <label for="chargePrice" required>Charges supplémentaires</label>
                 <input type="number" name="chargePrice" placeholder="50" min="0" max="20000" required value="{{kot.chargePrice}}"/>
                 
-                <hr>
+                <div class="form-separator"></div>   
         
                 <label for="bedrooms" required>Nombre de chambres</label>
                 <input type="number" name="bedrooms" placeholder="1" min="1" max="25" required value="{{kot.bedrooms}}"/>
@@ -264,7 +264,7 @@
                   <option value="house" {{#formPreloader.type.opt2}}selected="true"{{/formPreloader.type.opt2}}>Maison</option>
                 </select>
                 
-                <hr>
+                <div class="form-separator"></div>   
         
                 <label for="surface" required>Surface en m²</label>
                 <input type="number" name="surface" placeholder="25" min="1" max="1000" required value="{{kot.surface}}"/>
@@ -278,7 +278,7 @@
                 <label for="parking" required>Nombre de place de parking</label>
                 <input type="number" name="parking" placeholder="0" min="0" max="25" required value="{{kot.parking}}"/>
         
-                <hr>
+                <div class="form-separator"></div>   
         
                 <label for="furnished" required>Meubles disponibles</label>
                 <select name="furnished" required>

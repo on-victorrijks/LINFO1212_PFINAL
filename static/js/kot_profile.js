@@ -101,17 +101,35 @@ function initMap() {
     
 }
 
+const fav = document.getElementById("fav");
+const kotID = document.getElementById("kotID").value;
 
-const favBTN = document.getElementById("fav");
-favBTN.addEventListener("click", (e) => {
-    const isFav = favBTN.getAttribute("inFavs")==="true";
-    if(isFav){
-        // ask server to de-fav
-    } else {
-        // ask server to fav
-    }
-    favBTN.setAttribute("inFavs", (!isFav).toString());
-});
+async function switchFav(){
+    const isInFav = fav.getAttribute("inFavs")==="true";
+
+    const data = {
+        "kotID": kotID
+    };
+
+    await fetch('https://localhost:8080/api/switchFavourite', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            fav.setAttribute("inFavs", (!isInFav).toString());
+        } else {
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
 
 function setCarrouselImage(index) {
     document.querySelector('.carrousel img[main="true"]').setAttribute("main", "false");

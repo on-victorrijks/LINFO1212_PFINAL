@@ -148,7 +148,7 @@
         </div>
     </div>
 
-    <div class="g-background">
+    <div class="g-background bgColor">
 
         <div class="g-content">
 
@@ -160,10 +160,10 @@
 
             <form action="/api/modifyUser" method="POST">
 
-                <label for="firstname">Mot de passe actuel</label>
+                <label for="firstname" required>Mot de passe actuel</label>
                 <input type="password" name="actual_password" placeholder="********" required/>
         
-                <hr />
+                <div class="form-separator"></div>
         
                 <label for="firstname">Prénom</label>
                 <input type="text" name="firstname" placeholder="Prénom" value="{{user.firstname}}"/>
@@ -184,9 +184,9 @@
                 <textarea name="preferences" placeholder="Vos préférences, que cherchez-vous dans un kot ? Quel est votre collocataire parfait ?" value="{{user.preferences}}" required></textarea>
                 {{/isResident}}
         
-                <hr />
+                <div class="form-separator"></div>
         
-                <h2>Changer le mot de passe</h2>
+                <h2 class="form-category">Changer le mot de passe</h2>
         
                 <label for="password">Mot de passe</label>
                 <input type="password" name="password" placeholder="********"/>
@@ -197,10 +197,10 @@
                 <button type="submit" class="submit">Modifier le compte</button>
             </form>
         
-            <hr>
+            <div class="form-separator sideMargin"></div>   
 
             <form method="post" enctype="multipart/form-data" action="/api/upload/profilPicture">
-                <h2>Uploader une image de profil</h2>
+                <h2 class="form-category">Uploader une image de profil</h2>
                 <label for="profilPicture" class="uploadImageLabel">
                     Choisir une image
                 </label>

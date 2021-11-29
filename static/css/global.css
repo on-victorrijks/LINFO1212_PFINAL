@@ -69,6 +69,7 @@
     flex-direction: row;
     text-decoration: none;
     align-items: center;
+    height: 100%;
 }
 .g-topTitle b{
     color: var(--color-accentColor);

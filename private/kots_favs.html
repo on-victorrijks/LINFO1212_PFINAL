@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/menu.css">
   <link rel="stylesheet" href="/css/forms.css">
-  <link rel="stylesheet" href="/css/user_profile.css">
+  <link rel="stylesheet" href="/css/kot_favs.css">
   <link rel="stylesheet" href="/css/kotPreview.css">
 
 </head>
@@ -154,149 +154,14 @@
 
         <div class="g-content">
             
-            <div class="infoUser">
-
-                <div class="picContainer">
-                    <img alt="creator_profilPic" src="https://localhost:8080/users/profilPicture/{{profilUser._id}}"/>
+            <div class="g-topBar">
+                <div class="g-topTitle">
+                    <h1>Kots favoris</b></h1>
                 </div>
-
-                <div class="infoContainer">
-                    <h1>{{profilUser.firstname}} {{profilUser.lastname}}</h1>
-                    <div class="subInfo">
-                        <img alt="email" src="/imgs/icons/mail_black_24dp.svg"/>
-                        <h2>{{profilUser.email}}</h2>
-                    </div>
-                    <div class="subInfo">
-                        <img alt="phonenumber" src="/imgs/icons/call_black_24dp.svg"/>
-                        <h2>{{profilUser.phonenumber}}</h2>
-                    </div>
-                    {{#profilUser.isLandlord}}
-                    <div class="subInfo">
-                        <img alt="accountType" src="/imgs/icons/done_black_24dp.svg"/>
-                        <h2>Propriétaire</h2>
-                    </div>
-                    {{/profilUser.isLandlord}}
-                </div>
-
-                <div class="buttonContainer">
-                    {{#ownAccount}}
-                    <a class="icon modify" href="/account/settings">Modifier le compte</a>
-                    {{/ownAccount}}
-                    {{^ownAccount}}
-                    <a class="icon sendMessage" href="/conversations/create/fromprofile/{{profilUser._id}}">Envoyer un message</a>
-                    {{/ownAccount}}
-                </div>
-
             </div>
 
-            {{#profilUser.isResident}}
-            <div class="userPreferences">
-                {{#ownAccount}}
-                <h2>Vos préférences</h2>
-                {{/ownAccount}}
-                {{^ownAccount}}
-                <h2>Préférences de l'utilisateur</h2>
-                {{/ownAccount}}
-                <p>           
-                    {{#profilUser.preferences}}
-                        {{profilUser.preferences}}
-                    {{/profilUser.preferences}}
-                    {{^profilUser.preferences}}
-                        <i>L'utilisateur n'a pas renseigné de préférences</i>
-                    {{/profilUser.preferences}}
-                </p>
-            </div>
-            {{/profilUser.isResident}}
-
-            {{#profilUser.isLandlord}}
-            <div class="publishedKots">
-                <h2>Kots publiés</h2>
-
-                <div class="kotsContainer">
-                {{#kotsPublishedByUser}}
-                <div class="kotPreview">
-
-                    <div class="kotPic">
-                        <div class="carrousel">
-                            <img alt="mainImage" src="https://localhost:8080/users/kots/images/{{_id}}_{{mainPictureName}}">
-                        </div>
-                        <div class="titleContainer">
-                            <h1>{{title}}</h1>
-                        </div>
-                        <div class="priceContainer">
-                            <h2>{{basePrice}}€</h2>
-                            <h3>+ {{chargePrice}}€</h3>
-                        </div>
-                    </div>
-            
-                    <div class="informationsContainer address">
-                        <img src="../imgs/icons/near_me_black_24dp.svg">
-                        <h2>{{location.address}}</h2>
-                    </div>
-
-                    <div class="twoColumnsInfosContainer">
-                        <div class="informationsContainer">
-                            <img src="../imgs/icons/bedroom_parent_black_24dp.svg">
-                            <h2>
-                                {{bedrooms}} chambres
-                            </h2>
-                        </div>
-                        <div class="informationsContainer">
-                            <img src="../imgs/icons/bathroom_black_24dp.svg">
-                            <h2>
-                                {{bathrooms}} salles de bain
-                            </h2>
-                        </div>
-                    </div>
-
-                    <div class="twoColumnsInfosContainer">
-                        <div class="informationsContainer">
-                            <img src="../imgs/icons/lock_open_black_24dp.svg">
-                            <h2>
-                                {{#isOpen}}
-                                Disponible
-                                {{/isOpen}}
-                                {{^isOpen}}
-                                Indisponible
-                                {{/isOpen}}
-                            </h2>
-                        </div>
-                        <div class="informationsContainer">
-                            <img src="../imgs/icons/groups_black_24dp.svg">
-                            <h2>
-                                {{#isCollocation}}
-                                Collocation
-                                {{/isCollocation}}
-                                {{^isCollocation}}
-                                Ce n'est pas une collocation
-                                {{/isCollocation}}
-                            </h2>
-                        </div>
-                    </div>
-                    
-                    <div class="tagsAndButtonsContainer">
-                        <a href="/kot/profile/{{_id}}">Voir le Kot</a>
-                        {{#ownAccount}}
-                        <div class="separator"></div>
-                        <a href="/kot/modify/{{_id}}">Modifier le Kot</a>
-                        {{/ownAccount}}
-                    </div>
-                    
-                </div>
-                {{/kotsPublishedByUser}}
-                {{^kotsPublishedByUser}}
-                <div class="noKot">
-                    <h3>Cet utilisateur n'a pas posté de kot</h3>
-                </div>
-                {{/kotsPublishedByUser}}
-                </div>
-                
-            </div>
-            {{/profilUser.isLandlord}}
-            {{^profilUser.isLandlord}}
             <div class="favouritesKots">
-                <h2>Kots favoris</h2>
-
+                
                 <div class="kotsContainer">
                 {{#favsKots}}
                 <div class="kotPreview">
@@ -367,14 +232,13 @@
                 {{/favsKots}}
                 {{^favsKots}}
                 <div class="noKot">
-                    <h3>Cet utilisateur n'a pas mit de kot dans ses favoris</h3>
+                    <h3>Vous n'avez pas mis de kots dans vos favoris</h3>
+                    <a href="/">Trouver vos kots favoris</a>
                 </div>
                 {{/favsKots}}
                 </div>
                 
             </div>
-            {{/profilUser.isLandlord}}
-
 
         
         </div>

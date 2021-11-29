@@ -157,6 +157,7 @@
 
             <input type="hidden" id="kot_localisation_lat" value="{{kot.location.lat}}"/>
             <input type="hidden" id="kot_localisation_lng" value="{{kot.location.lng}}"/>
+            <input type="hidden" id="kotID" value="{{kot._id}}"/>
 
             <div class="g-topBar">
                 <a class="g-topTitle" href="/search">
@@ -182,11 +183,13 @@
                             <div class="bubble" id="carrouselBubble{{index}}" selected="{{isMainImage}}" onClick="setCarrouselImage({{index}})"></div>
                             {{/kot.pictures}}
                         </div>
-                        <button class="favBtn" id="fav" inFavs="false">
+                        {{#user}}
+                        <button class="favBtn" id="fav" onClick="switchFav()" inFavs="false">
                             <img id="fav_true" src="/imgs/icons/favorite_black_24dp_selected.svg" alt="share">
                             <img id="fav_false" src="/imgs/icons/favorite_border_black_24dp.svg" alt="share">
                         </button>
-                    </div>
+                        {{/user}}
+                    </div>  
 
                     <div class="informationsContainer">
                         <div class="mainInformations">
@@ -389,6 +392,5 @@
       async
     ></script>
     <script src="/js/menu.js"></script>
-
 </body>
 
