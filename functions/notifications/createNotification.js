@@ -21,7 +21,7 @@ const isCreateNotifFormDataValid = (req) => {
     return  
 }
 
-export const createKot = (database, req, mainPictureIndex, filteredPicturesName, callback) => {
+export const createKot = (database, req, callback) => {
     /*
         DEF  : On enregiste une nouvelle notif avec les données dans la requête POST et on callback soit un array contenant l'_id de la notif, soit une erreur
         PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | mainPictureIndex (number) | filteredPicturesName (Array<string>) | callback (Function(string))
@@ -37,9 +37,9 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
     //FIX VERIF USER TYPE
 
     const newNotif = {
-        "userID"        : userID_toObjectID,
-        "type"          : ,
-        "datapoints"    : ,
+        "userID"        : "utilisateur recevant la notif",
+        "type"          : "message, askTojoin, ...",
+        "datapoints"    : "descirption de la notif ",
         "createdOn"     : (new Date()).getTime(),
     };
 
