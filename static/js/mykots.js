@@ -6,19 +6,17 @@ async function showCollocationData(kotID){
 
     document.getElementById("modalContainer").removeAttribute("hidden");
     document.getElementById("addPeopleToConversationModal").removeAttribute("hidden");
+    document.getElementById("loading_collocation-data").removeAttribute("hidden");
 
 
     document.getElementById("actual-tenants").innerHTML = "";
-
-    document.getElementById("loading_collocation-actual").removeAttribute("hidden");
     document.getElementById("noUser-actual").setAttribute("hidden", "true");
 
     //
 
     document.getElementById("requests-users").innerHTML = "";
-
-    document.getElementById("loading_collocation-requests").removeAttribute("hidden");
     document.getElementById("noUser-requests").setAttribute("hidden", "true");
+    document.getElementById("collocation-data").setAttribute("hidden", "true");
 
     await fetch('https://localhost:8080/api/collocation/getTenants', {
         method: 'post',
@@ -35,11 +33,9 @@ async function showCollocationData(kotID){
                 document.getElementById("noUser-actual").removeAttribute("hidden");
             } else {
                 usersData.forEach(userData => {
-                    appendUserTo(userData, "actual-tenants")
+                    appendUserTo(userData, kotID, "actual-tenants", "actual");
                 });
             }
-
-            document.getElementById("loading_collocation-actual").setAttribute("hidden", "true");
         } else {
             const error = result.content;
             console.error('Error:', error); //FIX SHOW ERROR
@@ -63,11 +59,9 @@ async function showCollocationData(kotID){
                 document.getElementById("noUser-requests").removeAttribute("hidden");
             } else {
                 usersData.forEach(userData => {
-                    appendUserTo(userData, "requests-users")
+                    appendUserTo(userData, kotID, "requests-users", "requests");
                 });
             }
-
-            document.getElementById("loading_collocation-requests").setAttribute("hidden", "true");
         } else {
             const error = result.content;
             console.error('Error:', error); //FIX SHOW ERROR
@@ -76,11 +70,27 @@ async function showCollocationData(kotID){
         console.error('Error:', error); //FIX SHOW ERROR
     });
 
+    document.getElementById("collocation-data").removeAttribute("hidden");
+    document.getElementById("loading_collocation-data").setAttribute("hidden", "true");
+
 }
 
-function appendUserTo(userData, appendTo){
+
+
+function appendUserTo(userData, kotID, appendTo, type){
+
+    let btn1, btn2;
+
+    if(type==="actual"){
+        btn1 = `<button class="delete" onClick="removeUserFromCollocation('${userData._id}', '${kotID}')">Enlever</button>`;
+        btn2 = ``;
+    } else {
+        btn1 = `<button class="refuse" onClick="refuseAskToJoin('${userData._id}', '${kotID}')">Refuser</button>`;
+        btn2 = `<button class="accept" onClick="acceptAskToJoin('${userData._id}', '${kotID}')">Accepter</button>`;
+    }
+
     document.getElementById(appendTo).innerHTML += `
-    <div class="userPreview">
+    <div class="userPreview" userID="${userData._id}">
         <div class="uP-userImage">
             <img src="https://localhost:8080/users/profilPicture/${userData._id}"/>
         </div>
@@ -89,11 +99,67 @@ function appendUserTo(userData, appendTo){
         </div>
         <div class="uP-userBtns">
             <a href="/user/${userData._id}">Voir le profil</a>
-            <button class="delete" onClick="removeUserFromCollocation('${userData._id}')">Enlever</button>
+            ${btn1}
+            ${btn2}
         </div>
     </div>
     `;
 }
+
+async function acceptAskToJoin(userID, kotID) {
+
+    const data = {
+        "kotID": kotID,
+        "userID_askingToJoin": userID
+    };
+
+    await fetch('https://localhost:8080/api/collocation/acceptAskToJoinKot', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            document.querySelector(".userPreview[userID='" + userID + "']").remove();
+        } else {
+            const error = result.content;
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+}
+
+async function refuseAskToJoin(userID, kotID) {
+
+    const data = {
+        "kotID": kotID,
+        "userID_askingToJoin": userID
+    };
+
+    await fetch('https://localhost:8080/api/collocation/refuseAskToJoinKot', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            document.querySelector(".userPreview[userID='" + userID + "']").remove();
+        } else {
+            const error = result.content;
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+}
+
 
 function closeModal(modalID){
     document.getElementById("modalContainer").setAttribute("hidden", "true");

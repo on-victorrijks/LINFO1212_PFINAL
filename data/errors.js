@@ -118,4 +118,20 @@ export const ERRORS = {
         redirectTo: "/",
         buttons: []
     },
+    "BAD_USERIDASKTOJOIN": {
+        type: "client",
+        importance: "silly",
+        title: "L'utilisateur que vous avez choisi d'ajouter n'a pas demandé à rejoindre votre",
+        description: "",
+        redirectTo: "/",
+        buttons: []
+    },
+    "MAX_TENANTS_REACHED": {
+        type: "client",
+        importance: "silly",
+        title: "Le nombre maximum de colocataires a été atteint",
+        description: "",
+        redirectTo: "/",
+        buttons: [] 
+    }
 }

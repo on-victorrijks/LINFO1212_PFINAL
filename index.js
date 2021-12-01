@@ -62,6 +62,8 @@ import { ERRORS } from "./data/errors.js";
 import { PAGES_METAS } from "./data/pages_metas.js";
 import { getTenants } from './functions/kots/getTenants.js';
 import { getAskToJoinUsersForKot } from './functions/kots/getAskToJoinForKot.js';
+import { acceptAskToJoinKot } from './functions/users/kots/acceptAskToJoinKot.js';
+import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js';
 
 ////// Constants
 const language = "fr";
@@ -299,7 +301,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
             if(filteredPicturesName.length===0) return res.redirect("/kot/modify/" + req.body.kotID + "?error=PICTURE_NEEDED");
     
-            modifyKot(database, req, req.body.kotID, binNames, kotsPicturesPath, kotData.collocationData.kotData, mainPictureIndex, filteredPicturesName, (result) => {
+            modifyKot(database, req, req.body.kotID, binNames, kotsPicturesPath, kotData.collocationData.tenantsID, mainPictureIndex, filteredPicturesName, (result) => {
                 if(Array.isArray(result)){
     
                     pictures.forEach(picture => {
@@ -458,6 +460,31 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
             return;
         })
     })
+
+    app.post('/api/collocation/acceptAskToJoinKot', (req, res, next) => {
+        acceptAskToJoinKot(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    app.post('/api/collocation/refuseAskToJoinKot', (req, res, next) => {
+        refuseAskToJoinKot(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    
+
 
     // ------------  VIEWS  ------------
 
