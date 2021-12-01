@@ -77,6 +77,24 @@
                     </div>
                 </a>
 
+                <a class="option" selected="false" href="/mykots">
+                    <div class="optionImage">
+                        <img id="unselected" alt="menuOption" src="../imgs/icons/home_black_24dp.svg"/>
+                        <img id="selected"   alt="menuOption" src="../imgs/icons/home_black_24dp_selected.svg"/>
+                    </div>
+                    <div class="optionName">
+                        <h2>Mes notifications</h2>
+                    </div>
+                </a>
+
+                <div class="notifications">
+                    <h3>Notifications </h3>
+                    <div class="notifContainer"></div>
+                    <div class="notifContainer"></div>
+                    <div class="notifContainer"></div>
+                    
+                </div>
+
                 <a class="option" selected="false" href="/contact">
                     <div class="optionImage">
                         <img id="unselected" alt="menuOption" src="../imgs/icons/call_black_24dp.svg"/>
@@ -104,3 +122,12 @@
 </div>
 
 <script src="../js/menu.js"></script>
+
+<style>
+    .notifications {
+        border-radius: var(--border-radius);
+        background: var(--color-bg-light);
+        border: solid 1px var(--color-bg-dark);
+    }
+
+</style>
