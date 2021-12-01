@@ -12,16 +12,7 @@ import { getConnectedUserID, toObjectID, isRequestPOST, log, cutString, toFloat,
 // Constants
 
 
-const isCreateNotifFormDataValid = (req) => {
-    /*
-        DEF  : On vérifie que les champs nécessaires pour créer un kot sont dans la requête POST et utilisables
-        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
-        POST : boolean
-    */
-    return  
-}
-
-export const createKot = (database, req, callback) => {
+export const createNotifications = (database, userID, type, datapoints) => {
     /*
         DEF  : On enregiste une nouvelle notif avec les données dans la requête POST et on callback soit un array contenant l'_id de la notif, soit une erreur
         PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | mainPictureIndex (number) | filteredPicturesName (Array<string>) | callback (Function(string))
@@ -37,13 +28,13 @@ export const createKot = (database, req, callback) => {
     //FIX VERIF USER TYPE
 
     const newNotif = {
-        "userID"        : "utilisateur recevant la notif",
-        "type"          : "message, askTojoin, ...",
-        "datapoints"    : "descirption de la notif ",
+        "userID"        : userID,
+        "type"          : type,
+        "datapoints"    : datapoints,
         "createdOn"     : (new Date()).getTime(),
     };
 
-    // Insertion du kot dans la base de données
+    // Insertion de la notif dans la base de données
     database.collection("notification").insertOne(newNotif, (err, res) => {
         if (err || !res) return callback("SERVICE_PROBLEM")     // Erreur reliée à mongoDB
         log("New notif created, ID:"+res.insertedId);
