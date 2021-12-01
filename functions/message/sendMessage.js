@@ -7,6 +7,7 @@ role  : 1) vérifier la requête POST
 */
 
 // Imports
+import { createNotifications } from '../notifications/createNotification.js';
 import { encrypt } from '../technicals/encryption.js';
 import { cutString, getConnectedUserID, isRequestPOST, log, toObjectID } from '../technicals/technicals.js';
 
@@ -58,6 +59,21 @@ export const sendMessage = (database, req, callback) => {
             database.collection("messages").insertOne(newMessage, (errInsertMessage, res) => {
                 if (errInsertMessage || !res) return callback(true)                // Erreur reliée à mongoDB
                 log("New message added, ID:"+res.insertedId);
+
+                conversation.participants.forEach(participantID => {
+
+                    createNotifications(
+                        database,
+                        participantID,
+                        "newMessage",
+                        [
+                            conversation._id,
+                            userID_toObjectID,
+                            cutString(req.body.message, 30)
+                        ]
+                    );
+                });
+
                 return callback(false)                                             // Aucune erreur
             });
 
