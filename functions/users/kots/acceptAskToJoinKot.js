@@ -5,7 +5,6 @@ role  : 1)
 
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
-import { getKot } from '../../kots/getKot.js';
 import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../technicals/technicals.js';
 
 const isAcceptAskToJoinKotFormDataValid = (req) => {
@@ -47,32 +46,26 @@ export const acceptAskToJoinKot = (database, req, callback) => {
 
             if(err_askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]);    // Erreur reliée à mongoDB
             if(!askToJoin) return callback(["ERROR", "BAD_USERIDASKTOJOIN"]);   // L'utilisateur choisi n'a pas demandé à rejoindre ce kot
-    
-            getKot(database, req, kotID_toObjectID, true, 
-                (kot) => {
-                    if(kot.collocationData.tenantsID.length >= kot.collocationData.maxTenants) return callback(["ERROR", "MAX_TENANTS_REACHED"]);
-                    const modifiedKot = {
-                        $set: {
-                            "collocationData.tenantsID" : [...kot.collocationData.tenantsID, userID_askingToJoin_toObjectID]
-                        }
-                    } 
-                
-                    // Modification du kot dans la base de données
-                    database.collection("kots").updateOne({ _id: kotID_toObjectID }, modifiedKot, function(err_kots_modify, res) {
-                        if(err_kots_modify) return callback(["OK", "SERVICE_PROBLEM"]);     // Erreur reliée à mongoDB
-                
-                        database.collection("askToJoin").deleteOne({ kotID: kotID_toObjectID, userID: userID_askingToJoin_toObjectID }, function(err_askToJoin_delete, askToJoin) {
-                            if (err_askToJoin_delete || !askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
-                            log("New tenant added, ID:" + kotID_toObjectID);
-                            return callback(["OK", ""]); // Aucune erreur
-                        });
-                
-                    });
-                },
-                (error) => {
-                    return callback(["ERROR", error])
+            if(kot.collocationData.tenantsID.length >= kot.collocationData.maxTenants) return callback(["ERROR", "MAX_TENANTS_REACHED"]);
+
+            const modifiedKot = {
+                $set: {
+                    "collocationData.tenantsID" : [...kot.collocationData.tenantsID, userID_askingToJoin_toObjectID]
                 }
-            );
+            } 
+
+            // Modification du kot dans la base de données
+            database.collection("kots").updateOne({ _id: kotID_toObjectID }, modifiedKot, function(err_kots_modify, res) {
+                if(err_kots_modify) return callback(["OK", "SERVICE_PROBLEM"]);     // Erreur reliée à mongoDB
+            
+                database.collection("askToJoin").deleteOne({ kotID: kotID_toObjectID, userID: userID_askingToJoin_toObjectID }, function(err_askToJoin_delete, askToJoin) {
+                    if (err_askToJoin_delete || !askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
+                    log("New tenant added, ID:" + kotID_toObjectID);
+                    return callback(["OK", ""]); // Aucune erreur
+                });
+               
+            });
+
 
         });
 

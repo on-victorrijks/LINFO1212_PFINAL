@@ -160,6 +160,33 @@ async function refuseAskToJoin(userID, kotID) {
     });
 }
 
+async function removeUserFromCollocation(userID, kotID){
+
+    const data = {
+        "kotID": kotID,
+        "userID_toRemove": userID
+    };
+
+    await fetch('https://localhost:8080/api/collocation/removeTenant', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            document.querySelector(".userPreview[userID='" + userID + "']").remove();
+        } else {
+            const error = result.content;
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
+
+}
 
 function closeModal(modalID){
     document.getElementById("modalContainer").setAttribute("hidden", "true");

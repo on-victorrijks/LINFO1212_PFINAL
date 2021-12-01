@@ -95,15 +95,6 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
-                    <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
-                        <div class="optionImage">
-                            <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
-                            <img id="selected"   alt="menuOption" src="/imgs/icons/favorite_black_24dp_selected.svg"/>
-                        </div>
-                        <div class="optionName">
-                            <h2>Notifications</h2>
-                        </div>
-                    </a>
                     
                     {{/user.isResident}}
                     {{/user}}
@@ -128,15 +119,6 @@
                             <h2>Mes kots</h2>
                         </div>
                     </a>
-                    <a class="option" selected="{{menu.selectedPage.mykots}}" href="/kot/my">
-                        <div class="optionImage">
-                            <img id="unselected" alt="menuOption" src="/imgs/icons/home_black_24dp.svg"/>
-                            <img id="selected"   alt="menuOption" src="/imgs/icons/home_black_24dp_selected.svg"/>
-                        </div>
-                        <div class="optionName">
-                            <h2>Notifications</h2>
-                        </div>
-                    </a>
                     {{/user.isLandlord}}
                     {{/user}}
     
@@ -152,28 +134,28 @@
     
                 </div>
                 
-                {{#user}}
-                <div class="otherBtns">
-                    <a href="/account/settings">
-                        <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
-                    </a>
-                    <a href="/disconnect">
-                        <img src="/imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
-                    </a>
-                </div>
-                <div class="notifications">
+                <div class="notifications" hidden>
                     <h3 class="TitleNotif">Notifications :</h3>
-                    {{#ownNotifs}}
                     <div class="notif">
                         <div class="notifContainer">
                             <h4 class="notifType">{{type}}</h4>
                             <div class="dataPointNotif">{{dataPoint}}</div>
                         </div>
                     </div>
-                    {{\ownNotifs}}
-                    {{^ownNotifs}}
-                    <h3>Vous n'avez pas encore reçu de notifications</h3>
-                    {{\ownNotifs}}    
+                </div>
+
+                {{#user}}
+                <div class="otherBtns">
+                    <a href="/account/settings">
+                        <div class="notifIndicator"></div>
+                        <img src="/imgs/icons/notifications_black_24dp.svg" alt="notifications"/>
+                    </a>
+                    <a href="/account/settings">
+                        <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
+                    </a>
+                    <a href="/disconnect">
+                        <img src="/imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
+                    </a>
                 </div>
                 {{/user}}
             </div>

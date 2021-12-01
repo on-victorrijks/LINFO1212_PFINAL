@@ -192,6 +192,7 @@
     opacity: 0.8;
 }
 .otherBtns a{
+    position: relative;
     text-decoration: none;
     width: 6vh;
     height: 6vh;
@@ -232,6 +233,15 @@
 }
 #logo_mini{
     display: block;
+}
+.notifIndicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 7px;
+    background-color: var(--color-cancel);
+    position: absolute;
+    right: 8px;
+    top: 8px;
 }
 
 /*DESKTOP VERSION*/

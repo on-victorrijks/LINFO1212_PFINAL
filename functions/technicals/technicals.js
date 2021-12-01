@@ -202,14 +202,14 @@ export const objectIDsArrayIncludes = (array, toFind, callback) => {
         PRE  : array (Array<mongodb.ObjectID>) | toFind (mongodb.ObjectID) | calback (Function(boolean))
         POST : boolean
     */  
+    if(array.length===0) return callback(false);
     for (let index = 0; index < array.length; index++) {
         const element = array[index];
         if(element.toString() === toFind.toString()) {
-            callback(true);
-            break;
+            return callback(true);
         };
         if((index + 1) === array.length) {
-            callback(false);
+           return  callback(false);
         };
     }
 

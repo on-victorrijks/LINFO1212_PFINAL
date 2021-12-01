@@ -64,6 +64,7 @@ import { getTenants } from './functions/kots/getTenants.js';
 import { getAskToJoinUsersForKot } from './functions/kots/getAskToJoinForKot.js';
 import { acceptAskToJoinKot } from './functions/users/kots/acceptAskToJoinKot.js';
 import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js';
+import { removeTenant } from './functions/kots/removeTenant.js';
 
 ////// Constants
 const language = "fr";
@@ -483,6 +484,16 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         })
     })
 
+    app.post('/api/collocation/removeTenant', (req, res, next) => {
+        removeTenant(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
     
 
 
