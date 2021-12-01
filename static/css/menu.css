@@ -125,6 +125,34 @@
     vertical-align: middle;
     font-size: 2vh;
 }
+
+/*notifications*/
+.notifications {
+    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
+    border: solid 1px var(--color-bg-dark);
+    position: absolute;
+    margin-right: 15px;
+    margin-top: 70%;
+    font-size: large;
+    height: 30%;
+ 
+}
+.notifContainer {
+    padding: 5px;
+    border-top: solid 1px var(--color-bg-dark);
+}
+.TitleNotif {
+    padding : 5px;
+}
+.notif {
+    height: 85%;
+    overflow-y: scroll;
+}
+.dataPointNotif {
+    font-size: 15px;
+    cursor: pointer;
+}
 /*selected*/
 .menuOptions .option[selected="true"]{
     opacity: 1;
