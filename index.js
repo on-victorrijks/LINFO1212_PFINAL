@@ -60,6 +60,8 @@ const upload = multer({
 const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
 import { ERRORS } from "./data/errors.js";
 import { PAGES_METAS } from "./data/pages_metas.js";
+import { getTenants } from './functions/kots/getTenants.js';
+import { getAskToJoinUsersForKot } from './functions/kots/getAskToJoinForKot.js';
 
 ////// Constants
 const language = "fr";
@@ -426,6 +428,28 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     app.post('/api/collocation/cancelAskToJoinKot', (req, res, next) => {
         cancelAskToJoinKot(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    app.post('/api/collocation/getTenants', (req, res, next) => {
+        getTenants(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })
+
+    app.post('/api/collocation/getAskToJoinUsers', (req, res, next) => {
+        getAskToJoinUsersForKot(database, req, ([status, content]) => {
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({
                 status: status,

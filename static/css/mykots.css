@@ -4,3 +4,72 @@
     margin: 25px;
     margin-top: 0;
 }
+.collocation-data{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+.collocation-actual{
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.collocation-requests{
+    display: flex;
+    flex-direction: column;
+}
+.collocation-actual h1, .collocation-requests h1{
+    font-size: 18px;
+    line-height: 25px;
+    vertical-align: middle;
+    font-weight: 600;
+    color: var(--color-font-title);
+    margin-bottom: 10px;
+}
+
+.showCollocationData{
+    background: var(--color-accentColor);
+    border-radius: var(--border-radius-small);
+    height: 55px;
+    border: 0;
+    line-height: 55px;
+    text-align: center;
+    vertical-align: middle;
+    color: var(--color-font-op);
+    font-weight: 600;
+    cursor: pointer;
+    margin: 15px;
+}
+.showCollocationData:hover{
+    background: var(--color-pressed);
+}
+
+.collocation-loader{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.collocation-loader[hidden]{
+    display: none;
+}
+.collocation-loader h2{
+    font-size: 17px;
+    margin-top: 25px;
+    color: var(--color-accentColor);
+    font-weight: 600;
+    max-width: 250px;
+    letter-spacing: .5px;
+    text-align: center;
+}
+.noUserFound{
+    font-size: 17px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: var(--color-accentColor);
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-align: center;
+}

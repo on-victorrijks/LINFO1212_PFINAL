@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/css/forms.css">
   <link rel="stylesheet" href="/css/mykots.css">
   <link rel="stylesheet" href="/css/kotPreviewList.css">
+  <link rel="stylesheet" href="/css/userPreview.css">
 
 </head>
 <body>
@@ -165,68 +166,72 @@
                 {{#ownKots}}
                 <div class="kotPreviewList">
 
-                    <div class="imageContainer">
-                        <img alt="mainImage" src="https://localhost:8080/users/kots/images/{{_id}}_{{mainPictureName}}">
+                    <div class="table">
+                        <div class="imageContainer">
+                            <img alt="mainImage" src="https://localhost:8080/users/kots/images/{{_id}}_{{mainPictureName}}">
+                        </div>
+
+                        <div class="twoRowsInfosContainer">
+                            <div class="infoContainer">
+                                <h2>{{title}}</h2>
+                            </div>
+                            <div class="infoContainer">
+                                <h2>{{basePrice}}€  <b>+ {{chargePrice}}€</b></h2>
+                            </div>
+                        </div>
+
+                        <div class="twoRowsInfosContainer">
+                            <div class="infoContainer">
+                                <h2>{{location.address}}</h2>
+                            </div>
+                            <div class="infoContainer">
+                                <h2>
+                                    {{#isOpen}}
+                                        Disponible
+                                    {{/isOpen}}
+                                    {{^isOpen}}
+                                        Non-disponible
+                                    {{/isOpen}}
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="twoRowsInfosContainer">
+                            <div class="infoContainer">
+                                <h2>
+                                    {{#isCollocation}}
+                                        Colocation
+                                    {{/isCollocation}}
+                                    {{^isCollocation}}
+                                        Pas une colocation
+                                    {{/isCollocation}}
+                                </h2>
+                            </div>
+                            <div class="infoContainer">
+                                <h2>{{collocationData.tenantsID.length}}/{{collocationData.maxTenant}} colocataires</h2>
+                            </div>
+                        </div>
+
+                        <div class="twoRowsInfosContainer">
+                            <div class="buttonContainer">
+                                <a href="/kot/profile/{{_id}}">Voir le Kot</a>
+                            </div>
+                            <div class="buttonContainer">
+                                <a href="/kot/modify/{{_id}}">Modifier le Kot</a>
+                            </div>
+                        </div>
+
+                        <div class="twoRowsInfosContainer">
+                            <div class="buttonContainer">
+                                <a href="/notifications?kotID_highlight={{_id}}">Conversation du kot</a>
+                            </div>
+                            <div class="buttonContainer">
+                                <a href="/kot/delete/{{_id}}" class="delete">Supprimer</a>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="twoRowsInfosContainer">
-                        <div class="infoContainer">
-                            <h2>{{title}}</h2>
-                        </div>
-                        <div class="infoContainer">
-                            <h2>{{basePrice}}€  <b>+ {{chargePrice}}€</b></h2>
-                        </div>
-                    </div>
-
-                    <div class="twoRowsInfosContainer">
-                        <div class="infoContainer">
-                            <h2>{{location.address}}</h2>
-                        </div>
-                        <div class="infoContainer">
-                            <h2>
-                                {{#isOpen}}
-                                    Disponible
-                                {{/isOpen}}
-                                {{^isOpen}}
-                                    Non-disponible
-                                {{/isOpen}}
-                            </h2>
-                        </div>
-                    </div>
-
-                    <div class="twoRowsInfosContainer">
-                        <div class="infoContainer">
-                            <h2>
-                                {{#isCollocation}}
-                                    Colocation
-                                {{/isCollocation}}
-                                {{^isCollocation}}
-                                    Pas une colocation
-                                {{/isCollocation}}
-                            </h2>
-                        </div>
-                        <div class="infoContainer">
-                            <h2>{{collocationData.tenantsID.length}}/{{collocationData.maxTenant}} colocataires</h2>
-                        </div>
-                    </div>
-
-                    <div class="twoRowsInfosContainer">
-                        <div class="buttonContainer">
-                            <a href="/kot/profile/{{_id}}">Voir le Kot</a>
-                        </div>
-                        <div class="buttonContainer">
-                            <a href="/kot/modify/{{_id}}">Modifier le Kot</a>
-                        </div>
-                    </div>
-
-                    <div class="twoRowsInfosContainer">
-                        <div class="buttonContainer">
-                            <a href="/notifications?kotID_highlight={{_id}}">Voir les demandes</a>
-                        </div>
-                        <div class="buttonContainer">
-                            <a href="/kot/delete/{{_id}}" class="delete">Supprimer le Kot</a>
-                        </div>
-                    </div>
+                    <button type="button" class="showCollocationData" onClick="showCollocationData('{{_id}}')">Afficher les données de la colocation</button>
 
                 </div>
                 {{/ownKots}}
@@ -242,5 +247,49 @@
     
     </div>
 
+
+    <div class="g-modalContainer" id="modalContainer" hidden>
+
+        <div class="g-modal" id="addPeopleToConversationModal" hidden>
+            <div class="g-modal-topBar">
+                <h1>Données sur la colocation</h1>
+                <button class="close" onClick="closeModal('addPeopleToConversationModal')">
+                    <img src="/imgs/icons/close_black_24dp.svg"/>
+                </button>
+            </div>
+            <div class="g-modal-content">
+
+                <div class="collocation-data" visible="false">
+                    <div class="collocation-actual">
+                        <h1>Colocataires actuels</h1>
+                        <div class="collocation-loader" id="loading_collocation-actual" hidden>
+                            <div class="g-loader"><div></div><div></div></div>
+                            <h2>Chargement des colocataires...</h2>
+                        </div>
+                        <h2 id="noUser-actual" class="noUserFound" hidden>Aucun colocataire trouvé pour ce kot</h2>
+                        <div class="usersPreviewContainer" id="actual-tenants">
+                        
+                        </div>
+                    </div>
+                    <div class="collocation-requests">
+                        <h1>Demandes pour rejoindre cette colocation</h1>
+                        <div class="collocation-loader" id="loading_collocation-requests">
+                            <div class="g-loader"><div></div><div></div></div>
+                            <h2>Chargement des demandes...</h2>
+                        </div>
+                        <h2 id="noUser-requests" class="noUserFound" hidden>Aucune demande trouvée pour ce kot</h2>
+                        <div class="usersPreviewContainer" id="requests-users">
+                        
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
 </body>
 <script src="/js/menu.js"></script>
+<script src="/js/mykots.js"></script>

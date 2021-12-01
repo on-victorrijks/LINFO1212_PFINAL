@@ -3,10 +3,17 @@
     border: solid 1px var(--color-bg-dark);
     border-radius: var(--border-radius-small);
     display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    -webkit-box-shadow: var(--shadow-light);
+}
+.kotPreviewList .table{
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 15px;
 }
 .kotPreviewList .imageContainer{
     width: 180px;
@@ -72,4 +79,8 @@
 }
 .kotPreviewList .twoRowsInfosContainer .buttonContainer a:hover{
     opacity: .7;
+}
+.kotPreviewList .twoRowsInfosContainer .buttonContainer a.delete:hover{
+    opacity: 1;
+    background-color: var(--color-cancel-pressed);
 }
