@@ -42,19 +42,33 @@
     font-size: 12px;
     text-align: center;
     text-decoration: none;
-    background-color: var(--color-cancel);
     border-radius: var(--border-radius-small);
     padding: 8px 16px;
-    color: var(--color-font-op);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 0;
     margin: 0 5px;
+    background-color: var(--color-accentColor);
+    color: var(--color-font-op);
+}
+.userPreview .uP-userBtns button.delete, .userPreview .uP-userBtns button.refuse{
+    background-color: var(--color-cancel);
+    color: var(--color-font-op);
+}
+.userPreview .uP-userBtns button.accept{
+    background-color: var(--color-submit);
+    color: var(--color-font-op);
 }
 .userPreview .uP-userBtns button:hover{
+    background-color: var(--color-pressed);
+}
+.userPreview .uP-userBtns button.delete:hover, .userPreview .uP-userBtns button.refuse:hover{
     background-color: var(--color-cancel-pressed);
+}
+.userPreview .uP-userBtns button.accept:hover{
+    background-color: var(--color-submit-pressed);
 }
 .userPreview .uP-userBtns a{
     font-weight: 600;

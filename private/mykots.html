@@ -259,13 +259,14 @@
             </div>
             <div class="g-modal-content">
 
-                <div class="collocation-data" visible="false">
+                <div class="collocation-loader" id="loading_collocation-data" hidden>
+                    <div class="g-loader"><div></div><div></div></div>
+                    <h2>Chargement des colocataires et des demandes...</h2>
+                </div>
+
+                <div class="collocation-data" id="collocation-data" hidden>
                     <div class="collocation-actual">
                         <h1>Colocataires actuels</h1>
-                        <div class="collocation-loader" id="loading_collocation-actual" hidden>
-                            <div class="g-loader"><div></div><div></div></div>
-                            <h2>Chargement des colocataires...</h2>
-                        </div>
                         <h2 id="noUser-actual" class="noUserFound" hidden>Aucun colocataire trouvé pour ce kot</h2>
                         <div class="usersPreviewContainer" id="actual-tenants">
                         
@@ -273,10 +274,6 @@
                     </div>
                     <div class="collocation-requests">
                         <h1>Demandes pour rejoindre cette colocation</h1>
-                        <div class="collocation-loader" id="loading_collocation-requests">
-                            <div class="g-loader"><div></div><div></div></div>
-                            <h2>Chargement des demandes...</h2>
-                        </div>
                         <h2 id="noUser-requests" class="noUserFound" hidden>Aucune demande trouvée pour ce kot</h2>
                         <div class="usersPreviewContainer" id="requests-users">
                         
