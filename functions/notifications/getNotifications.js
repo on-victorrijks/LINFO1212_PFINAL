@@ -4,29 +4,79 @@ role  : 1) callback les données de la notif avec le notifID fourni
 */
 
 // Imports
+import { isUserConnected } from '../../protections/isUserConnected.js';
 import { getConnectedUserID, log, toObjectID } from '../technicals/technicals.js';
 
-export const getNotifications = (database, req, notifID, success, error) => {
+const getButtonsForNotificationData = (notification) => {
+    try{
+        switch (notification.type){
+            case "newMessage":
+                return [
+                    {
+                        title: "Voir la conversation",
+                        redirectTo: "/conversations/?selectedConversationID="+notification.datapoints[0]
+                    }
+                ]
+            default:
+                return []
+        }
+    } catch {
+        return []
+    }
+}
+
+const getTitleFromNotificationData = (notification) => {
+    try{
+        switch (notification.type){
+            case "newMessage":
+                return "Nouveau message !"
+            default:
+                return "Nouvelle notification"
+        }
+    } catch {
+        return "Nouvelle notification"
+    }
+}
+
+const getDescFromNotificationData = (notification) => {
+    try{
+        switch (notification.type){
+            case "newMessage":
+                return notification.datapoints[2]
+            default:
+                return ""
+        }
+    } catch {
+        return ""
+    }
+}
+
+export const getConnectedUserNotifications = (database, req, callback) => {
     /*
-        DEF  : On cherche une notif avec le notifID fourni et on callback soit null si elle n'existe pas, soit ses données
-        PRE  : database (mongodb.Db) | notifID (mongodb.ObjectID sous forme de string) | callback (Function(False|string)) (//FIX ADD REQ)
-        CALLBACK : null|données de de la notif demandée
+        DEF  : On cherche les notifications de l'utilisateur connecté et on les callback
+        PRE  : database (mongodb.Db) | callback (Function(False|string)) (//FIX ADD REQ)
+        CALLBACK : Array<NotifObject> //FIX
     */
 
-    const notifID_toObjectID = toObjectID(notifID);
+    if(!isUserConnected(req)) return callback(["ERROR", "CONNECTION_NEEDED"]);      // l'utilisateur doit être connecté
+    const userID_toObjectID = toObjectID(getConnectedUserID(req));
+    if(userID_toObjectID==="") return callback(["ERROR", "BAD_REQUEST"]);           // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
 
-    if(notifID_toObjectID==="") return error("BAD_KOTID"); // le notifID fourni ne peut pas être transformé en mongodb.ObjectID
+    database.collection("notifications").find({ userID: userID_toObjectID }).toArray(function(err, notifications) {
 
-    database.collection("notification").findOne({ _id: notifID_toObjectID }, function(err, notification) {
+        if(err) return callback(["ERROR", "SERVICE_ERROR"]);      // Erreur reliée à mongoDB
+        if(notifications===null) return callback(["OK", []]);     // Pas de notification pour l'utilisateur connecté
 
-        if(err) return error("SERVICE_ERROR");      // Erreur reliée à mongoDB
-        if(!notification) return error("BAD_KOTID");     // Pas de notification pour ce notifID
-
-        log("Notification fetched, ID:"+notification._id.toString());
+        log("Notification fetched, ID:"+userID_toObjectID.toString());
         
-        return success({
-            ...notification
-        }); // Aucune erreur
+        return callback(["OK", notifications.map(notification => {
+            return {
+                ...notification,
+                title: getTitleFromNotificationData(notification),
+                description: getDescFromNotificationData(notification),
+                buttons: getButtonsForNotificationData(notification)
+            }
+        })]); // Aucune erreur
  
     });
 

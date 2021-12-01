@@ -17,3 +17,15 @@ function closeMenu(){
     document.getElementById("mobileClose").setAttribute("hidden", "true");
     document.getElementById("mobileOpen").setAttribute("hidden", "false");
 }
+
+const notificationsTab = document.getElementById("notificationsTab");
+let isNotificationsTabVisible = false;
+
+function switchNotificationsTabVisibility(){
+    if(isNotificationsTabVisible){
+        notificationsTab.setAttribute("hidden", "true");
+    } else {
+        notificationsTab.removeAttribute("hidden");
+    }
+    isNotificationsTabVisible = !isNotificationsTabVisible;
+}
