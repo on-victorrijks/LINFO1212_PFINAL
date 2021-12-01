@@ -5,7 +5,7 @@ role  : 1)
 
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
-import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../technicals/technicals.js';
+import { isRequestPOST, log, toObjectID, getConnectedUserID, objectIDsArrayIncludes } from '../../technicals/technicals.js';
 
 const isAskToJoinKotFormDataValid = (req) => {
     /*
@@ -37,27 +37,30 @@ export const askToJoinKot = (database, req, callback) => {
         
         if(err) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
         if(!kot) return callback(["ERROR", "BAD_KOTID"]); // Pas de kot pour ce kotID
+        objectIDsArrayIncludes(kot.collocationData.tenantsID, userID_toObjectID, (isConnectedUserInTenants) => {
+            if(isConnectedUserInTenants) return callback(["ERROR", "ALREADY_IN_TENANTS"]);
+      
+            database.collection("askToJoin").findOne({ kotID: kotID_toObjectID, userID: userID_toObjectID }, function(err_askToJoin, askToJoin) {
 
-        database.collection("askToJoin").findOne({ kotID: kotID_toObjectID, userID: userID_toObjectID }, function(err_askToJoin, askToJoin) {
-
-            if(err_askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
-            if(askToJoin) return callback(["ERROR", "ALREADY_ASKEDTOJOIN"]); // L'utilisateur a déja demandé de rejoindre ce kot
-    
-            const newAskToJoin = {
-                "createdOn"     : (new Date()).getTime(),
-                "userID"        : userID_toObjectID,
-                "kotID"         : kotID_toObjectID
-            };
+                if(err_askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
+                if(askToJoin) return callback(["ERROR", "ALREADY_ASKEDTOJOIN"]); // L'utilisateur a déja demandé de rejoindre ce kot
         
-            // Insertion de la demande dans la base de données
-            database.collection("askToJoin").insertOne(newAskToJoin, (err_askToJoin_insertion, res) => {
-                if (err_askToJoin_insertion || !res) return callback(["ERROR", "SERVICE_PROBLEM"])     // Erreur reliée à mongoDB
-                log("New askedToJoin added, ID:"+res.insertedId);
-                return callback(["OK", ""])                                  // Aucune erreur
+                const newAskToJoin = {
+                    "createdOn"     : (new Date()).getTime(),
+                    "userID"        : userID_toObjectID,
+                    "kotID"         : kotID_toObjectID
+                };
+            
+                // Insertion de la demande dans la base de données
+                database.collection("askToJoin").insertOne(newAskToJoin, (err_askToJoin_insertion, res) => {
+                    if (err_askToJoin_insertion || !res) return callback(["ERROR", "SERVICE_PROBLEM"])     // Erreur reliée à mongoDB
+                    log("New askedToJoin added, ID:"+res.insertedId);
+                    return callback(["OK", ""])                                  // Aucune erreur
+                });
+
             });
 
-        });
-
+        })
     });
 
 }

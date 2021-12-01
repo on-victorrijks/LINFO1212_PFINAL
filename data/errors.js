@@ -133,5 +133,13 @@ export const ERRORS = {
         description: "",
         redirectTo: "/",
         buttons: [] 
-    }
+    },
+    "ALREADY_IN_TENANTS": {
+        type: "client",
+        importance: "silly",
+        title: "Vous êtes déja dans les colocataires de ce kot",
+        description: "",
+        redirectTo: "/",
+        buttons: [] 
+    },
 }
