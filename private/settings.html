@@ -194,15 +194,15 @@
                 <label for="phonenumber">Numéro de téléphone</label>
                 <input type="number" name="phonenumber" placeholder="0450675036" value="{{user.phonenumber}}"/>
         
-                {{#isLandlord}}
+                {{#user.isLandlord}}
                 <label for="companyName">Nom de votre société</label>
                 <input type="text" name="companyName" placeholder="Nom de votre société" value="{{user.companyName}}"/>
-                {{/isLandlord}}
+                {{/user.isLandlord}}
 
-                {{#isResident}}
+                {{#user.isResident}}
                 <label for="preferences">Vos préférences</label>
                 <textarea name="preferences" placeholder="Vos préférences, que cherchez-vous dans un kot ? Quel est votre collocataire parfait ?" value="{{user.preferences}}" required></textarea>
-                {{/isResident}}
+                {{/user.isResident}}
         
                 <div class="form-separator"></div>
         
