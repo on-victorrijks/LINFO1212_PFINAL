@@ -12,7 +12,7 @@ import { log } from '../technicals/technicals.js';
 // Constants
 
 
-export const createNotification = (database, userID, type, datapoints) => {
+export const createNotification = (database, userID, type, datapoints, callback) => {
     /*
         DEF  : On enregiste une nouvelle notif avec les données dans la requête POST et on callback soit un array contenant l'_id de la notif, soit une erreur
         PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | mainPictureIndex (number) | filteredPicturesName (Array<string>) | callback (Function(string))
@@ -33,5 +33,6 @@ export const createNotification = (database, userID, type, datapoints) => {
     database.collection("notifications").insertOne(newNotif, (err, res) => {
         if (err || !res) return callback("SERVICE_PROBLEM")     // Erreur reliée à mongoDB
         log("New notif created, ID:"+res.insertedId);
+        return callback(res.insertedId);
     });
 }

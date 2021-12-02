@@ -6,6 +6,7 @@ role  : 1)
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
 import { getKot } from '../../kots/getKot.js';
+import { createNotification } from '../../notifications/createNotification.js';
 import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../technicals/technicals.js';
 
 const isRefuseAskToJoinKotFormDataValid = (req) => {
@@ -46,6 +47,22 @@ export const refuseAskToJoinKot = (database, req, callback) => {
         database.collection("askToJoin").deleteOne({ kotID: kotID_toObjectID, userID: userID_askingToJoin_toObjectID }, function(err_askToJoin_delete, askToJoin) {
             if (err_askToJoin_delete || !askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
             log("AskToJoin refused, ID:" + kotID_toObjectID);
+
+            /* 
+            On crée la notification de la demande refusée
+            pour le celui qui a fait la demande
+            */
+            createNotification(
+                database,
+                userID_askingToJoin_toObjectID,
+                "askToJoinRefused",
+                [
+                    kot._id,
+                    kot.title
+                ],
+                (newlyCreatedNotificationID) => { /* PASS */ }
+            );
+
             return callback(["OK", ""]); // Aucune erreur
         });
 

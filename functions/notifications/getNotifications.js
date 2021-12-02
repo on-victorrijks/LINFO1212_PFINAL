@@ -6,6 +6,7 @@ role  : 1) callback les données de la notif avec le notifID fourni
 // Imports
 import { isUserConnected } from '../../protections/isUserConnected.js';
 import { getConnectedUserID, log, toObjectID } from '../technicals/technicals.js';
+import { getUser } from '../users/getUser.js';
 
 const getButtonsForNotificationData = (notification) => {
     try{
@@ -17,6 +18,13 @@ const getButtonsForNotificationData = (notification) => {
                         redirectTo: "/conversations/?selectedConversationID="+notification.datapoints[0]
                     }
                 ]
+            case "newAskToJoin":
+                return [
+                    {
+                        title: "Voir mes kots",
+                        redirectTo: "/kot/my/?selectedKotID="+notification.datapoints[0]
+                    }
+                ]
             default:
                 return []
         }
@@ -25,29 +33,62 @@ const getButtonsForNotificationData = (notification) => {
     }
 }
 
-const getTitleFromNotificationData = (notification) => {
+const getUIData = (database, notification, callback) => {
     try{
         switch (notification.type){
             case "newMessage":
-                return "Nouveau message !"
-            default:
-                return "Nouvelle notification"
+                getUser(database, notification.datapoints[1], false, 
+                (user) => {
+                    return callback({
+                        title: `Nouveau message de ${user.firstname} ${user.lastname}`,
+                        description: notification.datapoints[2],
+                    })
+                }, (error) => { 
+                    log(error, true);
+                    return callback({
+                        title: "Nouveau message",
+                        description: `Message disponible dans l'onglet "Messages"`,
+                    })
+                });
+                break;
+            case "newAskToJoin":
+                getUser(database, notification.datapoints[1], false, 
+                (user) => {
+                    return callback({
+                        title: `Nouvelle demande pour : ${notification.datapoints[2]}`,
+                        description: `${user.firstname} ${user.lastname} souhaite rejoindre votre kot`,
+                    })
+                }, (error) => { 
+                    log(error, true);
+                    return callback({
+                        title: `Nouvelle demande pour : ${notification.datapoints[2]}`,
+                        description: `Un utilisateur souhaite rejoindre votre kot`,
+                    })
+                });
+                break;
+            case "askToJoinAccepted":
+                return callback({
+                    title: `Demande acceptée : ${notification.datapoints[1]}`,
+                    description: `Votre demande pour rejoindre le kot "${notification.datapoints[1]}" a été acceptée`,
+                })
+                break;
+            case "askToJoinRefused":
+                return callback({
+                    title: `Demande refusée : ${notification.datapoints[1]}`,
+                    description: `Votre demande pour rejoindre le kot "${notification.datapoints[1]}" a été refusée`,
+                })
+                break;
         }
     } catch {
-        return "Nouvelle notification"
-    }
-}
-
-const getDescFromNotificationData = (notification) => {
-    try{
-        switch (notification.type){
-            case "newMessage":
-                return notification.datapoints[2]
-            default:
-                return ""
-        }
-    } catch {
-        return ""
+        /* 
+        Le try-catch est utilisé car nous utilisons la propriété "datapoints" de l'objet notification, 
+        cet objet nous permet de transmettre tout type de données et toute quantité de données mais
+        il apporte de l'incertitude
+        */ 
+        return callback({
+            title: "Nouvelle notification",
+            description: "",
+        })
     }
 }
 
@@ -69,15 +110,27 @@ export const getConnectedUserNotifications = (database, req, callback) => {
 
         log("Notification fetched, ID:"+userID_toObjectID.toString());
         
-        return callback(["OK", notifications.map(notification => {
-            return {
-                ...notification,
-                title: getTitleFromNotificationData(notification),
-                description: getDescFromNotificationData(notification),
-                buttons: getButtonsForNotificationData(notification)
-            }
-        })]); // Aucune erreur
- 
+        const formattedNotifications = [];
+
+        for (let index = 0; index < notifications.length; index++) {
+            const notification = notifications[index];
+            
+            getUIData(database, notification, (UIData) => {
+
+                formattedNotifications.push({
+                    ...notification,
+                    UIData: UIData,
+                    buttons: getButtonsForNotificationData(notification)
+                });
+                
+                if((index + 1) === notifications.length){
+                    return callback(["OK", formattedNotifications]); // Aucune erreur
+                }
+
+            })
+
+        }
+
     });
 
 }

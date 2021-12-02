@@ -134,6 +134,7 @@
     
                 </div>
                 
+                {{#user}}
                 <div class="notificationsTab" hidden id="notificationsTab">
                     <div class="title">
                         <h1>Notifications</h1>
@@ -147,11 +148,12 @@
 
                     </div>
                 </div>
+                {{/user}}
 
                 {{#user}}
                 <div class="otherBtns">
                     <button id="showNotificationsTab" onClick="switchNotificationsTabVisibility()">
-                        <div class="notifIndicator"></div>
+                        <div class="notifIndicator" id="notifIndicator"></div>
                         <img src="/imgs/icons/notifications_black_24dp.svg" alt="notifications"/>
                     </button>
                     <a href="/account/settings">

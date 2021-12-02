@@ -95,6 +95,7 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
+                    
                     {{/user.isResident}}
                     {{/user}}
 
@@ -134,7 +135,27 @@
                 </div>
                 
                 {{#user}}
+                <div class="notificationsTab" hidden id="notificationsTab">
+                    <div class="title">
+                        <h1>Notifications</h1>
+                        <button onClick="switchNotificationsTabVisibility()">
+                            <img src="/imgs/icons/close_black_24dp.svg"/>
+                        </button>
+                    </div>
+                    <div class="notificationsContainer" id="notificationsContainer">
+
+                        <div class="notifBlocker"></div>
+
+                    </div>
+                </div>
+                {{/user}}
+
+                {{#user}}
                 <div class="otherBtns">
+                    <button id="showNotificationsTab" onClick="switchNotificationsTabVisibility()">
+                        <div class="notifIndicator" id="notifIndicator"></div>
+                        <img src="/imgs/icons/notifications_black_24dp.svg" alt="notifications"/>
+                    </button>
                     <a href="/account/settings">
                         <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
                     </a>
@@ -143,7 +164,6 @@
                     </a>
                 </div>
                 {{/user}}
-    
             </div>
             
         </div>
@@ -404,11 +424,13 @@
 
     </div>
 
-    <script src="/js/kot_profile.js"></script>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
-      async
-    ></script>
-    <script src="/js/menu.js"></script>
 </body>
-
+<script src="/js/kot_profile.js"></script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
+  async
+></script>
+<script src="/js/menu.js"></script>
+{{#user}}
+<script src="/js/notificationsManager.js"></script>
+{{/user}}

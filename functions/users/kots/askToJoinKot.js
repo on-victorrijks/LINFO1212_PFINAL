@@ -5,6 +5,7 @@ role  : 1)
 
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
+import { createNotification } from '../../notifications/createNotification.js';
 import { isRequestPOST, log, toObjectID, getConnectedUserID, objectIDsArrayIncludes } from '../../technicals/technicals.js';
 
 const isAskToJoinKotFormDataValid = (req) => {
@@ -55,6 +56,23 @@ export const askToJoinKot = (database, req, callback) => {
                 database.collection("askToJoin").insertOne(newAskToJoin, (err_askToJoin_insertion, res) => {
                     if (err_askToJoin_insertion || !res) return callback(["ERROR", "SERVICE_PROBLEM"])     // Erreur reliée à mongoDB
                     log("New askedToJoin added, ID:"+res.insertedId);
+
+                    /* 
+                    On crée la notification d'une nouvelle demande pour rejoindre le kot
+                    pour le créateur du kot
+                    */
+                    createNotification(
+                        database,
+                        kot.creatorID,
+                        "newAskToJoin",
+                        [
+                            kot._id,
+                            userID_toObjectID,
+                            kot.title
+                        ],
+                        (newlyCreatedNotificationID) => { /* PASS */ }
+                    );
+
                     return callback(["OK", ""])                                  // Aucune erreur
                 });
 

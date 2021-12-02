@@ -1,10 +1,20 @@
-getNotifications();
+const NotificationBubble = document.getElementById("notifIndicator");
 
-async function getNotifications() {
+setTimeout(getNotifications, 500);
+setInterval(getNotifications, 1000*60); // On récupère les notifications toutes les 60 secondes
 
-    console.log(1);
+function getNotifications() {
 
-    await fetch('https://localhost:8080/api/notifications/getConnectedUserNotifications', {
+    // Clear
+    const UINotifications = document.querySelector(".notificationItem");
+    if(UINotifications) {
+        UINotifications.forEach(UINotification => {
+            UINotification.remove();
+        })
+    }
+    NotificationBubble.removeAttribute("notifFound");
+
+    fetch('https://localhost:8080/api/notifications/getConnectedUserNotifications', {
         method: 'post',
         mode: 'cors',
         headers: {'Content-Type': 'application/json'},
@@ -15,9 +25,16 @@ async function getNotifications() {
         const status = result.status;
         if(status==="OK"){
             const notifications = result.content;
-            notifications.forEach(notification => {
-                appendNotification(notification);
-            });
+            const numberOfNotifications = result.content.length;
+
+            if(numberOfNotifications===0){
+                NotificationBubble.removeAttribute("notifFound");
+            } else {
+                NotificationBubble.setAttribute("notifFound", "true");
+                notifications.forEach(notification => {
+                    appendNotification(notification);
+                });
+            }
         } else {
             const error = result.content;
             console.error('Error:', error); //FIX SHOW ERROR
@@ -29,13 +46,31 @@ async function getNotifications() {
 }
 
 
-function getIconFromNotifType(type) {
-    switch (type){
+
+function getNotifIconFromNotificationData(notification){
+    const notifIcon = document.createElement('div');
+    notifIcon.setAttribute("class", "notifIcon");
+    const notifIconIMG = document.createElement('img');
+
+    switch (notification.type){
         case "newMessage":
-            return "chat_black_24dp"
+            notifIconIMG.src = "https://localhost:8080/users/profilPicture/" + notification.datapoints[1];
+            notifIcon.setAttribute("isUserPicture", "true");
+            break;
+        case "newAskToJoin":
+            notifIconIMG.src = "/imgs/icons/home_black_24dp.svg";
+            break;
+        case "askToJoinAccepted":
+            notifIconIMG.src = "/imgs/icons/done_black_24dp.svg";
+            break;
+        case "askToJoinRefused":
+            notifIconIMG.src = "/imgs/icons/close_black_24dp.svg";
+            break;
         default:
-            return "notifications_black_24dp"
+            notifIconIMG.src = "/imgs/icons/notifications_black_24dp.svg";
     }
+    notifIcon.appendChild(notifIconIMG);
+    return notifIcon
 }
 
 function appendNotification(notification){
@@ -49,23 +84,17 @@ function appendNotification(notification){
     notifContent.setAttribute("class", "notifContent");
 
     // notifIcon
-    const notifIcon = document.createElement('div');
-    notifIcon.setAttribute("class", "notifIcon");
-
-    const notifIconIMG = document.createElement('img');
-    notifIconIMG.src = "/imgs/icons/" + getIconFromNotifType(notification.type) + ".svg";
-
-    notifIcon.appendChild(notifIconIMG);
+    const notifIcon = getNotifIconFromNotificationData(notification);
 
     // notifData
     const notifData = document.createElement('div');
     notifData.setAttribute("class", "notifData");
 
     const notifTitle = document.createElement('h1');
-    notifTitle.innerHTML = notification.title;
+    notifTitle.innerHTML = notification.UIData.title;
 
     const notifDesc = document.createElement('h2');
-    notifDesc.innerHTML = notification.description;
+    notifDesc.innerHTML = notification.UIData.description;
     
     notifData.appendChild(notifTitle);
     notifData.appendChild(notifDesc);

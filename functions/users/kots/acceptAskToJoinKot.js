@@ -5,6 +5,7 @@ role  : 1)
 
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
+import { createNotification } from '../../notifications/createNotification.js';
 import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../technicals/technicals.js';
 
 const isAcceptAskToJoinKotFormDataValid = (req) => {
@@ -61,6 +62,22 @@ export const acceptAskToJoinKot = (database, req, callback) => {
                 database.collection("askToJoin").deleteOne({ kotID: kotID_toObjectID, userID: userID_askingToJoin_toObjectID }, function(err_askToJoin_delete, askToJoin) {
                     if (err_askToJoin_delete || !askToJoin) return callback(["ERROR", "SERVICE_PROBLEM"]); // Erreur reliée à mongoDB
                     log("New tenant added, ID:" + kotID_toObjectID);
+                    
+                    /* 
+                    On crée la notification de la demande acceptée
+                    pour le celui qui a fait la demande
+                    */
+                    createNotification(
+                        database,
+                        userID_askingToJoin_toObjectID,
+                        "askToJoinAccepted",
+                        [
+                            kot._id,
+                            kot.title
+                        ],
+                        (newlyCreatedNotificationID) => { /* PASS */ }
+                    );
+
                     return callback(["OK", ""]); // Aucune erreur
                 });
                

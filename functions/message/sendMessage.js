@@ -8,6 +8,7 @@ role  : 1) vérifier la requête POST
 
 // Imports
 import { createNotification } from '../notifications/createNotification.js';
+import { deleteNotificationFromLastMessage } from '../notifications/deleteNotificationFromLastMessage.js';
 import { encrypt } from '../technicals/encryption.js';
 import { cutString, getConnectedUserID, isRequestPOST, log, toObjectID } from '../technicals/technicals.js';
 
@@ -62,6 +63,10 @@ export const sendMessage = (database, req, callback) => {
 
                 conversation.participants.forEach(participantID => {
                     if(participantID.toString() !== userID_toObjectID.toString()){
+                        /* 
+                        On crée la notification d'un nouveau message pour tout les 
+                        participants de la conversation excepté celui qui envoie le message
+                        */
                         createNotification(
                             database,
                             participantID,
@@ -70,7 +75,20 @@ export const sendMessage = (database, req, callback) => {
                                 conversation._id,
                                 userID_toObjectID,
                                 cutString(req.body.message, 30)
-                            ]
+                            ],
+                            (newlyCreatedNotificationID) => {
+                                /*
+                                On supprime la dernière notification d'un nouveau message pour tout les participants 
+                                de la conversation excepté celui qui envoie le message (une seule notification par conversation)
+                                (on ne supprime pas la nouvelle notification crée !)
+                                */
+                                deleteNotificationFromLastMessage(
+                                    database,
+                                    conversation._id,
+                                    participantID,
+                                    newlyCreatedNotificationID
+                                );
+                            }
                         );
                     }
                 });
