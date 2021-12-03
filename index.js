@@ -66,6 +66,7 @@ import { acceptAskToJoinKot } from './functions/users/kots/acceptAskToJoinKot.js
 import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js';
 import { removeTenant } from './functions/kots/removeTenant.js';
 import { getConnectedUserNotifications } from './functions/notifications/getNotifications.js';
+import { searchEngine } from './functions/searchEngine/searchEngine.js';
 
 ////// Constants
 const language = "fr";
@@ -505,7 +506,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
             }));
             return;
         })
-    })    
+    })   
+    
+    app.post('/api/search/', (req, res, next) => {
+        searchEngine(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        });
+    })
 
 
     // ------------  VIEWS  ------------
@@ -799,20 +811,15 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 params.user.isResident = (connectedUser && connectedUser.type==="resident");
                 params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
             }
+            
+            const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
+            params.page.title += searchQuery;
+            params.page.description.replace("$text_search", searchQuery);
+            params.query = {
+                text_search: searchQuery,
+            };
 
-            search(database, req, 
-            (results) => {
-                const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
-                params.page.title += searchQuery;
-                params.page.description.replace("$text_search", searchQuery);
-                params.query = {
-                    text_search: searchQuery,
-                };
-                params.results = results;
-    
-                return res.render('search_results.html', params);
-            },
-            (error) => { return res.redirect(errorHandler(error)) })
+            return res.render('search_results.html', params);
         },
         (error) => { return res.redirect(errorHandler(error)) });
     })
