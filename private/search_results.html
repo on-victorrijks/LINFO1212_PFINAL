@@ -172,7 +172,7 @@
 
     <div class="g-background bgColor">
 
-        <div class="g-content flexColumn blockHeight">
+        <div class="g-content flexColumn blockHeight verticalAlign">
 
             <div class="blocksContainer">
     
@@ -180,15 +180,11 @@
                     <div class="searchParams" id="filtersTab">
                         <div class="applyFiltersBar">
                             <button id="closeFiltersTab" onClick="closeFiltersTab()">
-                                <img src="/imgs/icons/arrow_back_ios_black_24dp.svg"/>
                                 <h1>Voir les résultats</h1>
-                            </button>
-                            <button onClick="search()" id="launchSearch">
-                                <h2>Lancer la recherche</h2>
-                                <img src="/imgs/icons/search_white_24dp.svg"/>
+                                <img src="/imgs/icons/arrow_front_ios_black_24dp.svg"/>
                             </button>
                         </div>
-                        <form class="searchForm" action="search" method="GET">
+                        <form class="searchForm">
                             <input class="searchBar" type="text" placeholder="Trouver un kot..." value="{{query.text_search}}" name="text_search">
                             <div class="filtersContainer">
             
@@ -365,6 +361,8 @@
                                     </div>
                                 </div>
             
+                                <button class="submit full" type="button" onClick="search()">Lancer la recherche</button>
+
                             </div>                        
                         </form>
                     </div>
@@ -384,7 +382,17 @@
                             </div>
                             <div id="kotsPreviewsContainer">
                                 
-                                <div class="notifBlocker"></div>
+                                <div class="kotsPreviewBlocker"></div>
+
+                                <div id="loaderKotsPreview">
+                                    <div class="g-loader"><div></div><div></div></div>
+                                </div>
+
+                                <div class="noKotFoundForFilters" id="noKotFoundForFilters" hidden>
+                                    <img src="/imgs/illustration_noresult.png" />
+                                    <h1>Nous n'avons pas trouvé de kot correspondant à vos filtres</h1>
+                                </div>
+
     
                             </div>
                         </div>

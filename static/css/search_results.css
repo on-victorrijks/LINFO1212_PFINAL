@@ -3,7 +3,7 @@
     margin: 25px;
     flex: 1;
     flex-direction: row;
-    max-height: 90vh;
+    max-height: 100%;
 }
 .leftTab{
     width: 15vw;
@@ -47,7 +47,6 @@
     align-items: center;
     outline: none;
     cursor: pointer;
-    border-bottom: solid 1px var(--color-bg);
 }
 .resultsContainer .filtersBar button#openFiltersTab:hover{
     opacity: .7;
@@ -117,7 +116,7 @@
     justify-content: center;
     align-items: center;
 }
-.resultsContainer .notifBlocker{
+.resultsContainer .kotsPreviewBlocker{
     height: 40px;
 }
 .liveMapContainer{
@@ -165,7 +164,7 @@
     height: 50px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 .searchParams .applyFiltersBar #closeFiltersTab{
     height: 50px;
@@ -192,41 +191,9 @@
     line-height: 30px;
     height: 30px;
     color: var(--color-font-title);
-    margin-left: 0;
+    margin-right: 0;
 }
 
-.searchParams .applyFiltersBar #launchSearch{
-    height: 36px;
-    margin: 7px;
-    display: flex;
-    flex-direction: row;
-    background-color: var(--color-accentColor);
-    border-radius: var(--border-radius-small);
-    align-items: center;
-    border: 0;
-    outline: none;
-    cursor: pointer;
-    flex-shrink: 0;
-    padding-left: 15px;
-}
-.searchParams .applyFiltersBar #launchSearch:hover{
-    background-color: var(--color-pressed);
-}
-.searchParams .applyFiltersBar #launchSearch img {
-    width: 20px;
-    height: 20px;
-    margin: 15px;
-}
-.searchParams .applyFiltersBar #launchSearch h2{
-    margin: 0 10px;
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 36px;
-    height: 36px;
-    text-align: center;
-    flex: 1;
-    color: var(--color-font-op);
-}
 .searchParams form .searchBar{
     margin: 5px 20px;
 }
@@ -379,6 +346,47 @@
 }
 .selectedKotPreview .buttonsContainer button:hover{
     background-color: var(--color-button-extra-pressed);
+}
+
+.noKotFoundForFilters {
+    width: 250px;
+    margin: auto;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.noKotFoundForFilters[hidden]{
+    display: none;
+}
+.noKotFoundForFilters img {
+    width: 250px;
+    height: 250px;
+    flex-shrink: 0;
+}
+.noKotFoundForFilters h1 {
+    font-weight: 600;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    color: var(--color-font-title);
+}
+
+#loaderKotsPreview{
+    width: 250px;
+    margin: auto;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#loaderKotsPreview[hidden]{
+    display: none;
 }
 
 

@@ -1,4 +1,5 @@
 let GLOBAL_map = undefined;
+let GLOBAL_markers = [];
 
 function initMap() {
     const map = new google.maps.Map(document.getElementById("map"), {
@@ -42,10 +43,17 @@ function closeFiltersTab(){
 setTimeout(search, 100);
 
 const resultsContainer = document.getElementById("kotsPreviewsContainer");
+const noKotFoundForFilters = document.getElementById("noKotFoundForFilters");
+const loaderKotsPreview = document.getElementById("loaderKotsPreview");
 
 async function search(){
 
+    resetMarkers();
+
     closeFiltersTab();
+
+    noKotFoundForFilters.setAttribute("hidden", "true");
+    loaderKotsPreview.removeAttribute("hidden");
 
     const previousKotPreviews = resultsContainer.querySelectorAll(".kotPreview");
     if(previousKotPreviews && previousKotPreviews.length > 0){
@@ -91,16 +99,22 @@ async function search(){
         const status = result.status;
         if(status==="OK"){
             const searchResults = result.content;
-            searchResults.forEach(result => {
-                appendKot(result.kot, result.kotTags);
-                addMarker(
-                    result.kot.location.lat,
-                    result.kot.location.lng,
-                    result.kot.title,
-                    result.kot._id
-                )
-            });
+            if(searchResults.length===0){
+                noKotFoundForFilters.removeAttribute("hidden");
+            } else {
+                searchResults.forEach(result => {
+                    appendKot(result.kot, result.kotTags);
+                    addMarker(
+                        result.kot.location.lat,
+                        result.kot.location.lng,
+                        result.kot.title,
+                        result.kot._id
+                    )
+                });
+            }
+            loaderKotsPreview.setAttribute("hidden", "true");
         } else {
+            loaderKotsPreview.setAttribute("hidden", "true");
             const error = result.content;
             console.error('Error:', error); //FIX SHOW ERROR
         }
@@ -109,6 +123,13 @@ async function search(){
     });
 
 
+}
+
+function resetMarkers(){
+    GLOBAL_markers.forEach(marker => {
+        marker.setMap(null);
+    });
+    GLOBAL_markers = [];
 }
 
 function appendKot(kot, kotTags){
@@ -200,6 +221,7 @@ function addMarker(lat, lng, title, id) {
         content: title
     });
 
+    GLOBAL_markers.push(marker);
     marker.setMap(GLOBAL_map);
 }
 

@@ -136,6 +136,7 @@ export const searchEngine = (database, req, callback) => {
     database.collection("kots").find(query).sort({ createdOn: -1 }).toArray(function(err, kots) {
 
         if(err) return callback(["ERROR", "SERVICE_ERROR"]);
+        if(kots && kots.length===0) return callback(["OK", []]);
 
         const docs = kots.map((inside_kot) => { 
             return [...inside_kot.title.split(" "), ...inside_kot.description.split(" ")]
@@ -147,9 +148,9 @@ export const searchEngine = (database, req, callback) => {
 
         for (let index = 0; index < kots.length; index++) {
             const kot = kots[index];
-
+    
             const tf_idf_weight = tf_idf_multiwords(queryWords, docs, [...kot.title.split(" "), ...kot.description.split(" ")]);
-
+    
             kotWithScores.push({
                 score: tf_idf_weight,
                 kot: {
@@ -161,14 +162,15 @@ export const searchEngine = (database, req, callback) => {
                     owner: kot.creatorID.toString()===userID_toObjectID.toString()
                 }
             });
-
+    
             if(kotWithScores.length === kots.length){
                 kotWithScores.sort((a, b) => b.score - a.score);
-
+    
                 return callback(["OK", kotWithScores]);
             }
-
+    
         }
+
 
     });
 }
