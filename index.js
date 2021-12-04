@@ -67,6 +67,7 @@ import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js
 import { removeTenant } from './functions/kots/removeTenant.js';
 import { getConnectedUserNotifications } from './functions/notifications/getNotifications.js';
 import { searchEngine } from './functions/searchEngine/searchEngine.js';
+import { deleteNotification } from './functions/notifications/deleteNotification.js';
 
 ////// Constants
 const language = "fr";
@@ -499,6 +500,17 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     app.post('/api/notifications/getConnectedUserNotifications', (req, res, next) => {
         getConnectedUserNotifications(database, req, ([status, content]) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                status: status,
+                content: content,
+            }));
+            return;
+        })
+    })   
+
+    app.post('/api/notifications/deleteNotification', (req, res, next) => {
+        deleteNotification(database, req, ([status, content]) => {
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({
                 status: status,

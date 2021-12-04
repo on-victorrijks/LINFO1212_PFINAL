@@ -3,7 +3,7 @@ const NotificationBubble = document.getElementById("notifIndicator");
 setTimeout(getNotifications, 500);
 setInterval(getNotifications, 1000*60); // On récupère les notifications toutes les 60 secondes
 
-function getNotifications() {
+async function getNotifications() {
 
     // Clear
     const UINotifications = document.querySelector(".notificationItem");
@@ -14,7 +14,7 @@ function getNotifications() {
     }
     NotificationBubble.removeAttribute("notifFound");
 
-    fetch('https://localhost:8080/api/notifications/getConnectedUserNotifications', {
+    await fetch('https://localhost:8080/api/notifications/getConnectedUserNotifications', {
         method: 'post',
         mode: 'cors',
         headers: {'Content-Type': 'application/json'},
@@ -126,5 +126,30 @@ function appendNotification(notification){
     newNotification.appendChild(notifBtns);
 
     document.getElementById("notificationsContainer").insertBefore(newNotification, document.querySelector(".notifBlocker").nextSibling);
+
+}
+
+async function deleteNotif(notificationID){
+    
+    fetch('https://localhost:8080/api/notifications/deleteNotification', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            notificationID: notificationID
+        }),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            document.querySelector(`.notificationItem[notifID='${notificationID}']`).remove();
+        } else {
+            const error = result.content;
+            console.error('Error:', error); //FIX SHOW ERROR
+        }
+    }).catch((error) => {
+        console.error('Error:', error); //FIX SHOW ERROR
+    });
 
 }
