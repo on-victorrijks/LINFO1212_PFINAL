@@ -354,6 +354,28 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         
     })
 
+    app.get('/conversations/create/fromprofile/:userID', (req, res, next) => {
+
+        const connectedUserID = getConnectedUserID(req);
+        if(!connectedUserID) return res.redirect("/login?error=CONNECTION_NEEDED");
+        
+        createConversation(database, {
+            body: {
+                numberOfUsers: 2,
+                userID0: connectedUserID,
+                userID1: req.params.userID 
+            }
+        }, (result) => {
+            if(Array.isArray(result)){
+                const newConversationID = result[0];
+                return res.redirect("/conversations?selectedConversationID=" + newConversationID.toString());
+            } else {
+                res.redirect("/user/" + req.params.userID + "?error=" + result)
+            }
+        })
+        
+    })
+
     app.post('/api/sendMessage', (req, res, next) => {
         sendMessage(database, req, (error) => {
             res.setHeader('Content-Type', 'application/json');
