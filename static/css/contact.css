@@ -2,33 +2,86 @@
     flex-direction: row;
     display: flex;
 }
-.contactBox {
-    border: solid 1px;
-    border-radius: var(--border-radius);
-    margin-left: 60px;
-    text-align: center;
-    width: 15%;
-    padding: 5px;
-    padding: 10px;
-    
+
+.description {
+    flex: 1;
+    margin: calc(1vh + 25px);
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+}
+.description b{
+    color: var(--color-font-title);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+.description p{
+    color: var(--color-font-text);
+    font-weight: 500;
+    font-size: 19px;
 }
 
-.subtitles {
-    padding-bottom: 10px;
+.contactBox {
+    flex-shrink: 0;
+    margin: calc(1vh + 25px);
+    margin-top: 0;
+    margin-left: 25px;
+    width: 330px;
+}
+.contactBox b{
+    color: var(--color-font-title);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+.contactBox a{
     color: var(--color-accentColor);
-    font-size: larger;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin: 4px 0;
+    display: block;
 }
-.description {
-    margin-left: 30px;
+.contactBox a:hover{
+    color: var(--color-pressed);
 }
-.mail {
-    padding: 5px;
-    font-size: small;
+.FAQ{
+    flex: 1;
+    margin: calc(1vh + 25px);
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
 }
-.FAQ {
-    margin-left: 30px;
+.FAQ b{
+    color: var(--color-font-title);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
 }
-.questions {
-    padding-top: 15px;
-    padding-bottom: 15px;
+.FAQ .question_réponses{
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--border-radius-small);
+    padding: 25px;
+    background-color: var(--color-bg-light);
+    border: solid 1px var(--color-bg-dark);
+    margin: 8px 0;
+}
+.FAQ .question_réponses h3{
+    color: var(--color-accentColor);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+.FAQ .question_réponses h2{
+    color: var(--color-font-text);
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1px;
 }

@@ -145,6 +145,15 @@ export const PAGES_METAS = {
             "copyright": "//FIX",
             "charset": "UTF-8",
             "selectedPage": "presentation"    
+        },
+        "/contact": {
+            "title": "Information de contact //FIX_SITENAME",
+            "description": "Comment nous contacter, question et réponse sur //FIX_SITENAME",
+            "icon": "default.png",
+            "keywords": "questions, //FIX_SITENAME, contact",
+            "copyright": "//FIX",
+            "charset": "UTF-8",
+            "selectedPage": "contact"    
         }
     }
 }
