@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{page.title}}</title>
+  <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/css/vars.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/presentation.css">
+
+</head>
+<body>
+
+    <div class="menuContainer">
+        <div class="fixedBtn" id="mobileOpen">
+            <img src="/imgs/icons/menu_black_24dp.svg" alt="logo"/>
+        </div>
+        <div class="fixedBtn" id="mobileClose" hidden="true">
+            <img src="/imgs/icons/close_black_24dp.svg" alt="logo"/>
+        </div>
+    
+        <div class="menu" id="menu" mobileHidden="true">
+    
+            <div class="menuElms">
+    
+                <div class="menuTopElements">
+                    <a class="logo" href="/">
+                        <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
+                        <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                    </a>
+                    {{#user}}
+                    <a class="user" href="/account">
+                        <div class="userImage">
+                            <img src="https://localhost:8080/users/profilPicture/{{user._id}}" alt="user"/>
+                        </div>
+                        <div class="userText">
+                            <h1>{{user.firstname}} {{user.lastname}}</h1>
+                            <h2>Mon compte</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    {{^user}}
+                    <a class="registerorlogin" href="/login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    {{/user}}
+                </div>
+                <div class="menuOptions">
+    
+                    <a class="option" selected="{{menu.selectedPage.home}}" href="/">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/search_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/search_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Accueil</h2>
+                        </div>
+                    </a>
+
+                    {{#user}}
+                    <a class="option" selected="{{menu.selectedPage.conversations}}" href="/conversations">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/question_answer_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/question_answer_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Messages</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    {{^user}}
+                    <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/view_module_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/view_module_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Présentation</h2>
+                        </div>
+                    </a>
+                    {{/user}}
+                    
+                    {{#user}}
+                    {{#user.isResident}}
+                    <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/favorite_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes favoris</h2>
+                        </div>
+                    </a>
+                    
+                    {{/user.isResident}}
+                    {{/user}}
+
+                    {{#user}}
+                    {{#user.isLandlord}}
+                    <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/add_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Publier un kot</h2>
+                        </div>
+                    </a>
+                    <a class="option" selected="{{menu.selectedPage.mykots}}" href="/kot/my">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/home_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/home_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Mes kots</h2>
+                        </div>
+                    </a>
+                    {{/user.isLandlord}}
+                    {{/user}}
+    
+                    <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
+                        <div class="optionImage">
+                            <img id="unselected" alt="menuOption" src="/imgs/icons/call_black_24dp.svg"/>
+                            <img id="selected"   alt="menuOption" src="/imgs/icons/call_black_24dp_selected.svg"/>
+                        </div>
+                        <div class="optionName">
+                            <h2>Contact</h2>
+                        </div>
+                    </a>
+    
+                </div>
+                
+                {{#user}}
+                <div class="notificationsTab" hidden id="notificationsTab">
+                    <div class="title">
+                        <h1>Notifications</h1>
+                        <button onClick="switchNotificationsTabVisibility()">
+                            <img src="/imgs/icons/close_black_24dp.svg"/>
+                        </button>
+                    </div>
+                    <div class="notificationsContainer" id="notificationsContainer">
+
+                        <div class="notifBlocker"></div>
+
+                    </div>
+                </div>
+                {{/user}}
+
+                {{#user}}
+                <div class="otherBtns">
+                    <button id="showNotificationsTab" onClick="switchNotificationsTabVisibility()">
+                        <div class="notifIndicator" id="notifIndicator"></div>
+                        <img src="/imgs/icons/notifications_black_24dp.svg" alt="notifications"/>
+                    </button>
+                    <a href="/account/settings">
+                        <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
+                    </a>
+                    <a href="/disconnect">
+                        <img src="/imgs/icons/logout_black_24dp.svg" alt="disconnect"/>
+                    </a>
+                </div>
+                {{/user}}
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="g-background bgColor">
+
+        <div class="g-content">
+
+            <div class="slide">
+                <h1 class="mainTitle">Bienvenue sur //FIX_SITENAME</h1>
+                <div class="bottomScrollStarter" onClick="scrollToSlide(1)">
+                    <h2>Scroller pour découvrir les fonctionnalités</h2>
+                    <img src="./imgs/icons/arrow_downward_accentColor_24dp.svg"/>
+                </div>
+                <div id="map"></div>
+            </div>
+
+            <div class="slide">
+                <div class="left">
+                    <div class="centerBox">
+
+                        <div class="popUpKotPreview">
+                            <img src="https://localhost:8080/users/kots/images/61900639a37b27b6906f4be0_1.jpg"/>
+                            <h1>Titre du kot</h1>
+                        </div>
+
+                        <div class="popUpKotPreview">
+                            <img src="https://localhost:8080/users/kots/images/61900639a37b27b6906f4be0_1.jpg"/>
+                            <h1>Titre du kot</h1>
+                        </div>
+
+                        <div class="popUpKotPreview">
+                            <img src="https://localhost:8080/users/kots/images/618ff147d3e4cf02547bf9ba_tate-britain-3840x2160-england-tourism-travel-4967.jpg"/>
+                            <h1>Titre du kot</h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="box">
+                        <h1 class="big">Trouver le kot parfait pour vous !</h1>
+                        <h2>Grace à notre système de filtrage avancés et complet</h2>
+                        <div class="filtersList">
+                            <div class="filtersColumn">
+                                <h3>Prix minimum</h3>
+                                <h3>Prix maximum</h3>
+                                <h3>Posté depuis</h3>
+                                <h3>Localisaiton</h3>
+                                <h3>Disponibilitée</h3>
+                                <h3>Nombre de chambres</h3>
+                            </div>
+                            <div class="filtersColumn">
+                                <h3>Nombres de salles de bain</h3>
+                                <h3>Type de batiment</h3>
+                                <h3>Surface</h3>
+                                <h3>Parking</h3>
+                                <h3>Animaux autorisés</h3>
+                                <h3>Et bien plus...</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottomScrollStarter" onClick="scrollToSlide(2)">
+                    <h2>Scroller pour en apprendre plus sur la publication de kot</h2>
+                    <img src="./imgs/icons/arrow_downward_accentColor_24dp.svg"/>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="left">
+                    <div class="centerBox">
+
+                        <div class="popUpData">
+                            <img src="./imgs/icons/bedroom_parent_black_24dp.svg"/>
+                        </div>
+
+                        <div class="popUpData">
+                            <img src="./imgs/icons/bathroom_black_24dp.svg"/>
+                        </div>
+
+                        <div class="popUpData">
+                            <img src="./imgs/icons/square_foot_black_24dp.svg"/>
+                        </div>
+
+                        <div class="popUpData">
+                            <img src="./imgs/icons/deck_black_24dp.svg"/>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="box">
+                        <h1 class="mid">Vous êtes un propriétaire ? Publier votre kot facilement</h1>
+                        <h2>Créer un compte, remplisser les données de votre propriété et c'est parti !</h2>
+                    </div>
+                </div>
+                <div class="bottomScrollStarter" onClick="scrollToSlide(3)">
+                    <h2>Scroller pour en savoir plus sur la messagerie</h2>
+                    <img src="./imgs/icons/arrow_downward_accentColor_24dp.svg"/>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="left">
+                    <div class="centerBox">
+
+                        <div class="popUpMessage">
+                            <p>
+                                Bonjour, pouvez-vous m'indiquer la disponibilitée de votre kot ?
+                            </p>
+                        </div>
+                        
+                        <div class="popUpMessage">
+                            <p>
+                                Bonjour, mon kot est toujours disponible, avez-vous d'autres questions ?
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="box">
+                        <h1 class="big">
+                            Discuter avec 
+                            <b id="dynUserType">vos colocataires</b>
+                        </h1>
+                        <h2>Vous avez besoin de plus d'information sur une habitation ? Contacter directement le propriétaire.</h2>
+                        <h2>Vous voulez prévenir vos colocataires de la venue d'un technicien ? Contacter les tous via //FIX_SITENAME.</h2>
+                    </div>
+                </div>
+                <div class="bottomScrollStarter" onClick="scrollToSlide(4)">
+                    <h2>Scroller pour en savoir plus sur le système de colocation</h2>
+                    <img src="./imgs/icons/arrow_downward_accentColor_24dp.svg"/>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="left">
+                    <div class="centerBox">
+                        <img id="illustration_collocation_1" src="./imgs/illustration_collocation_1.png"/>
+                        <img id="illustration_collocation_2" src="./imgs/illustration_collocation_2.png"/>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="box">
+                        <h1 class="mid">
+                            Organiser des colocation facilement
+                        </h1>
+                        <h2>Vous souhaiter mettre sur le marché votre habitation pour plusieurs colocataires ?</h2>
+                        <p>
+                            Il vous suffit d'activer l'option "colocation" qui gère directement vos colocations depuis l'application web.
+                            <br />
+                            Une discussion entre colocataires est directement crée, les demandes sont facilements accessibles et vous simplifie la vie.
+                        </p>
+                    </div>
+                </div>
+                <div class="bottomScrollStarter" onClick="scrollToSlide(5)">
+                    <h2>Scroller pour découvrir comment rejoindre //FIX_SITENAME</h2>
+                    <img src="./imgs/icons/arrow_downward_accentColor_24dp.svg"/>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="centerBoxOneSide">
+                    <h1>Rejoingnez dés maitenant //FIX_SITENAME</h1>
+                    <div class="twoLinksOneDiv">
+                        <a href="/register">Créer un compte</a>
+                        <a href="/login">Vous avez déja un compte ?</a>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    
+    </div>
+
+</body>
+<script src="/js/menu.js"></script>
+<script src="/js/presentation.js"></script>
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
+async
+></script>
+{{#user}}
+<script src="/js/notificationsManager.js"></script>
+{{/user}}

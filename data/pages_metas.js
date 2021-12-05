@@ -137,5 +137,14 @@ export const PAGES_METAS = {
             "charset": "UTF-8",
             "selectedPage": "mykots"       
         },
+        "/presentation": {
+            "title": "Présentation de //FIX_SITENAME",
+            "description": "Découvrez les fonctionnalités de //FIX_SITENAME avec ces slides",
+            "icon": "default.png",
+            "keywords": "fonctionnalités, //FIX_SITENAME, présentation, c'est quoi //FIX_SITENAME",
+            "copyright": "//FIX",
+            "charset": "UTF-8",
+            "selectedPage": "presentation"    
+        }
     }
 }

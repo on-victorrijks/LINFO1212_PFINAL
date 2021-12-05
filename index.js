@@ -972,6 +972,22 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { return res.redirect(errorHandler(error)) });
     })
 
+    app.get('/presentation', (req, res, next) => {
+        const params = generateParams("/presentation");
+        
+        getUser(database, getConnectedUserID(req), false, 
+        (connectedUser) => {
+            params.user = connectedUser;
+            if(connectedUser){
+                params.user.isResident = (connectedUser && connectedUser.type==="resident");
+                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+            }
+
+            return res.render('presentation.html', params);
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    })
+
     // ------------  FILES  ------------
 
     app.get('/users/profilPicture/:userID', function (req, res) {
