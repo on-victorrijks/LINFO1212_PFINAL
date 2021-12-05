@@ -220,3 +220,38 @@ export const generateRandomToken = () => {
     .map((x) => charactersToUseForTokens[x % charactersToUseForTokens.length])
     .join('')
 }
+
+export const calcCrowDistance = (pos1, pos2) => {
+    /*
+        Code trouvé sur : https://www.codegrepper.com/code-examples/javascript/js+calculate+distance+between+two+coordinates
+        (légèrement modifié)
+    */
+    /*
+        DEF  : On calculate la distance en km à vol de corbeau (Crow) entre deux position donnée sous format { lat : number, lng: number }
+        PRE  : pos1 { lat : number, lng: number } | pos2 { lat : number, lng: number }
+        POST : number
+    */
+
+    try{
+
+        function toRad(Value) {
+            return Value * Math.PI / 180;
+        }
+    
+        var R = 6371; // km
+        var dLat = toRad(pos2.lat - pos1.lat);
+        var dLon = toRad(pos2.lng - pos1.lng);
+        var lat1 = toRad(pos1.lat);
+        var lat2 = toRad(pos2.lat);
+    
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        var d = R * c;
+        return d;
+
+    } catch {
+        return 0;
+    }
+
+}

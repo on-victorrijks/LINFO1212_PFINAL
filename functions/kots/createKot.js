@@ -7,11 +7,31 @@ role  : 1) vérifier la requête POST
 */
 
 // Imports
-import { getConnectedUserID, toObjectID, isRequestPOST, log, cutString, toFloat, toBoolean, toInt } from '../technicals/technicals.js';
+import { getConnectedUserID, toObjectID, isRequestPOST, log, cutString, toFloat, toBoolean, toInt, calcCrowDistance } from '../technicals/technicals.js';
 
 // Constants
 const ENTRY_TYPES = ["flat", "house"];
 const ENTRY_PETFRIENDLY = ["false", "small", "big"];
+const POSITION_places_des_sciences = {
+    lat: 50.66818515352886,
+    lng: 4.619484511109864
+};
+const POSITION_agora = {
+    lat: 50.66911878266914,
+    lng: 4.612104631495814
+};
+const POSITION_esplanade = {
+    lat: 50.671477978827504,
+    lng: 4.617786099161508
+};
+const POSITION_lac = {
+    lat: 50.66737542738463,
+    lng: 4.607471216016249
+};
+const POSITION_grand_place = {
+    lat: 50.66948136836722,
+    lng: 4.611550503649657
+};
 
 const isCreateKotFormDataValid = (req) => {
     /*
@@ -58,6 +78,9 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
 
     //FIX VERIF USER TYPE
 
+    const kot_lat = toFloat(req.body.localisation_lat, 50.66797103612341);
+    const kot_lng = toFloat(req.body.localisation_lng, 4.610840944225293);
+
     const newKot = {
         "creatorID"         : userID_toObjectID,
         "title"             : cutString(req.body.title, 128),
@@ -65,8 +88,8 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
         "description"       : cutString(req.body.description, 2000),
         "location"          : {
             "address": cutString(req.body.localisation_address, 256),
-            "lat": toFloat(req.body.localisation_lat, 50.66797103612341), // def=Latitude du centre de LLN
-            "lng": toFloat(req.body.localisation_lng, 4.610840944225293)  // def=Longitude du centre de LLN
+            "lat": kot_lat, // def=Latitude du centre de LLN
+            "lng": kot_lng  // def=Longitude du centre de LLN
         },
         "pictures"          : filteredPicturesName,
         "mainPictureIndex"  : mainPictureIndex,
@@ -91,7 +114,27 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
         "furnished"         : toBoolean(req.body.furnished),
         "petFriendly"       : ENTRY_PETFRIENDLY.includes(req.body.petFriendly) ? req.body.petFriendly : ENTRY_PETFRIENDLY[0],
         "garden"            : toBoolean(req.body.garden),
-        "terrace"           : toBoolean(req.body.terrace)
+        "terrace"           : toBoolean(req.body.terrace),
+        "dist_place_des_sciences": calcCrowDistance({
+            lat: kot_lat,
+            lng: kot_lng,
+        }, POSITION_places_des_sciences),
+        "dist_agora": calcCrowDistance({
+            lat: kot_lat,
+            lng: kot_lng,
+        }, POSITION_agora),
+        "dist_esplanade": calcCrowDistance({
+            lat: kot_lat,
+            lng: kot_lng,
+        }, POSITION_esplanade),
+        "dist_lac": calcCrowDistance({
+            lat: kot_lat,
+            lng: kot_lng,
+        }, POSITION_lac),
+        "dist_grand_place": calcCrowDistance({
+            lat: kot_lat,
+            lng: kot_lng,
+        }, POSITION_grand_place)
     };
 
     // Insertion du kot dans la base de données

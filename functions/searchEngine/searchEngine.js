@@ -11,6 +11,7 @@ import { distance } from "fastest-levenshtein";
 // Constants
 const ENTRY_TYPES = ["flat", "house"];
 const ENTRY_PETFRIENDLY = ["false", "small", "big"];
+const lessThanDistance = 0.5;
 
 const convertPostedSinceToDate = (postedSince) => {
     let actualDate = new Date();
@@ -78,8 +79,6 @@ export const searchEngine = (database, req, callback) => {
         return finalRes
     }
     
-    // FIX LOCALISATION
-
     ////// Création de la query
     const query = {};
     query.basePrice     = {$gte: 0, $lte: 100000};
@@ -88,6 +87,7 @@ export const searchEngine = (database, req, callback) => {
     query.bathrooms     = { $gte: 0 };
     query.surface       = { $gte: 0 };
     query.parking       = { $gte: 0 };
+
 
     ////// Choix des filtres
     const filter_minValue       = !["", undefined].includes(req.body.minValue);
@@ -100,6 +100,7 @@ export const searchEngine = (database, req, callback) => {
     const filter_nbparkings     = !["", undefined].includes(req.body.nbparking);
     const filter_petfriendly    = !["", undefined].includes(req.body.petfriendly);
     const filter_postedSince    = !["", undefined].includes(req.body.postedSince);
+    const filter_localisation   = !["", undefined].includes(req.body.localisation);
 
     ////// On convertit les valeurs dans des formats facilement utilisables
     if(filter_minValue){
@@ -131,7 +132,33 @@ export const searchEngine = (database, req, callback) => {
     if(filter_petfriendly){
         query.petFriendly = ENTRY_PETFRIENDLY.includes(req.body.petfriendly) ? req.body.petfriendly : ENTRY_PETFRIENDLY[0];
     }
-    if(filter_postedSince) body.createdOn.$gte = convertPostedSinceToDate(req.body.postedsince).valueOf();
+    if(filter_postedSince){
+        query.createdOn.$gte = convertPostedSinceToDate(req.body.postedsince).valueOf();
+    }
+    if(filter_localisation){
+        switch (req.body.localisation){
+            case "sciences":
+                query.dist_place_des_sciences = {};
+                query.dist_place_des_sciences.$lte = lessThanDistance;
+                break;
+            case "agora":
+                query.dist_agora = {};
+                query.dist_agora.$lte = lessThanDistance;
+                break;
+            case "esplanade":
+                query.dist_esplanade = {};
+                query.dist_esplanade.$lte = lessThanDistance;
+                break;
+            case "lac":
+                query.dist_lac = {};
+                query.dist_lac.$lte = lessThanDistance;
+                break;
+            case "grandplace":
+                query.dist_grand_place = {};
+                query.dist_grand_place.$lte = lessThanDistance;
+                break;
+        }
+    }
 
     database.collection("kots").find(query).sort({ createdOn: -1 }).toArray(function(err, kots) {
 
