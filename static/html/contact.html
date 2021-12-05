@@ -6,11 +6,12 @@
   <meta name="description" content="{{page.description}}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="/css/vars.css">
-  <link rel="stylesheet" href="/css/global.css">
-  <link rel="stylesheet" href="/css/menu.css">
-  <link rel="stylesheet" href="/css/forms.css">
-
+  <link rel="stylesheet" href="../css/vars.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/kotPreview.css">
+  
 </head>
 <body>
 
@@ -27,10 +28,10 @@
             <div class="menuElms">
     
                 <div class="menuTopElements">
-                    <a class="logo" href="/">
+                    <div class="logo">
                         <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
                         <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
-                    </a>
+                    </div>
                     {{#user}}
                     <a class="user" href="/account">
                         <div class="userImage">
@@ -61,15 +62,6 @@
                     </a>
 
                     {{#user}}
-                    <a class="option" selected="{{menu.selectedPage.conversations}}" href="/conversations">
-                        <div class="optionImage">
-                            <img id="unselected" alt="menuOption" src="/imgs/icons/question_answer_black_24dp.svg"/>
-                            <img id="selected"   alt="menuOption" src="/imgs/icons/question_answer_black_24dp_selected.svg"/>
-                        </div>
-                        <div class="optionName">
-                            <h2>Messages</h2>
-                        </div>
-                    </a>
                     {{/user}}
                     {{^user}}
                     <a class="option" selected="{{menu.selectedPage.presentation}}" href="/presentation">
@@ -84,7 +76,7 @@
                     {{/user}}
                     
                     {{#user}}
-                    {{#user.isResident}}
+                    {{#isResident}}
                     <a class="option" selected="{{menu.selectedPage.favs}}" href="/kot/favs">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/favorite_black_24dp.svg"/>
@@ -94,12 +86,11 @@
                             <h2>Mes favoris</h2>
                         </div>
                     </a>
-                    
-                    {{/user.isResident}}
+                    {{/isResident}}
                     {{/user}}
-
+    
                     {{#user}}
-                    {{#user.isLandlord}}
+                    {{#isLandlord}}
                     <a class="option" selected="{{menu.selectedPage.publish}}" href="/kot/create">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/add_black_24dp.svg"/>
@@ -118,7 +109,7 @@
                             <h2>Mes kots</h2>
                         </div>
                     </a>
-                    {{/user.isLandlord}}
+                    {{/isLandlord}}
                     {{/user}}
     
                     <a class="option" selected="{{menu.selectedPage.contact}}" href="/contact">
@@ -134,27 +125,7 @@
                 </div>
                 
                 {{#user}}
-                <div class="notificationsTab" hidden id="notificationsTab">
-                    <div class="title">
-                        <h1>Notifications</h1>
-                        <button onClick="switchNotificationsTabVisibility()">
-                            <img src="/imgs/icons/close_black_24dp.svg"/>
-                        </button>
-                    </div>
-                    <div class="notificationsContainer" id="notificationsContainer">
-
-                        <div class="notifBlocker"></div>
-
-                    </div>
-                </div>
-                {{/user}}
-
-                {{#user}}
                 <div class="otherBtns">
-                    <button id="showNotificationsTab" onClick="switchNotificationsTabVisibility()">
-                        <div class="notifIndicator" id="notifIndicator"></div>
-                        <img src="/imgs/icons/notifications_black_24dp.svg" alt="notifications"/>
-                    </button>
                     <a href="/account/settings">
                         <img src="/imgs/icons/settings_black_24dp.svg" alt="settings"/>
                     </a>
@@ -163,6 +134,7 @@
                     </a>
                 </div>
                 {{/user}}
+    
             </div>
             
         </div>
@@ -174,11 +146,52 @@
 
             <div class="g-topBar">
                 <div class="g-topTitle">
-                    <h1>Publier un kot</b></h1>
+                    <h1 class="subtitles">Qui sommes nous ?</b></h1>
                 </div>
             </div>
 
-            <!--Contenu-->
+
+            <div class="infoContainer">
+                <div class="description">Nous sommes de jeunes étudiants en sciences informatiques. Nous avons créez ce site dans le cadre du cours "Projet en sciences informatiques".</div> 
+                <div class="contactBox">
+                    <h2 class="subtitles">Nous contacter :</h2>
+                    <a href="mailto:g.danckaert@student.uclouvain.be" class="mail">g.danckaert@student.uclouvain.be</a>
+                    <a href="mailto:victor.rijks@student.uclouvain.be" class="mail">victor.rijks@student.uclouvain.be</a>
+                    <a href="mailto:ari.saacti@student.uclouvain.be" class="mail">ari.saacti@student.uclouvain.be</a>
+                </div>
+            </div>
+            <div class="FAQ">
+                <h2 class="subtitles">Vos questions :</h2>
+                <div class="question_réponses">
+                    <h3 class="questions">Le passage de Lorem Ipsum standard, utilisé depuis 1500 ?</h3>
+                    <div class="réponses">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
+                    minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+                    </div>
+                </div>
+                <div class="question_réponses">
+                    <h3 class="questions">Le passage de Lorem Ipsum standard, utilisé depuis 1500 ?</h3>
+                    <div class="réponses">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
+                    minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+                    </div>
+                </div>
+                <div class="question_réponses">
+                    <h3 class="questions">Le passage de Lorem Ipsum standard, utilisé depuis 1500 ?</h3>
+                    <div class="réponses">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
+                    minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+                    </div>
+                </div>
+                <div class="question_réponses">
+                    <h3 class="questions">Le passage de Lorem Ipsum standard, utilisé depuis 1500 ?</h3>
+                    <div class="réponses">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
+                    minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+                    </div>
+                </div>
+            </div>
+            
         
         </div>
     
@@ -189,3 +202,41 @@
 {{#user}}
 <script src="/js/notificationsManager.js"></script>
 {{/user}}
+
+
+<style>
+    .infoContainer {
+        flex-direction: row;
+        display: flex;
+    }
+    .contactBox {
+        border: solid 1px;
+        border-radius: var(--border-radius);
+        margin-left: 60px;
+        text-align: center;
+        width: 15%;
+        padding: 5px;
+        padding: 10px;
+        
+    }
+
+    .subtitles {
+        padding-bottom: 10px;
+        color: var(--color-accentColor);
+        font-size: larger;
+    }
+    .description {
+        margin-left: 30px;
+    }
+    .mail {
+        padding: 5px;
+        font-size: small;
+    }
+    .FAQ {
+        margin-left: 30px;
+    }
+    .questions {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+</style>
