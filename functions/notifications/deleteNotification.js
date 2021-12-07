@@ -1,6 +1,9 @@
 /*
 titre : deleteNotification
-role  : 1) 
+role  : 1) vérifier la requête POST
+        2) préparer les informations pour supprimé la notif de la db
+        3) supprimer la notif à la db
+        4) retourne "ok" si tout c'est bien passé et une erreur si il y a eu un problème
 */
 
 // Imports
@@ -8,18 +11,18 @@ import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../technical
 
 const isDeleteNotificationFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : On vérifie que les champs nécessaires pour créer une notif sont dans la requête POST et utilisables
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean
     */
     return  req.body.notificationID!==undefined
 }
 
 export const deleteNotification = (database, req, callback) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : On supprime la notif avec les données dans la requête POST et on callback soit un array "ok", soit une erreur
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(string))
+        CALLBACK : callback(Array<string>)/code d'erreur (Array<string>|string)
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));

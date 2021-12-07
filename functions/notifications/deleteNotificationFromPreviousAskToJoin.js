@@ -1,6 +1,8 @@
 /*
 titre : deleteNotificationFromPreviousAskToJoin
-role  : 1) 
+role  : 1) préparer les informations pour supprimé la notif lié à la dernière demande de rejoindre un kot reçu de la db
+        2) supprimer la notif à la db
+        3) renvoie une erreur si il y a eu un problème 
 */
 
 // Imports
@@ -8,9 +10,9 @@ import { log } from '../technicals/technicals.js';
 
 export const deleteNotificationFromPreviousAskToJoin = (database, userID, kotID, userID_askingToJoin) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : supprime la notification lié au dernier message reçu
+        PRE  : database (mongod.Db) | userID (mongodb.ObjectID sous forme de string) | kotID (mongodb.ObjectID sous forme de string) | userID_askingToJoin (mongodb.ObjectID sous forme de string) 
+        CALLBACK : code d'erreur (Array<string>|string)
     */
 
     database.collection("notifications").find({
