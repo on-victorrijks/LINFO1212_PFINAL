@@ -1,0 +1,8 @@
+messageInterface {
+    "_id"                       : Mongodb.ObjectId,
+    "fromUserID"                : Mongodb.ObjectId,
+    "message"                   : String,
+    "createdOn"                 : Date (Number),
+    "conversationID"            : Mongodb.ObjectId,
+    "numID"                     : Number,
+}

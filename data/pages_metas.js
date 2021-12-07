@@ -74,7 +74,7 @@ export const PAGES_METAS = {
             "charset": "UTF-8",
             "selectedPage": undefined     
         },
-        "account": {
+        "/account": {
             "title": "Votre profil",
             "description": "Votre profil sur //FIX_SITENAME",
             "icon": "default.png",
@@ -101,7 +101,7 @@ export const PAGES_METAS = {
             "charset": "UTF-8",
             "selectedPage": "home"      
         },
-        "register": {
+        "/register": {
             "title": "Créer un compte sur //FIX_SITENAME",
             "description": "Trouver un kot facilement sur Louvain-La-Neuve avec //FIX_SITENAME, le site spécialement dédié à vous aider",
             "icon": "default.png",
@@ -110,7 +110,7 @@ export const PAGES_METAS = {
             "charset": "UTF-8",
             "selectedPage": undefined      
         },
-        "login": {
+        "/login": {
             "title": "Se connecter sur //FIX_SITENAME",
             "description": "Trouver un kot facilement sur Louvain-La-Neuve avec //FIX_SITENAME, le site spécialement dédié à vous aider",
             "icon": "default.png",

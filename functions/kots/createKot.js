@@ -66,15 +66,15 @@ const isCreateKotFormDataValid = (req) => {
 export const createKot = (database, req, mainPictureIndex, filteredPicturesName, callback) => {
     /*
         DEF  : On enregiste un nouveau kot avec les données dans la requête POST et on callback soit un array contenant l'_id du kot inséré, soit une erreur
-        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | mainPictureIndex (number) | filteredPicturesName (Array<string>) | callback (Function(string))
-        CALLBACK : [_id du kot ajouté]/code d'erreur (Array<string>|string)
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | mainPictureIndex (number) | filteredPicturesName (Array<string>) | callback (Function([string, any]))
+        CALLBACK : [status, content] ([string, any])
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
 
-    if(userID_toObjectID==="") return callback("BAD_REQUEST");                   // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
-    if(!isRequestPOST(req)) return callback("BAD_REQUEST");                      // est-ce que req.body est défini (POST)
-    if(!isCreateKotFormDataValid(req)) return callback("BAD_REQUEST");           // est-ce que les données nécessaires pour créer un kot sont dans la requête POST et utilisables
+    if(userID_toObjectID==="") return callback(["ERROR", "BAD_REQUEST"]);                   // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
+    if(!isRequestPOST(req)) return callback(["ERROR", "BAD_REQUEST"]);                      // est-ce que req.body est défini (POST)
+    if(!isCreateKotFormDataValid(req)) return callback(["ERROR", "BAD_REQUEST"]);           // est-ce que les données nécessaires pour créer un kot sont dans la requête POST et utilisables
 
     //FIX VERIF USER TYPE
 
@@ -139,9 +139,9 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
 
     // Insertion du kot dans la base de données
     database.collection("kots").insertOne(newKot, (err, res) => {
-        if (err || !res) return callback("SERVICE_PROBLEM")     // Erreur reliée à mongoDB
+        if (err || !res) return callback(["ERROR", "SERVICE_PROBLEM"])     // Erreur reliée à mongoDB
         log("New kot created, ID:"+res.insertedId);
-        return callback([res.insertedId])                       // Aucune erreur
+        return callback(["OK", res.insertedId])                       // Aucune erreur
     });
 
 

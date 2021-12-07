@@ -1,0 +1,7 @@
+notificationInterface {
+    "_id"                       : Mongodb.ObjectId,
+    "userID"                    : Mongodb.ObjectId,
+    "type"                      : String,
+    "datapoints"                : Array<Any>,
+    "createdOn"                 : Date (Number),
+}

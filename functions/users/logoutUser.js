@@ -14,5 +14,5 @@ export const logoutUser = (req, callback) => {
     */
     req.session.destroy();
     log("User disconnected");
-    callback(true);
+    callback();
 }

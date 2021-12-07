@@ -2,20 +2,6 @@
 titre : getUsersDataFromConvID
 role  : 1) vérifier la requête POST
         2) récupérer les informations des utilisateurs dans la conversation ayant _id égal au paramètre conversationID trouvable dans la requête POST
-
-Interfaces:
-UserObject: {
-    _id: mongodb.ObjectID,
-    firstname: string,
-    lastname: string,
-    createdOn: number (date),
-    email: string,
-    phonenumber: string,
-    profilPicture: string,
-    type: "landlord" | "resident",
-    companyName: string,
-    hashedPassword: string
-}
 */
 
 // Imports

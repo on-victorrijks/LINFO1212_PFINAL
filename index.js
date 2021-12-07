@@ -4,8 +4,9 @@ import consolidate from "consolidate";
 import session from "express-session";
 import bodyParser from "body-parser";
 import https from "https";
-import fs, { stat } from "fs";
+import fs from "fs";
 import multer from "multer";
+import sharp from 'sharp';
 import path from "path";
 import url from 'url';
 import cors from 'cors';
@@ -37,8 +38,6 @@ import { getConversation } from './functions/message/getConversation.js';
 import { joinConversation } from './functions/message/joinConversation.js';
 import { getUsersDataFromConvID } from './functions/message/getUsersDataFromConvID.js';
 import { removeUserFromConversation } from './functions/message/removeUserFromConversation.js';
-// Search engine
-import { search } from './functions/searchEngine/search.js';
 // Technicals imports
 import { formatDate, getConnectedUserID, log } from './functions/technicals/technicals.js';
 import { isUserConnected } from './protections/isUserConnected.js';
@@ -71,91 +70,259 @@ import { deleteNotification } from './functions/notifications/deleteNotification
 
 ////// Constants
 const language = "fr";
-const DEFAULT_PARAMS = {
-    user: null,
-    page: {
-        title: "SITENAME - ",
-        description: ""
-    },
-    menu: {
-        selectedPage: {}
-    },
-    isResident: false,
-    isLandlord: false,
-}
-
-////// Express setup
-const app = express()
-app.engine('html', consolidate.hogan)
-app.set('views', 'private');
-app.use(express.static('static'));
-app.use(bodyParser.urlencoded({ extended: true })); 
-app.use(cors());
-app.use(session({
-  secret: "test",
-  resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    path: '/', 
-    httpOnly: true, 
-    maxAge: 3600000
-  }
-}));
-app.use(express.json({limit:'1mb'}))
-
-
-
-const errorHandler = (errorCode) => {
-
-
-    const errorData = ERRORS[errorCode];
-    if (errorData) {
-        log(errorCode, true);
-        return errorData.redirectTo + "?error=" + errorCode;
-    } else {
-
-    }
-
-    return "/?error=UNKNOWN_ERROR"
-
-}
-
-const generateParams = (pageCode) => {
-    const params = {
-        user: null,
-        page: {
-            title: "SITENAME - ",
-            description: "",
-            icon: "defaultIcon.png",
-            keywords: "",
-            copyright: "//FIX",
-            charset: "UTF-8"
-        },
-        menu: {
-            selectedPage: {}
-        },
-        isResident: false,
-        isLandlord: false,
-    };
-
-    const pageMetas = PAGES_METAS[language][pageCode];
-    if (pageMetas) {
-        params.page.title       += pageMetas["title"];
-        params.page.description  = pageMetas["description"];
-        params.page.icon         = pageMetas["icon"];
-        params.page.keywords     = pageMetas["keywords"];
-        params.page.copyright    = pageMetas["copyright"];
-        params.page.charset      = pageMetas["charset"];
-        params.menu.selectedPage[  pageMetas["selectedPage"]  ] = true;
-    }
-
-    return params
-}
-
 
 MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 	const database = db.db("KOTS");
     if (err) throw err;
+
+    ////// Middleware
+    var MW_generateParams = function (req, res, next) {
+        const urlWithoutGETParams = req.originalUrl.split("?")[0];
+        const urlParts = urlWithoutGETParams.split("/");
+        urlParts.shift(); // On enlève le premier élément " '' " causé par le split au dessus
+
+        // Cas spéciaux
+        /* /kot/modify/:kotID */
+        if(urlParts.length >= 2 && urlParts[0]==="kot" && urlParts[1]==="modify"){
+            req.pageConfiguration = generateParams("/kot/modify/:kotID");
+        }
+        /* /kot/profile/:kotID */
+        if(urlParts.length >= 2 && urlParts[0]==="kot" && urlParts[1]==="profile"){
+            req.pageConfiguration = generateParams("/kot/profile/:kotID");
+        }
+        /* /invitations/:convID */
+        if(urlParts.length >= 1 && urlParts[0]==="invitations"){
+            req.pageConfiguration = generateParams("/invitations/:convID");
+        }
+        /* /user/:userID */
+        if(urlParts.length >= 1 && urlParts[0]==="user"){
+            req.pageConfiguration = generateParams("/user/:userID");
+        }
+
+        if(!req.pageConfiguration){
+            req.pageConfiguration = generateParams(urlWithoutGETParams);
+        }
+
+        next()
+    }
+
+    var MW_fetchConnectedUserData = function (req, res, next) {
+        getUser(database, getConnectedUserID(req), false, 
+            (connectedUser) => {
+                req.pageConfiguration.user = connectedUser;
+                if(connectedUser){
+                    req.pageConfiguration.user.isResident = (connectedUser && connectedUser.type==="resident");
+                    req.pageConfiguration.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
+                }
+                next()
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    }
+
+    var MW_protectionUserShouldNotBeConnected = function(req, res, next) {
+        if( isUserConnected(req) ){
+            return res.redirect(errorHandler("ALREADY_CONNECTED"))
+        } else {
+            next();
+        }
+    }
+
+    var MW_protectionUserShouldBeConnected = function(req, res, next) {
+        if( isUserConnected(req) ){
+            next();
+        } else {
+            return res.redirect(errorHandler("CONNECTION_NEEDED"));
+        }
+    } 
+
+    var MW_protectionRequestShouldHaveKotID = function(req, res, next) {
+        if( isRequestWithKotID(req) ){
+            next();
+        } else {
+            return res.redirect(errorHandler("BAD_KOTID"))
+        }
+    }
+
+    var MW_protectionRequestShouldHaveConvID = function(req, res, next) {
+        if( isRequestWithConvID(req) ){
+            next();
+        } else {
+            return res.redirect(errorHandler("CONVERSATION_INCORRECT"))
+        }
+    }
+
+    var MW_protectionRequestShouldHaveUserID = function(req, res, next) {
+        if( isRequestWithUserID(req) ){
+            next();
+        } else {
+            return res.redirect(errorHandler("BAD_USERID"))
+        }
+    }
+
+    var MW_protectionUserShouldBeCreatorOfFetchedKot = function(req, res, next) {
+        req.userShouldBeCreatorOfFetchedKot = true;
+        next();
+    }
+
+    var MW_getKot = function(req, res, next) {
+        getKot(database, req, req.params.kotID, req.pageConfiguration.userShouldBeCreatorOfFetchedKot, 
+        (kotData) => {
+            req.pageConfiguration.page.title += kotData.title;
+
+            kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
+            kotData.availability = formatDate(kotData.availability)
+            if(kotData.petFriendly==="small"){
+                kotData.petFriendly = "Petits animaux autorisés";
+            } else if(kotData.petFriendly==="big"){
+                kotData.petFriendly = "Grands animaux autorisés";
+            } else {
+                kotData.petFriendly = "Pas d'animaux autorisés";
+            }
+
+            req.pageConfiguration.kot = kotData;
+
+            next();
+        },
+        (error) => { return res.redirect(errorHandler(error)) });
+    }
+
+    var MW_kotPicturesFormatter = function(req, res, next) {
+        const kotData = req.pageConfiguration.kot;
+        // On génère picturesUsableData avec un structure plus facilement utilisable pour afficher les images déja uploadées
+        if(req.pageConfiguration && req.pageConfiguration.kot){
+            let picturesUsableData = [];
+            for (let index = 0; index < kotData.pictures.length; index++) {
+                picturesUsableData.push({
+                    imageName: kotData.pictures[index],
+                    index: index,
+                    isMainImage: index===kotData.mainPictureIndex
+                });                 
+            }
+            kotData.pictures = picturesUsableData;
+            next();
+        } else {
+            return res.redirect(errorHandler("SERVICE_ERROR"));
+        }
+    }
+
+    var MW_kotFormPreloader = function(req, res, next) {
+        if(req.pageConfiguration && req.pageConfiguration.kot){
+    
+            const kotData = req.pageConfiguration.kot;
+
+            const availabilityAsDate = new Date(kotData.availability);
+            let day = availabilityAsDate.getDate().toString();
+            let month = (availabilityAsDate.getMonth() + 1).toString();
+            let year = availabilityAsDate.getFullYear().toString();
+            if(day.length===1)   day = "0"+day;
+            if(month.length===1) month = "0"+month;
+
+            const preloadedDate = year+"-"+month+"-"+day;
+            
+            req.pageConfiguration.formPreloader = {
+                    mainPictureName: kotData.pictures[kotData.mainPictureIndex],
+                    isOpen: {
+                        opt1: kotData.isOpen,
+                        opt2: !kotData.isOpen
+                    },
+                    availability: preloadedDate,
+                    isCollocation: {
+                        opt1: kotData.isCollocation,
+                        opt2: !kotData.isCollocation
+                    },
+                    type: {
+                        opt1: kotData.type==="flat",
+                        opt2: kotData.type==="house",
+                    },
+                    furnished: {
+                        opt1: kotData.furnished,
+                        opt2: !kotData.furnished
+                    },
+                    petFriendly: {
+                        opt1: kotData.petFriendly==="false",
+                        opt2: kotData.petFriendly==="small",
+                        opt3: kotData.petFriendly==="big"
+                    },
+                    garden: {
+                        opt1: kotData.garden,
+                        opt2: !kotData.garden
+                    },
+                    terrace: {
+                        opt1: kotData.terrace,
+                        opt2: !kotData.terrace
+                    }
+            };
+            next();
+        } else {
+            return res.redirect(errorHandler("SERVICE_ERROR"));
+        }
+    }
+
+    ////// Express setup
+    const app = express()
+    app.engine('html', consolidate.hogan)
+    app.set('views', 'private');
+    app.use(express.static('static'));
+    app.use(bodyParser.urlencoded({ extended: true })); 
+    app.use(cors());
+    app.use(session({
+    secret: "test",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+        path: '/', 
+        httpOnly: true, 
+        maxAge: 3600000
+    }
+    }));
+    app.use(express.json({limit:'1mb'}))
+    app.use(MW_generateParams);
+
+
+
+    const errorHandler = (errorCode) => {
+        const errorData = ERRORS[errorCode];
+        if (errorData) {
+            log(errorCode, true);
+            return errorData.redirectTo + "?error=" + errorCode;
+        } else {
+
+        }
+
+        return "/?error=UNKNOWN_ERROR"
+    }
+
+    const generateParams = (pageCode) => {
+        const params = {
+            user: null,
+            page: {
+                title: "SITENAME - ",
+                description: "",
+                icon: "defaultIcon.png",
+                keywords: "",
+                copyright: "//FIX",
+                charset: "UTF-8"
+            },
+            menu: {
+                selectedPage: {}
+            },
+            isResident: false,
+            isLandlord: false,
+        };
+
+        const pageMetas = PAGES_METAS[language][pageCode];
+        if (pageMetas) {
+            params.page.title       += pageMetas["title"];
+            params.page.description  = pageMetas["description"];
+            params.page.icon         = pageMetas["icon"];
+            params.page.keywords     = pageMetas["keywords"];
+            params.page.copyright    = pageMetas["copyright"];
+            params.page.charset      = pageMetas["charset"];
+            params.menu.selectedPage[  pageMetas["selectedPage"]  ] = true;
+        }
+
+        return params
+    }
 
     // ------------  API  ------------
 
@@ -181,29 +348,16 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     })
 
     app.post('/api/upload/profilPicture', upload.single("profilPicture"), (req, res, next) => {
-
         const userID = getConnectedUserID(req);
         if(userID==="") return res.redirect("/login?error=CONNECTION_NEEDED");
 
-        const tempPath = req.file.path;
         const imageExtension = path.extname(req.file.originalname).toLowerCase();
         const imageName = userID + imageExtension;
-        const targetPath = path.join(profilPicturesPath, imageName);
-
-        if ([".png", ".jpeg", ".jpg"].includes(imageExtension)) {
-            fs.rename(tempPath, targetPath, (err) => {
-                if(err) return res.redirect("/account/settings?error="+error);
-                modifyUserProfilPicture(database, req, imageName, profilPicturesPath, (error) => {
-                    if(error) return res.send(error);
-                    return res.redirect("/account");
-                });
-            });
-
-        } else {
-            fs.unlink(tempPath, (err) => {
-                return res.redirect("/account/settings?error=BAD_FORMAT");
-            });
-        }
+        
+        modifyUserProfilPicture(database, req, imageName, profilPicturesPath, imageExtension, req.file.path, (error) => {
+            if(error) return res.send(error);
+            return res.redirect("/account");
+        });
     })
 
     app.post('/api/kot/create', upload.array("pictures", 10), (req, res, next) => {
@@ -233,9 +387,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
         if(pictures.length===0) return res.redirect("/kot/create/?error=PICTURE_NEEDED");
 
-        createKot(database, req, mainPictureIndex, filteredPicturesName, (result) => {
-            if(Array.isArray(result)){
-                const newKotID = result[0];
+        createKot(database, req, mainPictureIndex, filteredPicturesName, ([status, content]) => {
+            if(status==="OK"){
+                const newKotID = content;
 
                 pictures.forEach(picture => {
                     const tempPath = picture.path;
@@ -253,7 +407,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
                 return res.redirect("/kot/profile/"+newKotID.toString());
 
             } else {
-                return res.redirect("/kot/create/?error=" + result);
+                const error = content;
+                return res.redirect("/kot/create/?error=" + error);
             }
         });
 
@@ -556,398 +711,123 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     // ------------  VIEWS  ------------
 
-    app.get('/', (req, res, next) => {
-        const params = generateParams("/");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
+    app.get('/'                     , MW_fetchConnectedUserData, 
+    (req, res, next) => { res.render('index.html', req.pageConfiguration) })
 
-            res.render('index.html', params);
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
-    })
+    app.get('/register'             ,MW_protectionUserShouldNotBeConnected, 
+    (req, res, next) => { res.render('register.html', req.pageConfiguration) })
 
-    app.get('/register', (req, res, next) => {
-        if(isUserConnected(req)) return res.redirect(errorHandler("ALREADY_CONNECTED"));
-        const params = generateParams("/register");
-        
-        res.render('register.html', params);
-    })
+    app.get('/login'                ,MW_protectionUserShouldNotBeConnected, 
+    (req, res, next) => { res.render('login.html', req.pageConfiguration) })
 
-    app.get('/login', (req, res, next) => {
-        if(isUserConnected(req)) return res.redirect(errorHandler("ALREADY_CONNECTED"));
-        const params = generateParams("/login");
-        
-        res.render('login.html', params);
-    })
+    app.get('/disconnect'           ,MW_protectionUserShouldBeConnected, 
+    (req, res, next) => { logoutUser(req, () => { res.redirect('/?success=DISCONNECTED'); }) })
 
-    app.get('/disconnect', (req, res, next) => {
-        logoutUser(req, (done) => {
-            res.redirect('/?success=DISCONNECTED');
-        });
-    })
+    app.get('/kot/create'           ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData, 
+    (req, res, next) => { res.render('createKot.html', req.pageConfiguration) })
 
-    app.get('/kot/create', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        const params = generateParams("/kot/create");
-        
-        getUser(database, getConnectedUserID(req), true, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-
-            return res.render('createKot.html', params);
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
-    })
-
-    app.get('/kot/modify/:kotID', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        if(!isRequestWithKotID(req)) return res.redirect(errorHandler("BAD_KOTID"));
-        const params = generateParams("/kot/modify/:kotID");
-        
-        getUser(database, getConnectedUserID(req), true, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-
-            getKot(database, req, req.params.kotID, true, 
-            (kotData) => {
-                params.page.title += kotData.title;
-
-                // On génère picturesUsableData avec un structure plus facilement utilisable pour afficher les images déja uploadées
-                let picturesUsableData = [];
-                for (let index = 0; index < kotData.pictures.length; index++) {
-                    picturesUsableData.push({
-                        imageName: kotData.pictures[index],
-                        index: index,
-                        isMainImage: index===kotData.mainPictureIndex
-                    });                 
-                }
-                kotData.pictures = picturesUsableData;
-
-                const availabilityAsDate = new Date(kotData.availability);
-
-                let day = availabilityAsDate.getDate().toString();
-                let month = (availabilityAsDate.getMonth() + 1).toString();
-                let year = availabilityAsDate.getFullYear().toString();
-
-                if(day.length===1)   day = "0"+day;
-                if(month.length===1) month = "0"+month;
-
-                const preloadedDate = year+"-"+month+"-"+day;
-
-                params.kot = kotData;
-                params.formPreloader = {
-                        mainPictureName: kotData.pictures[kotData.mainPictureIndex],
-                        isOpen: {
-                            opt1: kotData.isOpen,
-                            opt2: !kotData.isOpen
-                        },
-                        availability: preloadedDate,
-                        isCollocation: {
-                            opt1: kotData.isCollocation,
-                            opt2: !kotData.isCollocation
-                        },
-                        type: {
-                            opt1: kotData.type==="flat",
-                            opt2: kotData.type==="house",
-                        },
-                        furnished: {
-                            opt1: kotData.furnished,
-                            opt2: !kotData.furnished
-                        },
-                        petFriendly: {
-                            opt1: kotData.petFriendly==="false",
-                            opt2: kotData.petFriendly==="small",
-                            opt3: kotData.petFriendly==="big"
-                        },
-                        garden: {
-                            opt1: kotData.garden,
-                            opt2: !kotData.garden
-                        },
-                        terrace: {
-                            opt1: kotData.terrace,
-                            opt2: !kotData.terrace
-                        }
-                };
-
-                return res.render('modifyKot.html', params);
-            },
-            (error) => { return res.redirect(errorHandler(error)) });
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
-    })
-
-    app.get('/kot/profile/:kotID', (req, res, next) => {
-        if(!isRequestWithKotID(req)) return res.redirect(errorHandler("BAD_KOTID"));
-        const params = generateParams("/kot/profile/:kotID");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-
-            getKot(database, req, req.params.kotID, false, 
-            (kotData) => {
-                params.page.title += kotData.title;
-                params.page.description += kotData.description;
-                params.page.keywords += kotData.description.replace(" ", ",");
-
-                kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
-                kotData.availability = formatDate(kotData.availability)
-                if(kotData.petFriendly==="small"){
-                    kotData.petFriendly = "Petits animaux autorisés";
-                } else if(kotData.petFriendly==="big"){
-                    kotData.petFriendly = "Grands animaux autorisés";
-                } else {
-                    kotData.petFriendly = "Pas d'animaux autorisés";
-                }
+    app.get('/kot/modify/:kotID'    ,MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveKotID, MW_fetchConnectedUserData, MW_protectionUserShouldBeCreatorOfFetchedKot, MW_getKot, MW_kotPicturesFormatter, MW_kotFormPreloader, 
+    (req, res, next) => { res.render('modifyKot.html', req.pageConfiguration);})
     
-                // On génère picturesUsableData avec un structure plus facilement utilisable pour créer le carrousel d'images
-                let picturesUsableData = [];
-                for (let index = 0; index < kotData.pictures.length; index++) {
-                    picturesUsableData.push({
-                        imageName: kotData.pictures[index],
-                        index: index,
-                        isMainImage: index===kotData.mainPictureIndex
-                    });                 
-                }
-                kotData.pictures = picturesUsableData;
-    
-                getUser(database, kotData.creatorID, true, 
-                (creatorData) => {
-                    params.isConnectedUserTheCreator = getConnectedUserID(req) && kotData.creatorID.toString()===getConnectedUserID(req);
-                    params.page.title = kotData.title;
-                    params.creatorData = creatorData;
-                    params.kot = kotData;
+    app.get('/kot/profile/:kotID'   ,MW_protectionRequestShouldHaveKotID, MW_fetchConnectedUserData, MW_getKot, MW_kotPicturesFormatter,
+    (req, res, next) => {
+        getUser(database, req.pageConfiguration.kot.creatorID, true, 
+        (creatorData) => {
+            req.pageConfiguration.isConnectedUserTheCreator = getConnectedUserID(req) && req.pageConfiguration.kot.creatorID.toString()===getConnectedUserID(req);
+            req.pageConfiguration.creatorData = creatorData;
 
-                    res.render('kot_profile.html', params);
-                },
-                (error) => { return res.redirect(errorHandler(error)) });
-            },
-            (error) => { return res.redirect(errorHandler(error)) });
+            res.render('kot_profile.html', req.pageConfiguration);
         },
-        (error) => { return res.redirect(errorHandler(error)) });
+        (error) => { res.redirect(errorHandler(error)) });
     })
 
-    app.get('/kot/favs', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        const params = generateParams("/kot/favs");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-            getUserFavouritesKots(database, getConnectedUserID(req),
-            (kots) => {
-                params.favsKots = kots;
-                return res.render('kots_favs.html', params);
-            },
-            (error) => { return res.redirect(errorHandler(error)) })
+    app.get('/kot/favs'             ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData,
+    (req, res, next) => {
+        getUserFavouritesKots(database, getConnectedUserID(req),
+        (favsKots) => {
+            req.pageConfiguration.favsKots = favsKots;
+            res.render('kots_favs.html', req.pageConfiguration);
         },
-        (error) => { return res.redirect(errorHandler(error)) });
+        (error) => { res.redirect(errorHandler(error)) })
     })
 
-    app.get('/kot/my', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        const params = generateParams("/kot/my");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-            getKotsPublishedByUser(database, getConnectedUserID(req),
-            (kots) => {
-                params.ownKots = kots;
-                return res.render('mykots.html', params);
-            },
-            (error) => { return res.redirect(errorHandler(error)) })
+    app.get('/kot/my'               ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData, 
+    (req, res, next) => {
+        getKotsPublishedByUser(database, getConnectedUserID(req),
+        (ownKots) => {
+            req.pageConfiguration.ownKots = ownKots;
+            res.render('mykots.html', req.pageConfiguration);
         },
-        (error) => { return res.redirect(errorHandler(error)) });
+        (error) => { res.redirect(errorHandler(error)) })
     })
 
-    app.get('/conversations', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        const params = generateParams("/conversations");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
+    app.get('/conversations'        ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData, 
+    (req, res, next) => {
+        getConversations(database, req,
+        (conversations) => {
+            req.pageConfiguration.selectedConversationID = req.query.selectedConversationID;
+            req.pageConfiguration.conversations = conversations;
 
-            getConversations(database, req,
-            (conversations) => {
-                params.selectedConversationID = req.query.selectedConversationID;
-                params.conversations = conversations;
-
-                return res.render('conversations.html', params);
-            },
-            (error) => { return res.redirect(errorHandler(error)) });
+            return res.render('conversations.html', req.pageConfiguration);
         },
         (error) => { return res.redirect(errorHandler(error)) });
     })
     
-    app.get('/invitations/:convID', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        if(!isRequestWithConvID(req)) return res.redirect(errorHandler("CONVERSATION_INCORRECT"));
-        const params = generateParams("/invitations/:convID");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-
-            getConversation(database, req, req.params.convID,
-            (conversation) => {
-                params.toJoinConversation = conversation;
-
-                return res.render('conversation_invitations.html', params);
-            },
-            (error) => { return res.redirect(errorHandler(error)) });
+    app.get('/invitations/:convID'  ,MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveConvID, MW_fetchConnectedUserData, 
+    (req, res, next) => {
+        getConversation(database, req, req.params.convID,
+        (conversation) => {
+            req.pageConfiguration.toJoinConversation = conversation;
+            res.render('conversation_invitation.html', req.pageConfiguration);
         },
-        (error) => { return res.redirect(errorHandler(error)) });
+        (error) => { res.redirect(errorHandler(error)) });
     })
 
-    app.get('/search', (req, res, next) => {
-        const params = generateParams("/search");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-            
-            const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
-            params.page.title += searchQuery;
-            params.page.description.replace("$text_search", searchQuery);
-            params.query = {
-                text_search: searchQuery,
-            };
-
-            return res.render('search_results.html', params);
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
+    app.get('/search', MW_fetchConnectedUserData,
+    (req, res, next) => {            
+        const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
+        req.pageConfiguration.page.title += searchQuery;
+        req.pageConfiguration.page.description.replace("$text_search", searchQuery);
+        req.pageConfiguration.query = {
+            text_search: searchQuery,
+        };
+        res.render('search_results.html', req.pageConfiguration);
     })
 
-    app.get('/user/:userID', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        if(!isRequestWithUserID(req)) return res.redirect(errorHandler("BAD_USERID"));
-        const params = generateParams("/user/:userID");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
+    app.get('/user/:userID', MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveUserID, MW_fetchConnectedUserData,
+    (req, res, next) => {
+        const userID = req.params.userID;
+        getUser(database, userID, false, 
+        (requestedUser) => {
 
-            getUser(database, req.params.userID, false, 
-            (requestedUser) => {
+            if(requestedUser===null) return res.redirect(errorHandler("BAD_USERID"));
+            if(requestedUser._id.toString()===getConnectedUserID(req)) return res.redirect(errorHandler("OWN_ACCOUNT"));
 
-                if(requestedUser===null) return res.redirect(errorHandler("BAD_USERID"));
-                if(requestedUser._id.toString()===getConnectedUserID(req)) return res.redirect(errorHandler("OWN_ACCOUNT"));
+            req.pageConfiguration.profilUser = requestedUser;
+            req.pageConfiguration.ownAccount = false;
+            req.pageConfiguration.profilUser.isResident = (requestedUser && requestedUser.type==="resident");
+            req.pageConfiguration.profilUser.isLandlord = (requestedUser && requestedUser.type==="landlord");
 
-                params.profilUser = requestedUser;
-                params.ownAccount = false;
-                params.profilUser.isResident = (requestedUser && requestedUser.type==="resident");
-                params.profilUser.isLandlord = (requestedUser && requestedUser.type==="landlord");
+            req.pageConfiguration.page.title += requestedUser.firstname + " " + requestedUser.lastname;
+            req.pageConfiguration.page.description.replace("$fistname", requestedUser.firstname);
+            req.pageConfiguration.page.description.replace("$lastname", requestedUser.lastname);
+            req.pageConfiguration.page.keywords.replace("$fistname", requestedUser.firstname);
+            req.pageConfiguration.page.keywords.replace("$lastname", requestedUser.lastname);
 
-                params.page.title += requestedUser.firstname + " " + requestedUser.lastname;
-                params.page.description.replace("$fistname", requestedUser.firstname);
-                params.page.description.replace("$lastname", requestedUser.lastname);
-                params.page.keywords.replace("$fistname", requestedUser.firstname);
-                params.page.keywords.replace("$lastname", requestedUser.lastname);
-
-                if(params.profilUser.isLandlord){
-                    // L'user demandé est un propriétaire
-                    getKotsPublishedByUser(database, req.params.userID,
-                    (kots) => {
-                        params.kotsPublishedByUser = kots;
-                        return res.render('user_profile.html', params);
-                    },
-                    (error) => { return res.redirect(errorHandler(error)) })
-                } else {
-                    // L'user demandé est un résident
-                    getUserFavouritesKots(database, req.params.userID,
-                    (kots) => {
-                        params.favsKots = kots;
-                        return res.render('user_profile.html', params);
-                    },
-                    (error) => { return res.redirect(errorHandler(error)) })
-                }
-            },
-            (error) => { return res.redirect(errorHandler(error)) });
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
-    })
-
-    app.get('/account', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        const params = generateParams("/account");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-
-            params.profilUser = connectedUser;
-            params.ownAccount = true;
-            params.profilUser.isResident = (connectedUser && connectedUser.type==="resident");
-            params.profilUser.isLandlord = (connectedUser && connectedUser.type==="landlord");
-
-            params.page.title += connectedUser.firstname + " " + connectedUser.lastname;
-            params.page.description.replace("$fistname", connectedUser.firstname);
-            params.page.description.replace("$lastname", connectedUser.lastname);
-            params.page.keywords.replace("$fistname", connectedUser.firstname);
-            params.page.keywords.replace("$lastname", connectedUser.lastname);
-
-            if(params.profilUser.isLandlord){
+            if(req.pageConfiguration.profilUser.isLandlord){
                 // L'user demandé est un propriétaire
-                getKotsPublishedByUser(database, getConnectedUserID(req),
-                (kots) => {
-                    params.kotsPublishedByUser = kots;
-                    return res.render('user_profile.html', params);
+                getKotsPublishedByUser(database, userID,
+                (publishedKots) => {
+                    req.pageConfiguration.kotsPublishedByUser = publishedKots;
+                    return res.render('user_profile.html', req.pageConfiguration);
                 },
                 (error) => { return res.redirect(errorHandler(error)) })
             } else {
                 // L'user demandé est un résident
-                getUserFavouritesKots(database, getConnectedUserID(req),
-                (kots) => {
-                    params.favsKots = kots;
-                    return res.render('user_profile.html', params);
+                getUserFavouritesKots(database, userID,
+                (favsKots) => {
+                    req.pageConfiguration.favsKots = favsKots;
+                    return res.render('user_profile.html', req.pageConfiguration);
                 },
                 (error) => { return res.redirect(errorHandler(error)) })
             }
@@ -955,53 +835,53 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { return res.redirect(errorHandler(error)) });
     })
 
-    app.get('/account/settings', (req, res, next) => {
-        if(!isUserConnected(req)) return res.redirect(errorHandler("CONNECTION_NEEDED"));
-        const params = generateParams("/account/settings");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
+    app.get('/account', MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData,
+    (req, res, next) => {
+        const connectedUser = req.pageConfiguration.user;
 
-            return res.render('settings.html', params);
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
+        req.pageConfiguration.profilUser = connectedUser;
+        req.pageConfiguration.ownAccount = true;
+        req.pageConfiguration.profilUser.isResident = (connectedUser && connectedUser.type==="resident");
+        req.pageConfiguration.profilUser.isLandlord = (connectedUser && connectedUser.type==="landlord");
+
+        req.pageConfiguration.page.title += connectedUser.firstname + " " + connectedUser.lastname;
+        req.pageConfiguration.page.description.replace("$fistname", connectedUser.firstname);
+        req.pageConfiguration.page.description.replace("$lastname", connectedUser.lastname);
+        req.pageConfiguration.page.keywords.replace("$fistname", connectedUser.firstname);
+        req.pageConfiguration.page.keywords.replace("$lastname", connectedUser.lastname);
+
+        if(req.pageConfiguration.profilUser.isLandlord){
+            // L'user demandé est un propriétaire
+            getKotsPublishedByUser(database, getConnectedUserID(req),
+            (publishedKots) => {
+                req.pageConfiguration.kotsPublishedByUser = publishedKots;
+                return res.render('user_profile.html', req.pageConfiguration);
+            },
+            (error) => { return res.redirect(errorHandler(error)) })
+        } else {
+            // L'user demandé est un résident
+            getUserFavouritesKots(database, getConnectedUserID(req),
+            (favsKots) => {
+                req.pageConfiguration.favsKots = favsKots;
+                return res.render('user_profile.html', req.pageConfiguration);
+            },
+            (error) => { return res.redirect(errorHandler(error)) })
+        }
     })
 
-    app.get('/presentation', (req, res, next) => {
-        const params = generateParams("/presentation");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
-
-            return res.render('presentation.html', params);
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
+    app.get('/account/settings', MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData,
+    (req, res, next) => {
+        return res.render('settings.html', req.pageConfiguration);
     })
 
-    app.get('/contact', (req, res, next) => {
-        const params = generateParams("/contact");
-        
-        getUser(database, getConnectedUserID(req), false, 
-        (connectedUser) => {
-            params.user = connectedUser;
-            if(connectedUser){
-                params.user.isResident = (connectedUser && connectedUser.type==="resident");
-                params.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-            }
+    app.get('/presentation', MW_fetchConnectedUserData,
+    (req, res, next) => {
+        return res.render('presentation.html', req.pageConfiguration);
+    })
 
-            return res.render('contact.html', params);
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
+    app.get('/contact', MW_fetchConnectedUserData,
+    (req, res, next) => {
+        return res.render('contact.html', req.pageConfiguration);
     })
 
 
@@ -1026,7 +906,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/users/kots/images/:imageName', function (req, res) {
         res.sendFile(path.join(kotsPicturesPath, req.params.imageName));
     });
-
     
     // ------------  ERROR404  ------------
 

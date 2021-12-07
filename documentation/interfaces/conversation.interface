@@ -1,0 +1,6 @@
+conversationInterface {
+    "_id"                       : Mongodb.ObjectId,
+    "participants"              : Array<Mongodb.ObjectId>,
+    "passwordToJoin"            : String,
+    "createdOn"                 : Date (Number)
+}

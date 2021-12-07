@@ -1,0 +1,13 @@
+userInterface {
+    "_id"                       : Mongodb.ObjectId,
+    "firstname"                 : String,
+    "lastname"                  : String,
+    "createdOn"                 : Date (Number),
+    "email"                     : String,
+    "phonenumber"               : Number,
+    "profilPicture"             : String,
+    "type"                      : "landlord" | "resident",
+    "companyName"               : String,
+    "preferences"               : String,
+    "hashedPassword"            : String
+}

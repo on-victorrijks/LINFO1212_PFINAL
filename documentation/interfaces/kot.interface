@@ -1,0 +1,41 @@
+kotInterface {
+    "_id"                       : Mongodb.ObjectId,
+    "creatorID"                 : Mongodb.ObjectId,
+    "title"                     : String,
+    "createdOn"                 : Date (Number),
+    "description"               : String,
+    "location": {
+        "address": String,
+        "lat": Float,
+        "lng": Float
+    },
+    "pictures"                  : Array<String>,
+    "mainPictureIndex"          : Number,
+    "hasBeenModified"           : Boolean,
+    "isOpen"                    : Boolean,
+    "availability"              : Boolean,
+    "isCollocation"             : Boolean,
+    "collocationData": {
+        "maxTenant"             : Number,
+        "tenantsID"             : Array<Mongodb.ObjectId>
+    },
+    "basePrice"                 : Number,
+    "chargePrice"               : Number,
+    "bedrooms"                  : Number,
+    "bathrooms"                 : Number,
+    "toilets"                   : Number,
+    "type"                      : "flat" | "house",
+    "surface"                   : Float,
+    "floors"                    : Number,
+    "constructionYear"          : Number,
+    "parking"                   : Number,
+    "furnished"                 : Boolean,
+    "petFriendly"               : "false" | "small" | "big",
+    "garden"                    : Boolean,
+    "terrace"                   : Boolean,
+    "dist_place_des_sciences"   : Float,
+    "dist_agora"                : Float,
+    "dist_esplanade"            : Float,
+    "dist_lac"                  : Float,
+    "dist_grand_place"          : Float
+}
