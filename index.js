@@ -44,9 +44,26 @@ import { isUserConnected } from './protections/isUserConnected.js';
 import { isRequestWithConvID } from './protections/isRequestWithConvID.js';
 import { isRequestWithKotID } from './protections/isRequestWithKotID.js';
 import { isRequestWithUserID } from './protections/isRequestWithUserID.js';
-// Collocation
+// Collocation imports
 import { askToJoinKot } from './functions/users/kots/askToJoinKot.js';
 import { cancelAskToJoinKot } from './functions/users/kots/cancelAskToJoinKot.js';
+import { removeTenant } from './functions/kots/removeTenant.js';
+import { getTenants } from './functions/kots/getTenants.js';
+import { getAskToJoinUsersForKot } from './functions/kots/getAskToJoinForKot.js';
+import { acceptAskToJoinKot } from './functions/users/kots/acceptAskToJoinKot.js';
+import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js';
+// Notifications imports
+import { getConnectedUserNotifications } from './functions/notifications/getNotifications.js';
+import { deleteNotification } from './functions/notifications/deleteNotification.js';
+// Search imports
+import { searchEngine } from './functions/searchEngine/searchEngine.js';
+
+////// Middlewares
+import { generateParams } from './middlewares/generateParams.js';
+
+////// ErrorHandler
+import { errorHandler } from './errorHandler/errorHandler.js';
+import { getConnectedUser } from './middlewares/getConnectedUser.js';
 
 ////// Multer
 const profilPicturesPath = path.join(__dirname, "/users/uploads/");
@@ -55,69 +72,42 @@ const upload = multer({
     dest: profilPicturesPath
 });
 
+
+
 ////// Data import
 const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
-import { ERRORS } from "./data/errors.js";
-import { PAGES_METAS } from "./data/pages_metas.js";
-import { getTenants } from './functions/kots/getTenants.js';
-import { getAskToJoinUsersForKot } from './functions/kots/getAskToJoinForKot.js';
-import { acceptAskToJoinKot } from './functions/users/kots/acceptAskToJoinKot.js';
-import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js';
-import { removeTenant } from './functions/kots/removeTenant.js';
-import { getConnectedUserNotifications } from './functions/notifications/getNotifications.js';
-import { searchEngine } from './functions/searchEngine/searchEngine.js';
-import { deleteNotification } from './functions/notifications/deleteNotification.js';
 
 ////// Constants
-const language = "fr";
+export const GLOBAL_language = "fr";
 
 MongoClient.connect('mongodb://localhost:27017', (err, db) => {
+
+    ////// Express setup
+    const app = express()
+    app.engine('html', consolidate.hogan)
+    app.set('views', 'private');
+    app.use(express.static('static'));
+    app.use(bodyParser.urlencoded({ extended: true })); 
+    app.use(cors());
+    app.use(session({
+    secret: "test",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+        path: '/', 
+        httpOnly: true, 
+        maxAge: 3600000
+    }
+    }));
+    app.use(express.json({limit:'1mb'}))
+    app.use(generateParams);
+
 	const database = db.db("KOTS");
+    app.locals.database = database;
+
     if (err) throw err;
 
     ////// Middleware
-    var MW_generateParams = function (req, res, next) {
-        const urlWithoutGETParams = req.originalUrl.split("?")[0];
-        const urlParts = urlWithoutGETParams.split("/");
-        urlParts.shift(); // On enlève le premier élément " '' " causé par le split au dessus
-
-        // Cas spéciaux
-        /* /kot/modify/:kotID */
-        if(urlParts.length >= 2 && urlParts[0]==="kot" && urlParts[1]==="modify"){
-            req.pageConfiguration = generateParams("/kot/modify/:kotID");
-        }
-        /* /kot/profile/:kotID */
-        if(urlParts.length >= 2 && urlParts[0]==="kot" && urlParts[1]==="profile"){
-            req.pageConfiguration = generateParams("/kot/profile/:kotID");
-        }
-        /* /invitations/:convID */
-        if(urlParts.length >= 1 && urlParts[0]==="invitations"){
-            req.pageConfiguration = generateParams("/invitations/:convID");
-        }
-        /* /user/:userID */
-        if(urlParts.length >= 1 && urlParts[0]==="user"){
-            req.pageConfiguration = generateParams("/user/:userID");
-        }
-
-        if(!req.pageConfiguration){
-            req.pageConfiguration = generateParams(urlWithoutGETParams);
-        }
-
-        next()
-    }
-
-    var MW_fetchConnectedUserData = function (req, res, next) {
-        getUser(database, getConnectedUserID(req), false, 
-            (connectedUser) => {
-                req.pageConfiguration.user = connectedUser;
-                if(connectedUser){
-                    req.pageConfiguration.user.isResident = (connectedUser && connectedUser.type==="resident");
-                    req.pageConfiguration.user.isLandlord = (connectedUser && connectedUser.type==="landlord");   
-                }
-                next()
-        },
-        (error) => { return res.redirect(errorHandler(error)) });
-    }
 
     var MW_protectionUserShouldNotBeConnected = function(req, res, next) {
         if( isUserConnected(req) ){
@@ -205,6 +195,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         }
     }
 
+
     var MW_kotFormPreloader = function(req, res, next) {
         if(req.pageConfiguration && req.pageConfiguration.kot){
     
@@ -258,71 +249,10 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         }
     }
 
-    ////// Express setup
-    const app = express()
-    app.engine('html', consolidate.hogan)
-    app.set('views', 'private');
-    app.use(express.static('static'));
-    app.use(bodyParser.urlencoded({ extended: true })); 
-    app.use(cors());
-    app.use(session({
-    secret: "test",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { 
-        path: '/', 
-        httpOnly: true, 
-        maxAge: 3600000
-    }
-    }));
-    app.use(express.json({limit:'1mb'}))
-    app.use(MW_generateParams);
 
 
 
-    const errorHandler = (errorCode) => {
-        const errorData = ERRORS[errorCode];
-        if (errorData) {
-            log(errorCode, true);
-            return errorData.redirectTo + "?error=" + errorCode;
-        } else {
 
-        }
-
-        return "/?error=UNKNOWN_ERROR"
-    }
-
-    const generateParams = (pageCode) => {
-        const params = {
-            user: null,
-            page: {
-                title: "SITENAME - ",
-                description: "",
-                icon: "defaultIcon.png",
-                keywords: "",
-                copyright: "//FIX",
-                charset: "UTF-8"
-            },
-            menu: {
-                selectedPage: {}
-            },
-            isResident: false,
-            isLandlord: false,
-        };
-
-        const pageMetas = PAGES_METAS[language][pageCode];
-        if (pageMetas) {
-            params.page.title       += pageMetas["title"];
-            params.page.description  = pageMetas["description"];
-            params.page.icon         = pageMetas["icon"];
-            params.page.keywords     = pageMetas["keywords"];
-            params.page.copyright    = pageMetas["copyright"];
-            params.page.charset      = pageMetas["charset"];
-            params.menu.selectedPage[  pageMetas["selectedPage"]  ] = true;
-        }
-
-        return params
-    }
 
     // ------------  API  ------------
 
@@ -711,7 +641,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     // ------------  VIEWS  ------------
 
-    app.get('/'                     ,MW_fetchConnectedUserData, 
+    app.get('/'                     , getConnectedUser, 
     (req, res, next) => { res.render('index.html', req.pageConfiguration) })
 
     app.get('/register'             ,MW_protectionUserShouldNotBeConnected, 
@@ -723,13 +653,13 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/disconnect'           ,MW_protectionUserShouldBeConnected, 
     (req, res, next) => { logoutUser(req, () => { res.redirect('/?success=DISCONNECTED'); }) })
 
-    app.get('/kot/create'           ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData, 
+    app.get('/kot/create'           ,MW_protectionUserShouldBeConnected, getConnectedUser, 
     (req, res, next) => { res.render('createKot.html', req.pageConfiguration) })
 
-    app.get('/kot/modify/:kotID'    ,MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveKotID, MW_fetchConnectedUserData, MW_protectionUserShouldBeCreatorOfFetchedKot, MW_getKot, MW_kotPicturesFormatter, MW_kotFormPreloader, 
+    app.get('/kot/modify/:kotID'    ,MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveKotID, getConnectedUser, MW_protectionUserShouldBeCreatorOfFetchedKot, MW_getKot, MW_kotPicturesFormatter, MW_kotFormPreloader, 
     (req, res, next) => { res.render('modifyKot.html', req.pageConfiguration);})
     
-    app.get('/kot/profile/:kotID'   ,MW_protectionRequestShouldHaveKotID, MW_fetchConnectedUserData, MW_getKot, MW_kotPicturesFormatter,
+    app.get('/kot/profile/:kotID'   ,MW_protectionRequestShouldHaveKotID, getConnectedUser, MW_getKot, MW_kotPicturesFormatter,
     (req, res, next) => {
         getUser(database, req.pageConfiguration.kot.creatorID, true, 
         (creatorData) => {
@@ -741,7 +671,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { res.redirect(errorHandler(error)) });
     })
 
-    app.get('/kot/favs'             ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData,
+    app.get('/kot/favs'             ,MW_protectionUserShouldBeConnected, getConnectedUser,
     (req, res, next) => {
         getUserFavouritesKots(database, getConnectedUserID(req),
         (favsKots) => {
@@ -751,7 +681,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { res.redirect(errorHandler(error)) })
     })
 
-    app.get('/kot/my'               ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData, 
+    app.get('/kot/my'               ,MW_protectionUserShouldBeConnected, getConnectedUser, 
     (req, res, next) => {
         getKotsPublishedByUser(database, getConnectedUserID(req),
         (ownKots) => {
@@ -761,7 +691,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { res.redirect(errorHandler(error)) })
     })
 
-    app.get('/conversations'        ,MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData, 
+    app.get('/conversations'        ,MW_protectionUserShouldBeConnected, getConnectedUser, 
     (req, res, next) => {
         getConversations(database, req,
         (conversations) => {
@@ -773,7 +703,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { return res.redirect(errorHandler(error)) });
     })
     
-    app.get('/invitations/:convID'  ,MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveConvID, MW_fetchConnectedUserData, 
+    app.get('/invitations/:convID'  ,MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveConvID, getConnectedUser, 
     (req, res, next) => {
         getConversation(database, req, req.params.convID,
         (conversation) => {
@@ -783,7 +713,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { res.redirect(errorHandler(error)) });
     })
 
-    app.get('/search', MW_fetchConnectedUserData,
+    app.get('/search', getConnectedUser,
     (req, res, next) => {            
         const searchQuery = (req.query && req.query.text_search) ? req.query.text_search : "...";
         req.pageConfiguration.page.title += searchQuery;
@@ -794,7 +724,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         res.render('search_results.html', req.pageConfiguration);
     })
 
-    app.get('/user/:userID', MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveUserID, MW_fetchConnectedUserData,
+    app.get('/user/:userID', MW_protectionUserShouldBeConnected, MW_protectionRequestShouldHaveUserID, getConnectedUser,
     (req, res, next) => {
         const userID = req.params.userID;
         getUser(database, userID, false, 
@@ -835,7 +765,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         (error) => { return res.redirect(errorHandler(error)) });
     })
 
-    app.get('/account', MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData,
+    app.get('/account', MW_protectionUserShouldBeConnected, getConnectedUser,
     (req, res, next) => {
         const connectedUser = req.pageConfiguration.user;
 
@@ -869,17 +799,17 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
         }
     })
 
-    app.get('/account/settings', MW_protectionUserShouldBeConnected, MW_fetchConnectedUserData,
+    app.get('/account/settings', MW_protectionUserShouldBeConnected, getConnectedUser,
     (req, res, next) => {
         return res.render('settings.html', req.pageConfiguration);
     })
 
-    app.get('/presentation', MW_fetchConnectedUserData,
+    app.get('/presentation', getConnectedUser,
     (req, res, next) => {
         return res.render('presentation.html', req.pageConfiguration);
     })
 
-    app.get('/contact', MW_fetchConnectedUserData,
+    app.get('/contact', getConnectedUser,
     (req, res, next) => {
         return res.render('contact.html', req.pageConfiguration);
     })
