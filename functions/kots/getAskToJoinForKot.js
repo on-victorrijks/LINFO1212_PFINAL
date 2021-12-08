@@ -1,6 +1,7 @@
 /*
 titre : getAskToJoinUsersForKot
-role  : 1) 
+role  : 1) Vérifie la requête POST
+        2) Renvoie les données liées aux personnes demandant de rejoindre le kot
 */
 
 // Imports
@@ -9,18 +10,18 @@ import { getUsers } from '../users/getUsers.js';
 
 const isGetAskToJoinUsersForKotFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : vérifie si les données sont dans la requête POST et valide pour renvoyer les donées des utilisateurs voulant rejoindre le kot
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean
     */
     return  req.body.kotID!==undefined
 }
 
 export const getAskToJoinUsersForKot = (database, req, callback) => {
     /*
-        DEF  : 
-        PRE  : database (mongodb.Db) | kotID (mongodb.ObjectID sous forme de string) | connectedUserShouldBeCreator (boolean) | callback (Function(False|string)) (//FIX ADD REQ)
-        CALLBACK : 
+        DEF  : renvoie les données des utilisateurs voulant rejoindre le kot ou un erreur
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(False|string))
+        CALLBACK : Array<"OK"|"ERROR", any>
     */
 
 

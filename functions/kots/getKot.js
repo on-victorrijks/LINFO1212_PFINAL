@@ -9,7 +9,7 @@ import { getConnectedUserID, log, toObjectID } from '../technicals/technicals.js
 export const getKot = (database, req, kotID, connectedUserShouldBeCreator, success, error) => {
     /*
         DEF  : On cherche un kot avec le kotID fourni et on callback soit null si il n'existe pas, soit ses données
-        PRE  : database (mongodb.Db) | kotID (mongodb.ObjectID sous forme de string) | connectedUserShouldBeCreator (boolean) | callback (Function(False|string)) (//FIX ADD REQ)
+        PRE  : database (mongodb.Db) | kotID (mongodb.ObjectID sous forme de string) | connectedUserShouldBeCreator (boolean) | success (kotInterface) | error (error)
         CALLBACK : null|données de lu kot demandé
     */
 

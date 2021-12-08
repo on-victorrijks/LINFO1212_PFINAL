@@ -95,8 +95,8 @@ const getUIData = (database, notification, callback) => {
 export const getConnectedUserNotifications = (database, req, callback) => {
     /*
         DEF  : On cherche les notifications de l'utilisateur connecté et on les callback
-        PRE  : database (mongodb.Db) | callback (Function(False|string)) (//FIX ADD REQ)
-        CALLBACK : Array<NotifObject> //FIX
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(False|string))
+        CALLBACK : Array<"OK"|"ERROR", any>
     */
 
     if(!isUserConnected(req)) return callback(["ERROR", "CONNECTION_NEEDED"]);      // l'utilisateur doit être connecté
