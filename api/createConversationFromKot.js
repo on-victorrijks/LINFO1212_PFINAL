@@ -1,4 +1,5 @@
 import { createConversation } from "../functions/message/createConversation.js";
+import { getConnectedUserID } from "../functions/technicals/technicals.js";
 
 export const apiCreateConversationFromKot = (req, res, next) => {
 
@@ -7,7 +8,7 @@ export const apiCreateConversationFromKot = (req, res, next) => {
     createConversation(database, {
         body: {
             numberOfUsers: 2,
-            userID0: connectedUserID,
+            userID0: getConnectedUserID(req),
             userID1: req.params.userID 
         }
     }, (result) => {

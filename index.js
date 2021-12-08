@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import https from "https";
 import fs from "fs";
 import multer from "multer";
-import sharp from 'sharp';
 import path from "path";
 import url from 'url';
 import cors from 'cors';
@@ -15,35 +14,8 @@ const MongoClient = mongodb.MongoClient;
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 ////// Functions imports
-// Users imports
 import { getUser } from './functions/users/getUser.js';
 import { logoutUser } from './functions/users/logoutUser.js';
-import { switchKotToFavourites } from './functions/users/kots/switchKotToFavourites.js';
-// Kots imports
-import { modifyKot } from './functions/kots/modifyKot.js';
-import { getKot } from './functions/kots/getKot.js';
-// Conversations imports
-import { createConversation } from './functions/message/createConversation.js';
-import { sendMessage } from './functions/message/sendMessage.js';
-import { getMessages } from './functions/message/getMessages.js';
-import { joinConversation } from './functions/message/joinConversation.js';
-import { getUsersDataFromConvID } from './functions/message/getUsersDataFromConvID.js';
-import { removeUserFromConversation } from './functions/message/removeUserFromConversation.js';
-// Technicals imports
-import { getConnectedUserID } from './functions/technicals/technicals.js';
-// Collocation imports
-import { askToJoinKot } from './functions/users/kots/askToJoinKot.js';
-import { cancelAskToJoinKot } from './functions/users/kots/cancelAskToJoinKot.js';
-import { removeTenant } from './functions/kots/removeTenant.js';
-import { getTenants } from './functions/kots/getTenants.js';
-import { getAskToJoinUsersForKot } from './functions/kots/getAskToJoinForKot.js';
-import { acceptAskToJoinKot } from './functions/users/kots/acceptAskToJoinKot.js';
-import { refuseAskToJoinKot } from './functions/users/kots/refuseAskToJoinKot.js';
-// Notifications imports
-import { getConnectedUserNotifications } from './functions/notifications/getNotifications.js';
-import { deleteNotification } from './functions/notifications/deleteNotification.js';
-// Search imports
-import { searchEngine } from './functions/searchEngine/searchEngine.js';
 
 ////// Middlewares
 import { generateParams } from './middlewares/generateParams.js';
@@ -92,6 +64,20 @@ import { apiCreateConversationFromKot } from './api/createConversationFromKot.js
 import { apiCreateConversationFromProfile } from './api/createConversationFromProfile.js';
 import { apiSendMessage } from './api/sendMessage.js';
 import { apiGetMessages } from './api/getMessages.js';
+import { apiGetUsersFromConv } from './api/getUsersFromConv.js';
+import { apiRemoveUserFromConv } from './api/removeUserFromConv.js';
+import { apiJoinConv } from './api/joinConv.js';
+import { apiSwitchFav } from './api/switchFav.js';
+import { apiAskToJoin } from './api/askToJoin.js';
+import { apiCancelAskToJoin } from './api/cancelAskToJoin.js';
+import { apiGetTenants } from './api/getTenants.js';
+import { apiGetAskToJoinUsers } from './api/getAskToJoinUsers.js';
+import { apiAcceptAskToJoinKot } from './api/acceptAskToJoinKot.js';
+import { apiRefuseAskToJoinKot } from './api/refuseAskToJoinKot.js';
+import { apiRemoveTenant } from './api/removeTenant.js';
+import { apiGetUserNotifications } from './api/getUserNotifications.js';
+import { apiDeleteNotification } from './api/deleteNotification.js';
+import { apiSearch } from './api/search.js';
 
 ////// Multer
 export const profilPicturesPath = path.join(__dirname, "/users/uploads/");
@@ -145,162 +131,20 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/conversations/create/fromprofile/:userID', userConnected, hasUserID, apiCreateConversationFromProfile);
     app.post('/api/sendMessage', userConnected, apiSendMessage);
     app.post('/api/getMessages', userConnected, apiGetMessages);
-    app.post('/api/getUsersDataFromConvID', (req, res, next) => {
-        getUsersDataFromConvID(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/removeUserFromConversation', (req, res, next) => {
-        removeUserFromConversation(database, req, (error) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                error: error,
-            }));
-            return;
-        });
-    })
-
-    app.post('/api/invitations/join', (req, res, next) => {
-        joinConversation(database, req, (error) => {
-            let convID = "";
-            if(req && req.body && req.body.convID){
-                convID = req.body.convID;
-            }
-            if(error){
-                return res.redirect("/invitations/" + convID + "?error="+error)
-            } else {
-                return res.redirect("/conversations?selectedConversationID=" + convID);
-            }
-        })
-    })
-
-    app.post('/api/switchFavourite', (req, res, next) => {
-        switchKotToFavourites(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/askToJoin', (req, res, next) => {
-        askToJoinKot(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/cancelAskToJoinKot', (req, res, next) => {
-        cancelAskToJoinKot(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/getTenants', (req, res, next) => {
-        getTenants(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/getAskToJoinUsers', (req, res, next) => {
-        getAskToJoinUsersForKot(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/acceptAskToJoinKot', (req, res, next) => {
-        acceptAskToJoinKot(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/refuseAskToJoinKot', (req, res, next) => {
-        refuseAskToJoinKot(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/collocation/removeTenant', (req, res, next) => {
-        removeTenant(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })
-
-    app.post('/api/notifications/getConnectedUserNotifications', (req, res, next) => {
-        getConnectedUserNotifications(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })   
-
-    app.post('/api/notifications/deleteNotification', (req, res, next) => {
-        deleteNotification(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        })
-    })   
-    
-    app.post('/api/search/', (req, res, next) => {
-        searchEngine(database, req, ([status, content]) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                status: status,
-                content: content,
-            }));
-            return;
-        });
-    })
-
+    app.post('/api/getUsersDataFromConvID', userConnected, apiGetUsersFromConv);
+    app.post('/api/removeUserFromConversation', userConnected, apiRemoveUserFromConv);
+    app.post('/api/invitations/join', userConnected, apiJoinConv);
+    app.post('/api/switchFavourite', userConnected, apiSwitchFav);
+    app.post('/api/collocation/askToJoin', userConnected, apiAskToJoin);
+    app.post('/api/collocation/cancelAskToJoinKot', userConnected, apiCancelAskToJoin);
+    app.post('/api/collocation/getTenants', userConnected, apiGetTenants);
+    app.post('/api/collocation/getAskToJoinUsers', userConnected, apiGetAskToJoinUsers);
+    app.post('/api/collocation/acceptAskToJoinKot', userConnected, apiAcceptAskToJoinKot);
+    app.post('/api/collocation/refuseAskToJoinKot', userConnected, apiRefuseAskToJoinKot);
+    app.post('/api/collocation/removeTenant', userConnected, apiRemoveTenant);
+    app.post('/api/notifications/getConnectedUserNotifications', userConnected, apiGetUserNotifications);   
+    app.post('/api/notifications/deleteNotification', userConnected, apiDeleteNotification);   
+    app.post('/api/search/', userConnected, apiSearch);
 
     // ------------  VIEWS  ------------
 
@@ -321,7 +165,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/account/settings', userConnected, getConnectedUser, renderSettings);
     app.get('/presentation', getConnectedUser, renderPresentation);
     app.get('/contact', getConnectedUser, renderContact);
-
 
     // ------------  FILES  ------------
 
