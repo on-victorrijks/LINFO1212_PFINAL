@@ -1,6 +1,7 @@
 /*
 titre : removeTenant
-role  : 1) 
+role  : 1) Vérifie la requête POST
+        2) Supprime le colocataire de la liste des colocatzire du kot
 */
 
 // Imports
@@ -9,9 +10,9 @@ import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../technical
 
 const isRemoveTenantFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : vérifie si les donées sont dans la requête POST et sont utilisables pour supprimer le colocataire
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean
     */
     return  req.body.kotID!==undefined &&
             req.body.userID_toRemove!==undefined
@@ -19,9 +20,9 @@ const isRemoveTenantFormDataValid = (req) => {
 
 export const removeTenant = (database, req, callback) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : retire l'userID de la liste des colocataire du kot et modifie les donées du kot dans la db
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(string))
+        CALLBACK : Array<"OK"|"ERROR", any>
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));

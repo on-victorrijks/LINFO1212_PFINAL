@@ -1,6 +1,7 @@
 /*
 titre : acceptAskToJoinKot
-role  : 1) 
+role  : 1) Vérifie la requête POST
+        2) Modifie les donées du kot pour ajouter l'userID dans les colocataires
 */
 
 // Imports
@@ -10,9 +11,9 @@ import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../techni
 
 const isAcceptAskToJoinKotFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : Vérifie que les donées sont dans la requête POST et qu'elles sont utilisables
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean
     */
     return  req.body.kotID!==undefined &&
             req.body.userID_askingToJoin!==undefined
@@ -20,9 +21,9 @@ const isAcceptAskToJoinKotFormDataValid = (req) => {
 
 export const acceptAskToJoinKot = (database, req, callback) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : modifie dans la db les donées du kot en ajoutant l'userID dans la liste des colocataires du kot
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)| callback (Function(string)) 
+        CALLBACK : Array<"OK"|"ERROR", any>
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));

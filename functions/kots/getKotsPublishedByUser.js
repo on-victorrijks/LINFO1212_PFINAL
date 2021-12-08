@@ -1,6 +1,6 @@
 /*
 titre : getKotsPublishedByUser
-role  : 
+role  : callback les données de tout les kots de l'userID
 */
 
 // Imports
@@ -8,8 +8,8 @@ import { log, toObjectID } from '../technicals/technicals.js';
 
 export const getKotsPublishedByUser = (database, userID, success, error) => {
     /*
-        DEF  : 
-        PRE  : 
+        DEF  : renvoie les donées de tout les kots de l'userID ou une erreur
+        PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) |sucess (kotsInterface) | error (error)
         CALLBACK : 
     */
 
