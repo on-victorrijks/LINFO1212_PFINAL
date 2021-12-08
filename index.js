@@ -127,8 +127,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.post('/api/upload/profilPicture', userConnected, upload.single("profilPicture"), apiChangeProfilePicture);
     app.post('/api/kot/create', userConnected, upload.array("pictures", 10), apiCreateKot);
     app.post('/api/kot/modify', userConnected, upload.array("pictures", 10), apiModifyKot);
-    app.get('/conversations/create/fromkot/:kotID/:userID', userConnected, hasKotID, hasUserID, apiCreateConversationFromKot);
-    app.get('/conversations/create/fromprofile/:userID', userConnected, hasUserID, apiCreateConversationFromProfile);
+    app.get ('/api/conversations/create/fromkot/:kotID/:userID', userConnected, hasKotID, hasUserID, apiCreateConversationFromKot);
+    app.get ('/api/conversations/create/fromprofile/:userID', userConnected, hasUserID, apiCreateConversationFromProfile);
     app.post('/api/sendMessage', userConnected, apiSendMessage);
     app.post('/api/getMessages', userConnected, apiGetMessages);
     app.post('/api/getUsersDataFromConvID', userConnected, apiGetUsersFromConv);
