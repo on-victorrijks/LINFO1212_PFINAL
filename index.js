@@ -711,7 +711,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     // ------------  VIEWS  ------------
 
-    app.get('/'                     , MW_fetchConnectedUserData, 
+    app.get('/'                     ,MW_fetchConnectedUserData, 
     (req, res, next) => { res.render('index.html', req.pageConfiguration) })
 
     app.get('/register'             ,MW_protectionUserShouldNotBeConnected, 
