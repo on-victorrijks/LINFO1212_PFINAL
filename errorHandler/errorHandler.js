@@ -1,4 +1,5 @@
 import { ERRORS } from "../data/errors.js";
+import { log } from "../functions/technicals/technicals.js";
 
 export const errorHandler = (errorCode) => {
     const errorData = ERRORS[errorCode];

@@ -3,7 +3,8 @@ import { getConnectedUserID } from "../functions/technicals/technicals.js";
 import { getUser } from "../functions/users/getUser.js";
 
 export const getConnectedUser = function (req, res, next) {
-    getUser(req.app.locals.database, getConnectedUserID(req), false, 
+    const database = req.app.locals.database;
+    getUser(database, getConnectedUserID(req), false, 
         (connectedUser) => {
             req.pageConfiguration.user = connectedUser;
             if(connectedUser){
