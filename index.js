@@ -139,7 +139,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.post('/api/collocation/removeTenant', userConnected, apiRemoveTenant);
     app.post('/api/notifications/getConnectedUserNotifications', userConnected, apiGetUserNotifications);   
     app.post('/api/notifications/deleteNotification', userConnected, apiDeleteNotification);   
-    app.post('/api/search/', userConnected, apiSearch);
+    app.post('/api/search/', apiSearch);
 
     // ------------  VIEWS  ------------
 
