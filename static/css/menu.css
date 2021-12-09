@@ -21,6 +21,7 @@
 }
 .logo img{
     height: 6vh;
+    object-fit: contain;
 }
 .menuTopElements{
     display: flex;

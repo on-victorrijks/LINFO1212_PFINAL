@@ -1,4 +1,4 @@
-import  mongodb from 'mongodb';
+import mongodb from 'mongodb';
 import express from "express";
 import consolidate from "consolidate";
 import session from "express-session";
@@ -14,14 +14,10 @@ const MongoClient = mongodb.MongoClient;
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 ////// Functions imports
-import { getUser } from './functions/users/getUser.js';
 import { logoutUser } from './functions/users/logoutUser.js';
 
 ////// Middlewares
 import { generateParams } from './middlewares/generateParams.js';
-
-////// ErrorHandler
-import { errorHandler } from './errorHandler/errorHandler.js';
 
 ////// Middlewares
 import { getConnectedUser } from './middlewares/getConnectedUser.js';
@@ -78,6 +74,8 @@ import { apiRemoveTenant } from './api/removeTenant.js';
 import { apiGetUserNotifications } from './api/getUserNotifications.js';
 import { apiDeleteNotification } from './api/deleteNotification.js';
 import { apiSearch } from './api/search.js';
+import { dispatchUserProfilePicture } from './fileDispatcher/userProfilePicture.js';
+import { dispatchKotImage } from './fileDispatcher/kotImage.js';
 
 ////// Multer
 export const profilPicturesPath = path.join(__dirname, "/users/uploads/");
@@ -85,9 +83,6 @@ export const kotsPicturesPath = path.join(__dirname, "/kots/uploads/");;
 export const upload = multer({
     dest: profilPicturesPath
 });
-
-////// Data import
-export const defaultProfilPicture = path.join(__dirname, "/static/imgs/user.png");
 
 ////// Constants
 export const GLOBAL_language = "fr";
@@ -168,31 +163,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
     // ------------  FILES  ------------
 
-    app.get('/users/profilPicture/:userID', function (req, res) {
-        getUser(database, req.params.userID, false, 
-        (requestedUser) => {
-            if(requestedUser && requestedUser.profilPicture !== "$DEFAULT"){
-                return res.sendFile(path.join(profilPicturesPath, requestedUser.profilPicture));
-            } else {
-                // No user for that userID, or the user with that userID doesn't have a profil picture set
-                return res.sendFile(defaultProfilPicture);
-            }
-        },
-        (error) => { 
-            errorHandler(error);
-            return res.sendFile(defaultProfilPicture);
-        });
-    });
-
-    app.get('/users/kots/images/:imageName', function (req, res) {
-        res.sendFile(path.join(kotsPicturesPath, req.params.imageName));
-    });
+    app.get('/users/profilPicture/:userID', hasUserID, dispatchUserProfilePicture);
+    app.get('/users/kots/images/:imageName', dispatchKotImage);
     
     // ------------  ERROR404  ------------
 
-    app.get('*', (req, res) => {
-        res.render('404error.html');
-    });
+    app.get('*', (req, res) => { res.render('404error.html') });
 
     https.createServer({
         key: fs.readFileSync('./keys/key.pem'),
