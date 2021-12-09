@@ -1,6 +1,7 @@
 /*
 titre : getUserFavouritesKots
-role  : 
+role  : 1) Vérifie la requête POST
+        2) retourne les données du kotID
 */
 
 // Imports
@@ -8,8 +9,8 @@ import { log, toObjectID } from '../../technicals/technicals.js';
 
 export const getUserFavouritesKots = (database, userID, success, error) => {
     /*
-        DEF  : 
-        PRE  : 
+        DEF  : retourne soit une erreure soit les donées du kotID
+        PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) | success (kotInterface) | error (error) 
         CALLBACK : 
     */
 

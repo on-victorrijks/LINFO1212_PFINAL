@@ -1,6 +1,7 @@
 /*
 titre : switchKotToFavourites
-role  : 1) 
+role  : 1) Vérifie la requête POST
+        2) on supprime le kot des favoris de l'utilisateur  
 */
 
 // Imports
@@ -9,18 +10,18 @@ import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../techni
 
 const isSwitchKotToFavouritesFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : Vérifie que les donées sont dans la requête POST et qu'elles sont utilisables
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean 
     */
     return  req.body.kotID!==undefined
 }
 
 export const switchKotToFavourites = (database, req, callback) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : on supprime le kot des favoris de l'utilisateur 
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)| callback (Function(string))
+        CALLBACK : CALLBACK : Array<"OK"|"ERROR", any>
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));

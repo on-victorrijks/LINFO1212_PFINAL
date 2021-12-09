@@ -1,6 +1,7 @@
 /*
 titre : cancelAskToJoinKot
-role  : 1) 
+role  : 1) Vérifie la requête POST
+        2) Supprime dans la db la demande de rjoindre un kot 
 */
 
 // Imports
@@ -10,18 +11,18 @@ import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../techni
 
 const isCancelAskToJoinKotFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : Vérifie que les donées sont dans la requête POST et qu'elles sont utilisables
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean
     */
     return  req.body.kotID!==undefined
 }
 
 export const cancelAskToJoinKot = (database, req, callback) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : supprime de la db la demande de rejoindre un kot
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)| callback (Function(string))
+        CALLBACK : Array<"OK"|"ERROR", any>
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));

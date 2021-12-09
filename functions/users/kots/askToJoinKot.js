@@ -1,6 +1,7 @@
 /*
 titre : askToJoinKot
-role  : 1) 
+role  : 1) Vérifie la requête POST
+        2) Ajoute dans la db une nouvelle demande de rejoindre un kot 
 */
 
 // Imports
@@ -10,18 +11,18 @@ import { isRequestPOST, log, toObjectID, getConnectedUserID, objectIDsArrayInclu
 
 const isAskToJoinKotFormDataValid = (req) => {
     /*
-        DEF  : 
-        PRE  : 
-        POST : 
+        DEF  : Vérifie que les donées sont dans la requête POST et qu'elles sont utilisables
+        PRE  : req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)
+        POST : boolean
     */
     return  req.body.kotID!==undefined
 }
 
 export const askToJoinKot = (database, req, callback) => {
     /*
-        DEF  :
-        PRE  :
-        CALLBACK :
+        DEF  : ajoute une demande de rejoinde le kot dans la db
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>)| callback (Function(string)) 
+        CALLBACK : Array<"OK"|"ERROR", any>
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
