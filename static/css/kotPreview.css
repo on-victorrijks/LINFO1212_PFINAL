@@ -1,6 +1,5 @@
 .kotPreview {
-    background-color: var(--color-bg-light);
-    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
     margin: 5px;
     height: auto;
     flex: 1;
@@ -8,11 +7,12 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
     border: solid 1px var(--color-bg-dark);
 }
 .kotPic {
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
     overflow: hidden;
     align-self: flex-start;
     display: flex;
@@ -24,9 +24,7 @@
     width: 100%;
     aspect-ratio: 2;
     overflow: hidden;
-    background-color: black;
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
+    background-color: var(--color-unloaded);
     overflow: hidden;
 }
 .carrousel img{
@@ -34,46 +32,49 @@
     position: absolute;
     top: 0;bottom: 0;left: 0;right: 0;
     margin: auto;
-    opacity: .8;
+    opacity: 1;
 }
 
-.titleContainer{
+.textContainer{
     position: absolute;
-    bottom: 16px;
-    left: 16px;
+    bottom: 6px;
+    left: 6px;
     z-index: 2;
-    max-width: calc(100% - 32px);
-}
-.titleContainer h1{
-    color: var(--color-font-op);
-    font-weight: 600;
-    font-size: 23px;
-    text-shadow: 0px 0px 7px rgba(0, 0, 0, 0.60);
-}
-.priceContainer{
-    background-color: var(--color-bg-light);
-    padding: 10px 22px;
-    border-radius: var(--border-radius-small);
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 2;
-    max-width: calc(35% - 16px);
+    max-width: calc(100% - 44px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    height: 50px;
+    background-color: var(--color-bg-light);
+    padding: 16px;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
 }
-.priceContainer h2{
-    color: var(--color-accentColor);
+.textContainer h1 {
+    color: var(--color-font-title);
     font-weight: 600;
-    font-size: 22px;
-    text-align: center;
+    font-size: 18px;
+    line-height: 25px;
+    height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.priceContainer h3{
+.textContainer .priceContainer{
+    height: 20px;
+    z-index: 2;
+    display: flex;
+}
+.textContainer .priceContainer h2{
     color: var(--color-font-subtitle);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 15px;
-    text-align: center;
+    text-align: left;
+}
+.textContainer .priceContainer i{
+    color: var(--color-font-subtitle);
+    font-weight: 500;
+    font-size: 15px;
+    text-align: left;
 }
 
 .tagsContainer{
@@ -143,13 +144,9 @@
 .informationsContainer{
     flex: 1;
     padding: 15px;
-    border-bottom: solid 1px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: row;
     align-items: center;
-}
-.informationsContainer.address{
-    background-color: red;
 }
 .informationsContainer h2{
     flex: 1;
@@ -163,24 +160,24 @@
     height: 25px;
     margin-right: 15px;
 }
+.informationsContainer.address{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
 
 .twoColumnsInfosContainer{
     display: flex;
     flex-direction: row;
-    margin: 8px;
 }
 .twoColumnsInfosContainer .informationsContainer{
     border-bottom: unset;
     background: transparent;
 }
-.informationsContainer.address {
-    background-color: var(--color-bg);
-}
 
 
 .tagsAndButtonsContainer {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: calc(100% - 30px);
     margin: 15px;
     align-self: flex-start;
@@ -188,22 +185,22 @@
 
 .tagsAndButtonsContainer a{
     background-color: var(--color-accentColor);
-    padding: 10px 22px;
+    padding: 10px 15px;
     border: 0;
     color: var(--color-font-op);
     font-weight: 500;
-    font-size: 20px;
-    line-height: 45px;
+    font-size: 15px;
+    line-height: 20px;
     border-radius: var(--border-radius-small);
     cursor: pointer;
     text-decoration: none;
     text-align: center;
 }
 .tagsAndButtonsContainer .separator{
-    height: 8px;
+    width: 8px;
 }
 .tagsAndButtonsContainer a:hover{
-    opacity: .7;
+    background-color: var(--color-pressed);
 }
 
 .columnsContainer {

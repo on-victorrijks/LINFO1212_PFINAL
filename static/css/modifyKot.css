@@ -58,26 +58,22 @@
 .addPictures-gallery .addFileBtn {
     position: relative;
     float: left;
-    height: 200px;
-    width: 200px;
+    height: 196px;
+    width: 196px;
     margin: 10px;
     overflow: hidden;
-    border-radius: var(--border-radius);
-    background-color: var(--color-accentColor);
-    border: solid 2px rgba(0,0,0,0.1);
+    background-color: transparent;
+    border: solid 5px var(--color-accentColor);
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: scale(1);
-    transition: transform .3s;
     cursor: pointer;
 }
-.addPictures-gallery .addFileBtn h2{
-    color: var(--color-font-op);
-    font-weight: 600;
-    font-size: 18px;
-    width: 50%;
-    text-align: center
+.addPictures-gallery .addFileBtn img{
+    width: 100px;
+    height: 100px;
+    transform: scale(1);
+    transition: transform .5s;
 }
 .addPictures-gallery .image{
     position: relative;
@@ -94,8 +90,8 @@
     background-color: var(--color-unloaded);
     border: solid 2px rgba(0,0,0,0.1);
 }
-.addPictures-gallery .addFileBtn:hover, .addPictures-gallery .image:hover{
-    transform: scale(1.03);
+.addPictures-gallery .addFileBtn:hover img{
+    transform: scale(1.1);
 }
 .addPictures-gallery-slider{
     width: 5000px;
@@ -107,17 +103,16 @@
     width: 100%;
 }
 .addPictures {
-    border-radius: var(--border-radius-small);
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-light);
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: solid 1px rgba(0,0,0,0.1);
+    border: solid 2px #e6e6e6;
     margin-bottom: 25px;
     overflow: hidden;
 }
 .searchLocalisationResults {
-    height: 40px;
+    min-height: 40px;
     padding: 10px;
     margin-left: 25px;
     flex: 1;
@@ -126,13 +121,9 @@
     line-height: 40px;
 }
 .searchLocalisation{
-    padding: 25px;
-    border-radius: var(--border-radius-small);
-    background-color: var(--color-bg);
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: solid 1px rgba(0,0,0,0.1);
     margin-bottom: 25px;
 }
 
