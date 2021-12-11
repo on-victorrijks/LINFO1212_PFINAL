@@ -54,7 +54,19 @@ export const acceptAskToJoinKot = (database, req, callback) => {
                 $set: {
                     "collocationData.tenantsID" : [...kot.collocationData.tenantsID, userID_askingToJoin_toObjectID]
                 }
-            } 
+            };
+            
+            const modifiedUser = {
+                $set: {
+                    "isInKot"   : true,
+                    "actualKot" : kot._id
+                }
+            };
+
+            // Modification de l'utilisateur qui rejoint le kot dans la base de données
+            database.collection("users").updateOne({ _id: userID_askingToJoin_toObjectID }, modifiedUser, function(err_users_modify, res) {
+                if(err_users_modify) return callback(["OK", "SERVICE_PROBLEM"]);    // Erreur reliée à mongoDB
+            });
 
             // Modification du kot dans la base de données
             database.collection("kots").updateOne({ _id: kotID_toObjectID }, modifiedKot, function(err_kots_modify, res) {

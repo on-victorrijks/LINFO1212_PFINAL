@@ -58,6 +58,8 @@ export const registerUser = (database, req, callback) => {
             "type"          : req.body.type==="landlord" ? "landlord" : "resident",
             "companyName"   : req.body.companyName,
             "preferences"   : "",
+            "isInKot"       : false,
+            "actualKot"     : undefined,
             "hashedPassword": hashedPassword
         };
     

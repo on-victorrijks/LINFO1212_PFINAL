@@ -402,21 +402,25 @@
                     {{/isConnectedUserTheCreator}}
                     {{^isConnectedUserTheCreator}}
                         {{#kot.isCollocation}}
-                        <div class="collocation-box">
-                            <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} colocataire(s) trouvé(s)</h3>
-                            {{#kot.canJoinCollocation}}
-                                {{#user}}
-                                    <button class="joinCollocation" onClick="askToJoinCollocation()" id="askToJoinCollocation" visible="true">Demander à rejoindre</a>
-                                    <button class="joinCollocation cancel" onClick="cancelAskToJoinCollocation()" id="cancelAskToJoinCollocation" visible="false">Annuler la demande à rejoindre</a>
-                                {{/user}}
-                                {{^user}}
-                                    <button disabled type="button" class="disabled">Vous devez être connecté pour rejoindre cette colocation</a>
-                                {{/user}}
-                            {{/kot.canJoinCollocation}}
-                            {{^kot.canJoinCollocation}}
-                                <button disabled type="button" class="disabled">Colocation remplie</a>
-                            {{/kot.canJoinCollocation}}
-                        </div>
+                            {{#user.isInKot}}
+                            {{/user.isInKot}}
+                            {{^user.isInKot}}
+                            <div class="collocation-box">
+                                <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} colocataire(s) trouvé(s)</h3>
+                                {{#kot.canJoinCollocation}}
+                                    {{#user}}
+                                        <button class="joinCollocation" onClick="askToJoinCollocation()" id="askToJoinCollocation" visible="true">Demander à rejoindre</a>
+                                        <button class="joinCollocation cancel" onClick="cancelAskToJoinCollocation()" id="cancelAskToJoinCollocation" visible="false">Annuler la demande à rejoindre</a>
+                                    {{/user}}
+                                    {{^user}}
+                                        <button disabled type="button" class="disabled">Vous devez être connecté pour rejoindre cette colocation</a>
+                                    {{/user}}
+                                {{/kot.canJoinCollocation}}
+                                {{^kot.canJoinCollocation}}
+                                    <button disabled type="button" class="disabled">Colocation remplie</a>
+                                {{/kot.canJoinCollocation}}
+                            </div>
+                            {{/user.isInKot}}
                         {{/kot.isCollocation}}
                     {{/isConnectedUserTheCreator}}
                     

@@ -7,7 +7,6 @@ role  : 1) Vérifie la requête POST
 
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
-import { getKot } from '../../kots/getKot.js';
 import { createNotification } from '../../notifications/createNotification.js';
 import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../technicals/technicals.js';
 

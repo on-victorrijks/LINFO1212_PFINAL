@@ -53,7 +53,19 @@ export const removeTenant = (database, req, callback) => {
             $set: {
                 "collocationData.tenantsID" : kot.collocationData.tenantsID
             }
-        } 
+        };
+
+        const modifiedUser = {
+            $set: {
+                "isInKot"   : false,
+                "actualKot" : undefined
+            }
+        };
+
+        // Modification de l'utilisateur qui a été enlevé du kot
+        database.collection("users").updateOne({ _id: userID_toRemove_toObjectID }, modifiedUser, function(err_users_modify, res) {
+            if(err_users_modify) return callback(["OK", "SERVICE_PROBLEM"]);    // Erreur reliée à mongoDB
+        });
 
         // Modification du kot dans la base de données
         database.collection("kots").updateOne({ _id: kotID_toObjectID }, modifiedKot, function(err_kots_modify, res) {
