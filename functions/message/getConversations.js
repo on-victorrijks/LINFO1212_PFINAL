@@ -49,25 +49,35 @@ export const getConversations = (database, req, success, error) => {
                 
                 getLastMessage(database, req, conversation._id.toString(), ([status, content]) => {
                     
+
                     if(status==="ERROR") {
-                        conversation.conv_lastmessage = "..."; 
+                        conversation.conv_lastmessage = "Pas de message"; 
                         conversation.isLastMessageFromUser = false; 
                     } else {
-                        conversation.conv_lastmessage = cutString(content.message, 23) + "..."; 
+                        if(content.message.length > 23){
+                            conversation.conv_lastmessage = cutString(content.message, 23) + "...";
+                        } else {
+                            conversation.conv_lastmessage = content.message;
+                        }
                         conversation.isLastMessageFromUser = content.isFromUser; 
                     }
                     conversation.conv_image = [];
                     conversation.conv_name = "";
     
-                    for (let userIndex = 0; (userIndex < usersData.length && userIndex < 4); userIndex++) {
-                        const participant = usersData[userIndex];
-                        if(participant){
-                            conversation.conv_image.push(participant._id.toString());
-                            conversation.conv_name += ", " + participant.firstname + " " + participant.lastname;
+                    if(usersData.length===0){
+                        conversation.conv_image.push("$ONLYCONNECTEDUSER");
+                        conversation.conv_name = "Seulement vous";
+                    } else {
+                        for (let userIndex = 0; (userIndex < usersData.length && userIndex < 4); userIndex++) {
+                            const participant = usersData[userIndex];
+                            if(participant){
+                                conversation.conv_image.push(participant._id.toString());
+                                conversation.conv_name += ", " + participant.firstname + " " + participant.lastname;
+                            }
                         }
+                        conversation.conv_name = conversation.conv_name.substring(2);
                     }
     
-                    conversation.conv_name = conversation.conv_name.substring(2);
     
                     if((index + 1) === connectedUsersConversations.length) {
                         log("Conversations fetched for connected user, ID:"+userID_toObjectID.toString());

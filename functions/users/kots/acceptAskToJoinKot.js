@@ -6,6 +6,7 @@ role  : 1) Vérifie la requête POST
 
 // Imports
 import { isUserConnected } from '../../../protections/isUserConnected.js';
+import { addUserToConversation } from '../../message/addUserToConversation.js';
 import { createNotification } from '../../notifications/createNotification.js';
 import { isRequestPOST, log, toObjectID, getConnectedUserID } from '../../technicals/technicals.js';
 
@@ -67,6 +68,9 @@ export const acceptAskToJoinKot = (database, req, callback) => {
             database.collection("users").updateOne({ _id: userID_askingToJoin_toObjectID }, modifiedUser, function(err_users_modify, res) {
                 if(err_users_modify) return callback(["OK", "SERVICE_PROBLEM"]);    // Erreur reliée à mongoDB
             });
+
+            // Ajout du nouveau colocataire à la conversation de kot
+            addUserToConversation(database, kot.convID, userID_askingToJoin_toObjectID);
 
             // Modification du kot dans la base de données
             database.collection("kots").updateOne({ _id: kotID_toObjectID }, modifiedKot, function(err_kots_modify, res) {

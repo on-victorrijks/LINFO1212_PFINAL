@@ -38,7 +38,7 @@ export const joinConversation = (database, req, callback) => {
     database.collection("conversations").findOne({ _id: convID_toObjectID }, function(err, conversation) {
 
         if(err) return callback("SERVICE_PROBLEM");                         // Erreur reliée à mongoDB
-        if(!conversation) return callback("BAD_INVITATION");                // Une conversation avec ces participants existe déja
+        if(!conversation) return callback("BAD_INVITATION");                // Pas de conversation pour ce convID
         if(req.body.password !== conversation.passwordToJoin) return callback("WRONG_PASSWORD");
 
         const modifiedParticipants = conversation.participants;

@@ -4,7 +4,7 @@ export const kotFormPreloader = function(req, res, next) {
     if(req.pageConfiguration && req.pageConfiguration.kot){
 
         const kotData = req.pageConfiguration.kot;
-        const availabilityAsDate = new Date(kotData.availability);
+        const availabilityAsDate = new Date(kotData.availabilityRaw);
         let day = availabilityAsDate.getDate().toString();
         let month = (availabilityAsDate.getMonth() + 1).toString();
         let year = availabilityAsDate.getFullYear().toString();

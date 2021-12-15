@@ -228,7 +228,9 @@
                                 </h2>
                             </div>
                             <div class="infoContainer">
+                                {{#isCollocation}}
                                 <h2>{{collocationData.tenantsID.length}}/{{collocationData.maxTenant}} colocataires</h2>
+                                {{/isCollocation}}
                             </div>
                         </div>
 
@@ -242,16 +244,20 @@
                         </div>
 
                         <div class="twoRowsInfosContainer">
+                            {{#isCollocation}}
                             <div class="buttonContainer">
-                                <a href="/notifications?kotID_highlight={{_id}}">Conversation du kot</a>
+                                <a href="/conversations?selectedConversationID={{convID}}">Conversation du kot</a>
                             </div>
+                            {{/isCollocation}}
                             <div class="buttonContainer">
                                 <a href="/kot/delete/{{_id}}" class="delete">Supprimer</a>
                             </div>
                         </div>
                     </div>
 
+                    {{#isCollocation}}
                     <button type="button" class="showCollocationData" onClick="showCollocationData('{{_id}}')">Afficher les données de la colocation</button>
+                    {{/isCollocation}}
 
                 </div>
                 {{/ownKots}}

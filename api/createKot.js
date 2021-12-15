@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 import { createKot } from "../functions/kots/createKot.js";
 import { kotsPicturesPath } from "../index.js";

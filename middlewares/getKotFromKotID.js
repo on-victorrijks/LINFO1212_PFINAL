@@ -9,7 +9,8 @@ export const getKotFromKotID = function(req, res, next){
             req.pageConfiguration.page.title += kotData.title;
 
             kotData.type = kotData.type==="flat" ? "Appartement" : "Maison";
-            kotData.availability = formatDate(kotData.availability)
+            kotData.availabilityRaw = kotData.availability;
+            kotData.availability = formatDate(kotData.availability);
             if(kotData.petFriendly==="small"){
                 kotData.petFriendly = "Petits animaux autorisés";
             } else if(kotData.petFriendly==="big"){

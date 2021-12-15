@@ -24,6 +24,7 @@ const isModifyKotFormDataValid = (req) => {
             req.body.description!==undefined && req.body.description!=="" &&
             req.body.localisation_address!==undefined && req.body.localisation_address!=="" &&
             req.body.localisation_lat!==undefined && req.body.localisation_lat!=="" &&
+            req.body.localisation_lng!==undefined && req.body.localisation_lng!=="" &&
             req.body.isOpen!==undefined && req.body.isOpen!=="" &&
             req.body.availability!==undefined && req.body.availability!=="" &&
             req.body.isCollocation!==undefined && req.body.isCollocation!=="" &&

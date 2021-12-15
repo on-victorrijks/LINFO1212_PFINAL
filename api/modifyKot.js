@@ -2,11 +2,13 @@ import fs from "fs";
 
 import { getKot } from "../functions/kots/getKot.js";
 import { modifyKot } from "../functions/kots/modifyKot.js";
+import { getConnectedUserID } from "../functions/technicals/technicals.js";
 import { kotsPicturesPath } from "../index.js";
 
 export const apiModifyKot = (req, res, next) => {
 
     const database = req.app.locals.database;
+    const userID = getConnectedUserID(req);
 
     if(!(req && req.body)) return res.redirect("/?error=BAD_REQUEST");
 

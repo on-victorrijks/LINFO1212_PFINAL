@@ -65,7 +65,7 @@ export const createConversation = (database, req, callback) => {
     database.collection("conversations").findOne({ participants: participantsObjectIDs }, function(err, conversation) {
 
         if(err) return callback("SERVICE_PROBLEM");                         // Erreur reliée à mongoDB
-        if(conversation) return callback("CONVESATION_ALREADY_EXISTING");   // Une conversation avec ces participants existe déja
+        if(conversation && !req.body.ignoreDuplicatedConversation) return callback("CONVESATION_ALREADY_EXISTING");   // Une conversation avec ces participants existe déja
 
         const newConversation = {
             "participants"  : participantsObjectIDs,
