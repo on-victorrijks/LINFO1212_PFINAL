@@ -56,6 +56,7 @@ import { apiModifyUser } from './api/modifyUser.js';
 import { apiChangeProfilePicture } from './api/changeProfilPicture.js';
 import { apiCreateKot } from './api/createKot.js';
 import { apiModifyKot } from './api/modifyKot.js';
+import { apiDeleteKot } from './api/deleteKot.js';
 import { apiCreateConversationFromKot } from './api/createConversationFromKot.js';
 import { apiCreateConversationFromProfile } from './api/createConversationFromProfile.js';
 import { apiSendMessage } from './api/sendMessage.js';
@@ -122,6 +123,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.post('/api/upload/profilPicture', userConnected, upload.single("profilPicture"), apiChangeProfilePicture);
     app.post('/api/kot/create', userConnected, upload.array("pictures", 10), apiCreateKot);
     app.post('/api/kot/modify', userConnected, upload.array("pictures", 10), apiModifyKot);
+    app.get ('/api/kot/delete/:kotID', userConnected, hasKotID, apiDeleteKot);
     app.get ('/api/conversations/create/fromkot/:kotID/:userID', userConnected, hasKotID, hasUserID, apiCreateConversationFromKot);
     app.get ('/api/conversations/create/fromprofile/:userID', userConnected, hasUserID, apiCreateConversationFromProfile);
     app.post('/api/sendMessage', userConnected, apiSendMessage);

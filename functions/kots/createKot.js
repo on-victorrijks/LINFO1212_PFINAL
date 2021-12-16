@@ -146,7 +146,8 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
                     lat: kot_lat,
                     lng: kot_lng,
                 }, POSITION_grand_place),
-                "convID": result[0]
+                "convID": result[0],
+                "hiddenInSearch": false
             };
         
             // Insertion du kot dans la base de données

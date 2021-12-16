@@ -142,4 +142,12 @@ export const ERRORS = {
         redirectTo: "/",
         buttons: [] 
     },
+    "NO_PROFILPIC": {
+        type: "client",
+        importance: "silly",
+        title: "Vous devez uploader une image valable pour changer de photo de profil",
+        description: "",
+        redirectTo: "/account/settings",
+        buttons: [] 
+    }
 }

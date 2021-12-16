@@ -102,14 +102,14 @@ export const modifyKot = (database, req, kotID, toDeletePictures, kotsPicturesPa
 
 
     // Modification du kot dans la base de données
-    database.collection("kots").updateOne({ _id: kotID_toObjectID }, modifiedKot, function(err, res) {
+    database.collection("kots").updateOne({ _id: kotID_toObjectID, creatorID: userID_toObjectID }, modifiedKot, function(err, res) {
         if(err) return callback("SERVICE_PROBLEM");     // Erreur reliée à mongoDB
 
         log("Kot modified, ID:" + kotID);
 
-        // On supprime l'ancienne image de l'utilisateur
+        // On supprime les images qui ne sont pas gardées
         toDeletePictures.forEach(toDeletePicture => {
-            if(toDeletePicture!==""){ //FIX
+            if(toDeletePicture!==""){
                 const toDeletePicturePath = path.join(kotsPicturesPath, kotID+"_"+toDeletePicture);
                 fs.unlink(toDeletePicturePath, (errUnlink) => {
                     if(errUnlink) return callback("BAD_REQUEST");     // Erreur reliée à la suppression de l'ancienne image

@@ -38,5 +38,6 @@ kotInterface {
     "dist_esplanade"            : Float,
     "dist_lac"                  : Float,
     "dist_grand_place"          : Float,
-    "convID"                    : Mongodb.ObjectId
+    "convID"                    : Mongodb.ObjectId,
+    "hiddenInSearch"            : Boolean
 }

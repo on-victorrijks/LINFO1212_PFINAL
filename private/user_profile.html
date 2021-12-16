@@ -232,7 +232,7 @@
             <div class="publishedKots">
                 <h2>Kots publiés</h2>
 
-                <div class="kotsContainer">
+                <div class="kotsContainer" hasKots="{{#kotsPublishedByUser}}true{{/kotsPublishedByUser}}">
                 {{#kotsPublishedByUser}}
                 <div class="kotPreview">
 
@@ -316,7 +316,7 @@
             <div class="favouritesKots">
                 <h2>Kots favoris</h2>
 
-                <div class="kotsContainer">
+                <div class="kotsContainer" hasKots="{{#favsKots}}true{{/favsKots}}">
                 {{#favsKots}}
                 <div class="kotPreview">
 

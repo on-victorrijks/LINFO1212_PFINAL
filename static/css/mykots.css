@@ -4,6 +4,32 @@
     margin: 25px;
     margin-top: 0;
 }
+.kotsContainer .noKot{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 350px;
+    align-items: center;
+    justify-content: center;
+}
+.kotsContainer .noKot a{
+    text-align: center;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--color-accentColor);
+    margin: 15px 0;
+    text-decoration: none;
+}
+.kotsContainer .noKot a:hover{
+    color: var(--color-pressed);
+}
+.kotsContainer .noKot h3{
+    text-align: center;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--color-font-title);
+    margin: 15px 0;
+}
 .collocation-data{
     padding: 15px;
     display: flex;

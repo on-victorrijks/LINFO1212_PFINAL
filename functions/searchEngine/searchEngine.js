@@ -80,7 +80,9 @@ export const searchEngine = (database, req, callback) => {
     }
     
     ////// Création de la query
-    const query = {};
+    const query = {
+        hiddenInSearch: false,
+    };
     query.basePrice     = {$gte: 0, $lte: 100000};
     query.createdOn     = { $gte: 0 };
     query.bedrooms      = { $gte: 0 };
