@@ -15,10 +15,24 @@
 </head>
 <body>
 
+    {{#error}}
+    <div class="g-alert" id="alerte_box">
+        <h1 id="alert_title">{{title}}</h1>
+        <p id="alert_desc">{{description}}</p>
+        <div class="btnsContainer">
+            {{#buttons}}
+                <a href="{{action.redirectTo}}">{{title}}</a>
+                <div class="spacer"></div>
+            {{/buttons}}
+            <button id="alert_close">Fermer</button>
+        </div>
+    </div>
+    {{/error}}
+
     <div class="centerContainer">
         <div class="logoContainer">
             <a href="/">
-                <img alt="logo" src="/imgs/logo.svg"/>
+                <img alt="logo" src="/imgs/logo.png"/>
             </a>
         </div>
         <div class="g-background-map">
@@ -79,6 +93,7 @@
 </body>
 
 <script src="/js/login.js"></script>
+<script src="/js/alert.js"></script>
 <script
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvHIznYCzznbkXRcZOt4MuvKxthkGcaSU&callback=initMap&libraries=&v=weekly"
 async

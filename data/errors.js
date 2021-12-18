@@ -12,13 +12,6 @@ export const ERRORS = {
                     type: "redirect",
                     redirectTo: "/"
                 }
-            },
-            {
-                title: "Button2_title",
-                action: {
-                    type: "onClick",
-                    function: "doSomething()"
-                }
             }
         ]
     },
@@ -85,7 +78,14 @@ export const ERRORS = {
         type: "client",
         importance: "silly",
         title: "Vous n'êtes pas un propriétaire",
-        description: "Le type de compte n'est pas celui requis pour créer/modifier un kot",
+        description: "Le type de compte n'est pas celui requis pour effectuer cette action.",
+        redirectTo: "/"
+    },
+    "NOT_RESIDENT": {
+        type: "client",
+        importance: "silly",
+        title: "Vous n'êtes pas un résident",
+        description: "Le type de compte n'est pas celui requis pour effectuer cette action.",
         redirectTo: "/"
     },
     "NOT_CREATOR": {
@@ -148,6 +148,22 @@ export const ERRORS = {
         title: "Vous devez uploader une image valable pour changer de photo de profil",
         description: "",
         redirectTo: "/account/settings",
+        buttons: [] 
+    },
+    "EMAIL_IN_USE": {
+        type: "client",
+        importance: "silly",
+        title: "Cette adresse email est déja utilisée",
+        description: "",
+        redirectTo: "/register",
+        buttons: [] 
+    },
+    "BAD_CREDENTIALS": {
+        type: "client",
+        importance: "silly",
+        title: "Les informations de connexion ne sont pas correctes",
+        description: "",
+        redirectTo: "/login",
         buttons: [] 
     }
 }

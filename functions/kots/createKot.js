@@ -78,8 +78,6 @@ export const createKot = (database, req, mainPictureIndex, filteredPicturesName,
     if(!isRequestPOST(req)) return callback(["ERROR", "BAD_REQUEST"]);                      // est-ce que req.body est défini (POST)
     if(!isCreateKotFormDataValid(req)) return callback(["ERROR", "BAD_REQUEST"]);           // est-ce que les données nécessaires pour créer un kot sont dans la requête POST et utilisables
 
-    //FIX VERIF USER TYPE
-
     const kot_lat = toFloat(req.body.localisation_lat, 50.66797103612341);
     const kot_lng = toFloat(req.body.localisation_lng, 4.610840944225293);
 

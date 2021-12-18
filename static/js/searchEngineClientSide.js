@@ -116,10 +116,10 @@ async function search(){
         } else {
             loaderKotsPreview.setAttribute("hidden", "true");
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 
 

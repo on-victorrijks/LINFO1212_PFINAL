@@ -37,10 +37,10 @@ async function getNotifications() {
             }
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 
 }
@@ -146,10 +146,10 @@ async function deleteNotif(notificationID){
             document.querySelector(`.notificationItem[notifID='${notificationID}']`).remove();
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 
 }

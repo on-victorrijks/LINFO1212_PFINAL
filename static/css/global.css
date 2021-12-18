@@ -288,6 +288,80 @@ a.g-topTitle h1{
     line-height: 19px;
 }
 
+/*Alert*/
+.g-alert {
+    position: fixed;
+    min-width: 300px;
+    width: 70vw;
+    max-width: 600px;
+    margin: auto;
+    margin-top: 15px;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 999999;
+    background: var(--color-bg-light);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    border: solid 1px var(--color-bg);
+}
+.g-alert h1{
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-font-title);
+    margin-bottom: 8px;
+}
+.g-alert p{
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-font-text);
+    margin-bottom: 8px;
+}
+.g-alert .btnsContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    align-items: center;
+    justify-content: flex-start;
+}
+.g-alert .btnsContainer .spacer{
+    width: 8px;
+}
+.g-alert .btnsContainer button{
+    border: 0;
+    background: var(--color-cancel);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    color: var(--color-font-op);
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+.g-alert .btnsContainer a{
+    border: 0;
+    text-decoration: none;
+    background: var(--color-accentColor);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    color: var(--color-font-op);
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+.g-alert .btnsContainer a:hover{
+    background: var(--color-pressed);
+}
+.g-alert .btnsContainer button:hover{
+    background: var(--color-cancel-pressed);
+}
+
+
 
 /*DESKTOP VERSION*/
 @media only screen and (min-width: 1280px) {

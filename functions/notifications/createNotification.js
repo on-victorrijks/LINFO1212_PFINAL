@@ -18,9 +18,6 @@ export const createNotification = (database, userID, type, datapoints, callback)
         CALLBACK : [_id de la notif ajouté]/code d'erreur (Array<string>|string)
     */
 
-
-    //FIX VERIF USER TYPE
-
     const newNotif = {
         "userID"        : userID,
         "type"          : type,

@@ -38,10 +38,10 @@ async function showCollocationData(kotID){
             }
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
     await fetch('https://localhost:8080/api/collocation/getAskToJoinUsers', {
@@ -64,10 +64,10 @@ async function showCollocationData(kotID){
             }
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 
     document.getElementById("collocation-data").removeAttribute("hidden");
@@ -126,10 +126,10 @@ async function acceptAskToJoin(userID, kotID) {
             document.querySelector(".userPreview[userID='" + userID + "']").remove();
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 }
 
@@ -153,10 +153,10 @@ async function refuseAskToJoin(userID, kotID) {
             document.querySelector(".userPreview[userID='" + userID + "']").remove();
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 }
 
@@ -180,10 +180,10 @@ async function removeUserFromCollocation(userID, kotID){
             document.querySelector(".userPreview[userID='" + userID + "']").remove();
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error); 
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error); 
     });
 
 }

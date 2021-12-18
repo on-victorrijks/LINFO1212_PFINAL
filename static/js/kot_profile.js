@@ -123,10 +123,10 @@ async function switchFav(){
         if(status==="OK"){
             fav.setAttribute("inFavs", (!isInFav).toString());
         } else {
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
 }
@@ -158,10 +158,10 @@ async function askToJoinCollocation(){
                 buttonAskToJoinCollocation.setAttribute("visible", "false");
                 buttonCancelAskToJoinCollocation.setAttribute("visible", "true");
             }
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
 }
@@ -186,10 +186,10 @@ async function cancelAskToJoinCollocation(e){
             buttonCancelAskToJoinCollocation.setAttribute("visible", "false");
         } else {
             const error = result.content;
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
 }

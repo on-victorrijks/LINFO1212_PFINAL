@@ -29,8 +29,8 @@
     
                 <div class="menuTopElements">
                     <a class="logo" href="/">
-                        <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
-                        <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                        <img src="/imgs/logo.png" id="logo_long" alt="logo"/>
+                        <img src="/imgs/logo_mini.png" id="logo_mini" alt="logo_mini"/>
                     </a>
                     {{#user}}
                     <a class="user" href="/account">
@@ -420,12 +420,12 @@ async function leaveConversation(){
     .then(result => {
         const error = result.error;
         if(!error){
-            location.reload(); //FIX ONLY UI CHANGES ?
+            location.reload();
         } else {
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
 }
@@ -470,11 +470,11 @@ async function getUsersFromConversation(){
                 });
                 usersLoaderContainer.setAttribute("hidden", "");
             } else {
-                console.error('Error:', content); //FIX SHOW ERROR
+                console.error('Error:', content);
                 usersLoaderContainer.setAttribute("hidden", "");
             }
         }).catch((error) => {
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
             usersLoaderContainer.setAttribute("hidden", "");
         });
 
@@ -503,10 +503,10 @@ async function removeUserFromConversation(userID){
         if(!error){
             usersListContainer.querySelector(".userListElement[userid='" + userID + "']").remove();
         } else {
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     }).catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
 }
@@ -635,11 +635,11 @@ async function sendMessage(){
             }, true);
             document.getElementById("conversationWindow").removeAttribute("noMessage");
         } else {
-            console.error('Error:', error); //FIX SHOW ERROR
+            console.error('Error:', error);
         }
     })
     .catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
     });
 
 }
@@ -679,13 +679,13 @@ async function getMessages(){
                 // Plus de message fetchable
                 fetchMoreMessagesButton.setAttribute("hidden", "");
             } else {
-                console.error('Error:', content); //FIX SHOW ERROR
+                console.error('Error:', content);
             }
             messagesLoaderContainer.setAttribute("hidden", "");
         }
     })
     .catch((error) => {
-        console.error('Error:', error); //FIX SHOW ERROR
+        console.error('Error:', error);
         messagesLoaderContainer.setAttribute("hidden", "");
     });
 

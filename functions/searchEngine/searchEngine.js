@@ -169,7 +169,7 @@ export const searchEngine = (database, req, callback) => {
 
         const docs = kots.map((inside_kot) => { 
             return [...inside_kot.title.split(" "), ...inside_kot.description.split(" ")]
-        })
+        });
 
         const queryWords = req.body.text_search.split(" ");
         const kotWithScores = [];

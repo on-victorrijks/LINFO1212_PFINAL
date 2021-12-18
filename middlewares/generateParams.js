@@ -1,15 +1,16 @@
 import { PAGES_METAS } from "../data/pages_metas.js";
 import { GLOBAL_language } from "../index.js";
+import { ERRORS } from "../data/errors.js";
 
-const generatePageConfigurationObject = (pageCode) => {
+const generatePageConfigurationObject = (pageCode, errorCode) => {
     const params = {
         user: null,
         page: {
-            title: "SITENAME - ",
+            title: "KotKot - ",
             description: "",
             icon: "defaultIcon.png",
             keywords: "",
-            copyright: "//FIX",
+            copyright: "© 2021 LINFO1212, Some Rights Reserved",
             charset: "UTF-8"
         },
         menu: {
@@ -30,6 +31,11 @@ const generatePageConfigurationObject = (pageCode) => {
         params.menu.selectedPage[  pageMetas["selectedPage"]  ] = true;
     }
 
+    if(errorCode) {
+        const errorMetas = ERRORS[errorCode];
+        params.error = errorMetas;
+    }
+
     return params
 }
 
@@ -40,6 +46,7 @@ export const generateParams = function (req, res, next) {
     urlParts.shift(); // On enlève le premier élément " '' " causé par le split au dessus
 
     let pageName = urlWithoutGETParams;
+    const errorCode = req.query.error;
 
     // Cas spéciaux
     /* /kot/modify/:kotID */
@@ -59,6 +66,6 @@ export const generateParams = function (req, res, next) {
         pageName = "/user/:userID";
     }
 
-    req.pageConfiguration = generatePageConfigurationObject(pageName);
+    req.pageConfiguration = generatePageConfigurationObject(pageName, errorCode);
     next()
 }

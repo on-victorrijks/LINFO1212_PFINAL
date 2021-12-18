@@ -30,6 +30,8 @@ import { connnectedUserIsCreator } from './middlewares/connnectedUserIsCreator.j
 import { getKotFromKotID } from './middlewares/getKotFromKotID.js';
 import { kotPicsFormatter } from './middlewares/kotPicsFormatter.js';
 import { kotFormPreloader } from './middlewares/kotFormPreloader.js';
+import { userIsLandlord } from './middlewares/userIsLandlord.js';
+import { userIsResident } from './middlewares/userIsResident.js';
 
 ////// Render
 import { renderIndex } from './render/index.js';
@@ -121,8 +123,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.post('/api/loginUser', userNotConnected, apiLoginUser);
     app.post('/api/modifyUser', userConnected, apiModifyUser);
     app.post('/api/upload/profilPicture', userConnected, upload.single("profilPicture"), apiChangeProfilePicture);
-    app.post('/api/kot/create', userConnected, upload.array("pictures", 10), apiCreateKot);
-    app.post('/api/kot/modify', userConnected, upload.array("pictures", 10), apiModifyKot);
+    app.post('/api/kot/create', userConnected, getConnectedUser, userIsLandlord, upload.array("pictures", 10), apiCreateKot);
+    app.post('/api/kot/modify', userConnected, getConnectedUser, userIsLandlord, upload.array("pictures", 10), apiModifyKot);
     app.get ('/api/kot/delete/:kotID', userConnected, hasKotID, apiDeleteKot);
     app.get ('/api/conversations/create/fromkot/:kotID/:userID', userConnected, hasKotID, hasUserID, apiCreateConversationFromKot);
     app.get ('/api/conversations/create/fromprofile/:userID', userConnected, hasUserID, apiCreateConversationFromProfile);
@@ -149,11 +151,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
     app.get('/register', userNotConnected, renderRegister);
     app.get('/login', userNotConnected, renderLogin);
     app.get('/disconnect', userConnected, logoutUser);
-    app.get('/kot/create', userConnected, getConnectedUser, renderKotCreate);
-    app.get('/kot/modify/:kotID', userConnected, hasKotID, getConnectedUser, connnectedUserIsCreator, getKotFromKotID, kotPicsFormatter, kotFormPreloader, renderKotModify);
+    app.get('/kot/create', userConnected, getConnectedUser, userIsLandlord, renderKotCreate);
+    app.get('/kot/modify/:kotID', userConnected, hasKotID, getConnectedUser, userIsLandlord, connnectedUserIsCreator, getKotFromKotID, kotPicsFormatter, kotFormPreloader, renderKotModify);
     app.get('/kot/profile/:kotID', hasKotID, getConnectedUser, getKotFromKotID, kotPicsFormatter, renderKotProfile);
-    app.get('/kot/favs', userConnected, getConnectedUser, renderKotFavs);
-    app.get('/kot/my', userConnected, getConnectedUser, renderKotMy);
+    app.get('/kot/favs', userConnected, getConnectedUser, userIsResident, renderKotFavs);
+    app.get('/kot/my', userConnected, getConnectedUser, userIsLandlord, renderKotMy);
     app.get('/conversations', userConnected, getConnectedUser, renderConversations);
     app.get('/invitations/:convID'  ,userConnected, hasConvID, getConnectedUser, renderConversationInvitation);
     app.get('/search', getConnectedUser, renderSearch);

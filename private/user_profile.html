@@ -16,6 +16,20 @@
 </head>
 <body>
 
+    {{#error}}
+    <div class="g-alert" id="alerte_box">
+        <h1 id="alert_title">{{title}}</h1>
+        <p id="alert_desc">{{description}}</p>
+        <div class="btnsContainer">
+            {{#buttons}}
+                <a href="{{action.redirectTo}}">{{title}}</a>
+                <div class="spacer"></div>
+            {{/buttons}}
+            <button id="alert_close">Fermer</button>
+        </div>
+    </div>
+    {{/error}}
+
     <div class="menuContainer">
         <div class="fixedBtn" id="mobileOpen">
             <img src="/imgs/icons/menu_black_24dp.svg" alt="logo"/>
@@ -30,8 +44,8 @@
     
                 <div class="menuTopElements">
                     <a class="logo" href="/">
-                        <img src="/imgs/logo.svg" id="logo_long" alt="logo"/>
-                        <img src="/imgs/logo_mini.svg" id="logo_mini" alt="logo_mini"/>
+                        <img src="/imgs/logo.png" id="logo_long" alt="logo"/>
+                        <img src="/imgs/logo_mini.png" id="logo_mini" alt="logo_mini"/>
                     </a>
                     {{#user}}
                     <a class="user" href="/account">
@@ -405,6 +419,7 @@
 
 </body>
 <script src="/js/menu.js"></script>
+<script src="/js/alert.js"></script>
 {{#user}}
 <script src="/js/notificationsManager.js"></script>
 {{/user}}
