@@ -560,6 +560,7 @@
     }
     #logo_long{
         display: block;
+        max-width: 70%;
     }
     #logo_mini{
         display: none;
