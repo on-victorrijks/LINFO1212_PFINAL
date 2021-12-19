@@ -19,11 +19,23 @@ const credentials = {
   }
 }
 
+async function connect(driver, email, password, connected) {
+  await driver.get("https://localhost:8080/login");
+
+  const input_email     = driver.findElement(By.name('email'));
+  const input_password  = driver.findElement(By.name('password'));
+
+  input_email.sendKeys(email);
+  input_password.sendKeys(password);
+
+  driver.findElement(By.css('button.submit')).click();
+}
+
 // declaring one test group, with common initialisation.
 describe('Execute tests on KotKot', () => {
 
   let driver;
-
+  
   beforeAll(async () => {    
     driver = await new Builder()
     .forBrowser('chrome')
@@ -44,6 +56,7 @@ describe('Execute tests on KotKot', () => {
     await driver.quit();
   }, 15000);
   
+  /*
   test('Create account for resident', async () => {
     await driver.get("https://localhost:8080/register");
 
@@ -89,6 +102,15 @@ describe('Execute tests on KotKot', () => {
     driver.findElement(By.css('button.submit')).click();
 
   });
+  */
+
+  test('', async () => {
+    const email = "victor.rijks@outlook.com";
+    const password = "123456";
+    connect(driver, email, password, (done) => {
+        console.log("done!");
+    });
+  })
 
   /*
   test('Check account login', async () => {
