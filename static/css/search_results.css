@@ -475,6 +475,7 @@
         top: 25px;
         width: 330px;
         max-height: 70vh;
+        height: unset;
         margin: 0;
     }
 }
