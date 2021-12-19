@@ -29,6 +29,8 @@ async function connect(driver, email, password, connected) {
   input_password.sendKeys(password);
 
   driver.findElement(By.css('button.submit')).click();
+
+  connected();
 }
 
 // declaring one test group, with common initialisation.
