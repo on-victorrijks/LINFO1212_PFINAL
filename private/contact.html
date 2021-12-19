@@ -65,6 +65,14 @@
                 </div>
                 <div class="menuOptions">
     
+                    {{#user}}
+                    {{/user}}
+                    {{^user}}
+                    <a class="registerorlogin_mobile" href="/login">
+                        <h1>Se connecter / S'inscrire</h1>
+                    </a>
+                    {{/user}}
+                    
                     <a class="option" selected="{{menu.selectedPage.home}}" href="/">
                         <div class="optionImage">
                             <img id="unselected" alt="menuOption" src="/imgs/icons/search_black_24dp.svg"/>
