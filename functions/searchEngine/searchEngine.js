@@ -101,7 +101,7 @@ export const searchEngine = (database, req, callback) => {
     const filter_surfacemin     = !["", undefined].includes(req.body.surfacemin);
     const filter_nbparkings     = !["", undefined].includes(req.body.nbparking);
     const filter_petfriendly    = !["", undefined].includes(req.body.petfriendly);
-    const filter_postedSince    = !["", undefined].includes(req.body.postedSince);
+    const filter_postedSince    = !["", undefined].includes(req.body.postedsince);
     const filter_localisation   = !["", undefined].includes(req.body.localisation);
 
     ////// On convertit les valeurs dans des formats facilement utilisables

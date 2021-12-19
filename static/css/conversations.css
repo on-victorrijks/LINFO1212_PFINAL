@@ -457,6 +457,26 @@
     text-align: center;
 }
 
+.usersList-empty{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.usersList-empty[hidden]{
+    display: none;
+}
+.usersList-empty h2{
+    font-size: 17px;
+    margin-top: 25px;
+    color: var(--color-accentColor);
+    font-weight: 600;
+    max-width: 250px;
+    letter-spacing: .5px;
+    text-align: center;
+}
+
 /*DESKTOP VERSION*/
 @media only screen and (min-width: 1280px) {
     .cB-conversation{

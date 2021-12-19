@@ -70,14 +70,31 @@
     justify-content: center;
     align-items: center;
 }
-.kotPreviewList .twoRowsInfosContainer .buttonContainer a.delete{
+.kotPreviewList .twoRowsInfosContainer .buttonContainer button{
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--color-bg-dark);
+    border-radius: var(--border-radius-small);
+    padding: 8px 16px;
+    color: var(--color-font-title);
+    cursor: pointer;
+    height: 51px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+}
+.kotPreviewList .twoRowsInfosContainer .buttonContainer button.delete{
     color: var(--color-font-op);
     background: var(--color-cancel);
 }
 .kotPreviewList .twoRowsInfosContainer .buttonContainer a:hover{
     opacity: .7;
 }
-.kotPreviewList .twoRowsInfosContainer .buttonContainer a.delete:hover{
+.kotPreviewList .twoRowsInfosContainer .buttonContainer button.delete:hover{
     opacity: 1;
     background-color: var(--color-cancel-pressed);
 }

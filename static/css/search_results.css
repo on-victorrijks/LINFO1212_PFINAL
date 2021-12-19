@@ -327,25 +327,11 @@
     border-radius: var(--border-radius-small);
     cursor: pointer;
 }
-.selectedKotPreview .buttonsContainer button{
-    border: 0;
-    text-decoration: none;
-    color: var(--color-font-op);
-    font-weight: 500;
-    font-size: 13px;
-    background-color: var(--color-button-extra);
-    padding: 10px 15px;
-    border-radius: var(--border-radius-small);
-    cursor: pointer;
-}
 .selectedKotPreview .buttonsContainer .button-separator{
     width: 5px;
 }
 .selectedKotPreview .buttonsContainer a:hover{
     background-color: var(--color-pressed);
-}
-.selectedKotPreview .buttonsContainer button:hover{
-    background-color: var(--color-button-extra-pressed);
 }
 
 .noKotFoundForFilters {

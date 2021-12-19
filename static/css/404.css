@@ -53,6 +53,7 @@
     top: 0;
 }
 .logoContainer img{
+    width: auto;
     height: 75px;
 }
 
@@ -70,6 +71,7 @@
     }
     .logoContainer img{
         width: 250px;
+        height: auto;
     }
     .centerContainer{
         display: flex;

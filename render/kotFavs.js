@@ -7,6 +7,7 @@ export const renderKotFavs = (req, res, next) => {
     getUserFavouritesKots(database, getConnectedUserID(req),
     (favsKots) => {
         req.pageConfiguration.favsKots = favsKots;
+        req.pageConfiguration.hasFavsKots = favsKots.length>0;
         res.render('kots_favs.html', req.pageConfiguration);
     },
     (error) => { res.redirect(errorHandler(error)) })

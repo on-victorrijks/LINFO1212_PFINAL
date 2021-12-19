@@ -15,26 +15,25 @@ ConversationObject: {
 import { log, toObjectID, getConnectedUserID, objectIDsArrayIncludes, cutString } from '../technicals/technicals.js';
 import { getUsers } from '../users/getUsers.js';
 
-export const getConversation = (database, req, convID, callback) => {
+export const getConversation = (database, req, convID, success, error) => {
     /*
         DEF  : On callback la conversation avec l'_id étant égal au paramètre convID, en cas d'erreur on callback l'erreur
         PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | convID (mongodb.ObjectID sous le format string) | callback (Function(False|string))
-        CALLBACK : ConversationObject/code d'erreur (ConversationObject|string)
     */
 
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
     const convID_toObjectID = toObjectID(convID);
 
-    if(userID_toObjectID==="") throw "BAD_REQUEST";  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
-    if(convID_toObjectID==="") throw "BAD_REQUEST";  // la convID fournie ne peut pas être transformé en mongodb.ObjectID
+    if(userID_toObjectID==="") return error("BAD_REQUEST");  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
+    if(convID_toObjectID==="") return error("BAD_REQUEST");  // la convID fournie ne peut pas être transformé en mongodb.ObjectID
 
     database.collection("conversations").findOne({ _id: convID_toObjectID }, function(err, conversation) {
 
-        if(err) throw "SERVICE_ERROR";               // Erreur reliée à mongoDB
-        if(!conversation) throw "BAD_REQUEST";       // Pas de conversation pour ce convID dans la db
+        if(err) return error("SERVICE_ERROR");               // Erreur reliée à mongoDB
+        if(!conversation) return error("BAD_REQUEST");       // Pas de conversation pour ce convID dans la db
 
         objectIDsArrayIncludes(conversation.participants, userID_toObjectID, (isConnectedUserInConversation) => {
-            if(isConnectedUserInConversation) throw "ALREADY_IN_CONVERSATION";       // L'utilisateur connecté est déja dans cette conversation
+            if(isConnectedUserInConversation) return error("ALREADY_IN_CONVERSATION");       // L'utilisateur connecté est déja dans cette conversation
 
             getUsers(database, conversation.participants, "", (usersData) => {
             
@@ -53,7 +52,7 @@ export const getConversation = (database, req, convID, callback) => {
                 conversation.conv_name = cutString(conversation.conv_name.substring(2), 75);
     
                 log("Conversation fetched, ID:"+convID.toString());
-                return callback(["OK", conversation]); // Aucune erreur     
+                return success(conversation); // Aucune erreur     
 
             });
 

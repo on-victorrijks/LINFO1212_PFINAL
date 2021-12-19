@@ -246,7 +246,7 @@
             <div class="publishedKots">
                 <h2>Kots publiés</h2>
 
-                <div class="kotsContainer" hasKots="{{#kotsPublishedByUser}}true{{/kotsPublishedByUser}}">
+                <div class="kotsContainer" hasKots="{{hasKotsPublishedByUser}}">
                 {{#kotsPublishedByUser}}
                 <div class="kotPreview">
 
@@ -330,7 +330,7 @@
             <div class="favouritesKots">
                 <h2>Kots favoris</h2>
 
-                <div class="kotsContainer" hasKots="{{#favsKots}}true{{/favsKots}}">
+                <div class="kotsContainer" hasKots="{{hasFavsKots}}">
                 {{#favsKots}}
                 <div class="kotPreview">
 
@@ -403,7 +403,7 @@
                 {{/favsKots}}
                 {{^favsKots}}
                 <div class="noKot">
-                    <h3>Cet utilisateur n'a pas mit de kot dans ses favoris</h3>
+                    <h3>Cet utilisateur n'a ajouté aucun kot à ses favoris.</h3>
                 </div>
                 {{/favsKots}}
                 </div>

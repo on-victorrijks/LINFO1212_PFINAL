@@ -47,6 +47,7 @@
 }
 .logoContainer img{
     height: 75px;
+    width: auto;
 }
 .previewConversation{
     background: var(--color-bg);
@@ -131,6 +132,7 @@
     }
     .logoContainer img{
         width: 250px;
+        height: auto;
     }
     .centerContainer{
         display: flex;

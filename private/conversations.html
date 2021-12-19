@@ -325,6 +325,10 @@
                         <h2>Chargement des utilisateurs...</h2>
                     </div>
 
+                    <div class="usersList-empty" id="usersEmpty-removeUsers" hidden>
+                        <h2>Aucun utilisateur trouvé</h2>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -365,6 +369,7 @@ const passwordCopyButton      = document.getElementById("button_invitationPasswo
 
 const usersListContainer      = document.getElementById("usersListContainer");
 const usersLoaderContainer    = document.getElementById("usersLoaderContainer");
+const usersEmpty_removeUsers  = document.getElementById("usersEmpty-removeUsers");
 
 
 // Dyn data
@@ -444,6 +449,7 @@ function clearUsersInUsersList(){
 async function getUsersFromConversation(){
 
     usersLoaderContainer.removeAttribute("hidden");
+    usersEmpty_removeUsers.setAttribute("hidden", "true");
 
     setTimeout(async() => {
 
@@ -465,9 +471,13 @@ async function getUsersFromConversation(){
             const content = result.content;
             if(status==="OK"){
                 const usersData = content;
-                usersData.forEach(userData => {
-                    createUIUser(userData);
-                });
+                if(usersData.length===0){
+                    usersEmpty_removeUsers.removeAttribute("hidden");
+                } else {
+                    usersData.forEach(userData => {
+                        createUIUser(userData);
+                    });
+                }
                 usersLoaderContainer.setAttribute("hidden", "");
             } else {
                 console.error('Error:', content);

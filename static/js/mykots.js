@@ -192,3 +192,30 @@ function closeModal(modalID){
     document.getElementById("modalContainer").setAttribute("hidden", "true");
     document.getElementById(modalID).setAttribute("hidden", "true");
 }
+
+async function deleteKot(kotID){
+
+    const data = {
+        "kotID": kotID
+    };
+
+    await fetch('https://localhost:8080/api/kot/delete', {
+        method: 'post',
+        mode: 'cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+        const status = result.status;
+        if(status==="OK"){
+            document.querySelector(".kotPreviewList[kotID='" + kotID + "']").remove();
+        } else {
+            const error = result.content;
+            console.error('Error:', error); 
+        }
+    }).catch((error) => {
+        console.error('Error:', error); 
+    });
+
+}

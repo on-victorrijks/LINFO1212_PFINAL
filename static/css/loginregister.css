@@ -97,6 +97,7 @@
 }
 .logoContainer img{
     height: 75px;
+    width: auto;
 }
 
 /*DESKTOP VERSION*/
@@ -113,6 +114,7 @@
     }
     .logoContainer img{
         width: 250px;
+        height: auto;
     }
     .centerContainer{
         display: flex;

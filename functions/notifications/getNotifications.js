@@ -1,6 +1,6 @@
 /*
 titre : getNotifications
-role  : 1) callback les données de la notif avec le notifID fourni
+role  : 1) callback les notifications pour l'utilisateur connecté
 */
 
 // Imports

@@ -28,6 +28,8 @@ export const renderUserProfile = (req, res, next) => {
             getKotsPublishedByUser(database, userID,
             (publishedKots) => {
                 req.pageConfiguration.kotsPublishedByUser = publishedKots;
+                req.pageConfiguration.hasKotsPublishedByUser = publishedKots.length>0;
+
                 return res.render('user_profile.html', req.pageConfiguration);
             },
             (error) => { return res.redirect(errorHandler(error)) })
@@ -36,6 +38,8 @@ export const renderUserProfile = (req, res, next) => {
             getUserFavouritesKots(database, userID,
             (favsKots) => {
                 req.pageConfiguration.favsKots = favsKots;
+                req.pageConfiguration.hasFavsKots = favsKots.length>0;
+
                 return res.render('user_profile.html', req.pageConfiguration);
             },
             (error) => { return res.redirect(errorHandler(error)) })

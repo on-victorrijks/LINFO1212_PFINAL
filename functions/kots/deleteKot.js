@@ -12,16 +12,20 @@ import { removeTenant } from './removeTenant.js';
 import fs from "fs";
 import path from "path";
 
-export const deleteKot = (database, req, kotID, callback) => {
+export const deleteKot = (database, req, callback) => {
     /*
         DEF  : On supprime le kot avec l'_id kotID
-        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | kotID (string) | callback (Function(False|string))
+        PRE  : database (mongodb.Db) | req (Request<{}, any, any, QueryString.ParsedQs, Record<string, any>>) | callback (Function(False|string))
         CALLBACK : Array<"OK"|"ERROR", any>
     */
 
-    const userID_toObjectID = toObjectID(getConnectedUserID(req));
-    const kotID_toObjectID = toObjectID(kotID);
+    const kotID = req && req.body && req.body.kotID;
 
+    const userID_toObjectID = toObjectID(getConnectedUserID(req));
+    if(userID_toObjectID==="") return callback(["ERROR", "BAD_REQUEST"]);
+
+
+    const kotID_toObjectID = toObjectID(kotID);
     if(kotID_toObjectID==="") return callback(["ERROR", "BAD_REQUEST"]);
 
     // is there an kot existing with this kotID and is the connected user the owner ?

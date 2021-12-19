@@ -216,10 +216,12 @@
                             {{/kot.pictures}}
                         </div>
                         {{#user}}
-                        <button class="favBtn" id="fav" onClick="switchFav()" inFavs="false">
-                            <img id="fav_true" src="/imgs/icons/favorite_black_24dp_selected.svg" alt="share">
-                            <img id="fav_false" src="/imgs/icons/favorite_border_black_24dp.svg" alt="share">
-                        </button>
+                            {{#isResident}}
+                            <button class="favBtn" id="fav" onClick="switchFav()" inFavs="{{isKotInFavs}}">
+                                <img id="fav_true" src="/imgs/icons/favorite_black_24dp_selected.svg" alt="share">
+                                <img id="fav_false" src="/imgs/icons/favorite_border_black_24dp.svg" alt="share">
+                            </button>
+                            {{/isResident}}
                         {{/user}}
                     </div>  
 
@@ -387,20 +389,20 @@
                             {{/user}}
                             {{/isConnectedUserTheCreator}}
                             
-                            {{#kot.availability}}
+                            {{#kot.isOpen}}
                             <div class="tags-separator"></div>
                             <div class="tag">
                                 <img alt="dispo_icon" src="/imgs/icons/done_black_24dp.svg"/>
                                 <h2>Kot disponible</h2>
                             </div>
-                            {{/kot.availability}}
-                            {{^kot.availability}}
+                            {{/kot.isOpen}}
+                            {{^kot.isOpen}}
                             <div class="tags-separator"></div>
                             <div class="tag">
                                 <img alt="dispo_icon" src="/imgs/icons/close_black_24dp.svg"/>
                                 <h2>Kot non-disponible</h2>
                             </div>
-                            {{/kot.availability}}
+                            {{/kot.isOpen}}
     
                             {{#kot.hasBeenModified}}
                             <div class="tags-separator"></div>
@@ -417,14 +419,17 @@
                     {{^isConnectedUserTheCreator}}
                         {{#kot.isCollocation}}
                             {{#user.isInKot}}
+                            <div class="collocation-box">
+                                <h3>Vous faites partie de cette colocation !</h3>
+                            </div>
                             {{/user.isInKot}}
                             {{^user.isInKot}}
                             <div class="collocation-box">
                                 <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} colocataire(s) trouvé(s)</h3>
                                 {{#kot.canJoinCollocation}}
                                     {{#user}}
-                                        <button class="joinCollocation" onClick="askToJoinCollocation()" id="askToJoinCollocation" visible="true">Demander à rejoindre</a>
-                                        <button class="joinCollocation cancel" onClick="cancelAskToJoinCollocation()" id="cancelAskToJoinCollocation" visible="false">Annuler la demande à rejoindre</a>
+                                        <button class="joinCollocation" onClick="askToJoinCollocation()" id="askToJoinCollocation" visible="{{isKotInAskToJoinOpposite}}">Demander à rejoindre</a>
+                                        <button class="joinCollocation cancel" onClick="cancelAskToJoinCollocation()" id="cancelAskToJoinCollocation" visible="{{isKotInAskToJoin}}">Annuler la demande à rejoindre</a>
                                     {{/user}}
                                     {{^user}}
                                         <button disabled type="button" class="disabled">Vous devez être connecté pour rejoindre cette colocation</a>

@@ -76,7 +76,7 @@
     -webkit-box-shadow: var(--shadow); 
     box-shadow: var(--shadow); 
     transform: scale(1);
-    transition: all 0.3s ease-out;
+    transition: transform 0.3s ease-out;
 }
 .favBtn:hover{
     transform: scale(1.1);
