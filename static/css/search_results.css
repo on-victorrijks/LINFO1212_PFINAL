@@ -1,17 +1,14 @@
 .blocksContainer{
     display: flex;
-    margin: 25px;
+    margin: 0;
     flex: 1;
-    flex-direction: row;
+    flex-direction: column;
     max-height: 100%;
 }
 .leftTab{
-    width: 15vw;
-    min-width: 500px;
-    max-width: 800px;
+    flex: 1;
     background-color: var(--color-bg-light);
     border-radius: var(--border-radius);
-    margin-right: 15px;
     position: relative;
     overflow: hidden;
 }
@@ -209,14 +206,17 @@
 
 /*selectedKotPreview*/
 .selectedKotPreview{
+    width: 90%;
+    height: 90%;
+    margin: 5%;
+    top: 0;
+    right: 0;
+    max-height: unset;
+
     position: absolute;
-    right: 25px;
-    top: 25px;
     background-color: var(--color-bg-light);
     display: flex;
     flex-direction: column;
-    width: 330px;
-    max-height: 70vh;
     overflow-y: auto;
     overflow-x: hidden;
     box-shadow: var(--shadow);
@@ -239,6 +239,7 @@
     aspect-ratio: 2;
     overflow: hidden;
     background: var(--color-unloaded);
+    flex-shrink: 0;
 }
 .selectedKotPreview .kotImage img{
     width: 100%;
@@ -452,4 +453,28 @@
 }
 .customSelector .elements .element:hover {
     color: var(--color-accentColor);
+}
+
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .blocksContainer{
+        flex-direction: row;
+        margin: 25px;
+        height: unset;
+    }
+    .leftTab{
+        flex: unset;
+        width: 15vw;
+        min-width: 500px;
+        max-width: 800px;
+        margin-right: 15px;
+    }
+    .selectedKotPreview{
+        right: 25px;
+        top: 25px;
+        width: 330px;
+        max-height: 70vh;
+        margin: 0;
+    }
 }

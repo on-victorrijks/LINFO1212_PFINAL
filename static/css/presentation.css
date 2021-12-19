@@ -1,8 +1,7 @@
 .slide{
-    width: calc(100% - 102px);
-    height: calc(100vh - 102px);
-    margin: 50px;
-    border-radius: 50px;
+    width: 100%;
+    height: 100vh;
+    flex-shrink: 0;
     background-color: var(--color-bg);
     display: flex;
     flex-direction: row;
@@ -10,8 +9,6 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    border: solid 1px var(--color-bg-dark);
-    box-shadow: var(--shadow-light);
 }
 
 .slide:nth-child(2), .slide:nth-child(3), .slide:nth-child(4), .slide:nth-child(5), .slide:nth-child(6){
@@ -99,8 +96,9 @@
     cursor: pointer;
 }
 .slide .left{
+    display: none;
+
     flex: 1;
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -155,10 +153,10 @@
     animation: blip 1.5s infinite ease-out;
 }
 .slide .right .box h1.big{
-    font-size: 60px;
+    font-size: 40px;
 }
 .slide .right .box h1.mid{
-    font-size: 45px;
+    font-size: 25px;
 }
 .slide .right .box h2{
     font-size: 20px;
@@ -430,7 +428,7 @@
 }
 .centerBoxOneSide .twoLinksOneDiv{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
 }
 .centerBoxOneSide .twoLinksOneDiv a{
@@ -443,7 +441,35 @@
     font-weight: 600;
     border-radius: var(--border-radius-small);
     margin: 15px;
+    text-align: center;
 }
 .centerBoxOneSide .twoLinksOneDiv a:hover{
     background-color: var(--color-pressed);
+}
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .slide{
+        width: calc(100% - 102px);
+        height: calc(100vh - 102px);
+        margin: 50px;
+        border-radius: 50px;
+        border: solid 1px var(--color-bg-dark);
+        box-shadow: var(--shadow-light);
+    }
+    .slide .left{
+        display: flex;
+    }
+    .slide .right .box h1.big{
+        font-size: 60px;
+    }
+    .slide .right .box h1.mid{
+        font-size: 45px;
+    }
+    .centerBoxOneSide .twoLinksOneDiv{
+        flex-direction: row;
+    }
+    .centerBoxOneSide .twoLinksOneDiv a{
+        text-align: left;
+    }
 }

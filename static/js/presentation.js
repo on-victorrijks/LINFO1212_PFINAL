@@ -104,8 +104,9 @@ async function dynUserTypeAnimation(){
 }
 
 function scrollToSlide(slideNumber){
+    const isMobile = screen.width<=1280;
     scrollWindow.scroll({
-        top: h*slideNumber - 50*slideNumber, 
+        top: isMobile ? h*slideNumber : (h*slideNumber - 50*slideNumber), 
         left: 0, 
         behavior: 'smooth' 
     });
