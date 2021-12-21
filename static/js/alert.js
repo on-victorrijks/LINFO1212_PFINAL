@@ -3,4 +3,7 @@ function closeAlerte() {
     alerteBox.remove();
 }
 
-document.getElementById("alert_close").addEventListener("click", closeAlerte);
+const alertCloseBtn = document.getElementById("alert_close");
+if(alertCloseBtn){
+    alertCloseBtn.addEventListener("click", closeAlerte);
+}
