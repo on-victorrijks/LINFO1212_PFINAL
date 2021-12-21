@@ -7,6 +7,6 @@ export const apiCreateUser = (req, res, next) => {
 
     registerUser(database, req, (error) => {
         if(error) return res.redirect(errorHandler(error));
-        return res.redirect("/login?sucess=ACCOUNT_CREATED");
+        return res.redirect("/login?success=ACCOUNT_CREATED");
     })
 }
