@@ -7,10 +7,10 @@ role  : 1) Vérifie la requête POST
 // Imports
 import { log, toObjectID } from '../../technicals/technicals.js';
 
-export const getUserFavouritesKots = (database, userID, success, error) => {
+export const getUserFavouritesKots = (database, userID, limit, success, error) => {
     /*
         DEF  : retourne soit une erreure soit les donées du kotID
-        PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) | success (kotInterface) | error (error) 
+        PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) | limit (number|false) | success (kotInterface) | error (error) 
         CALLBACK : 
     */
 
@@ -18,7 +18,7 @@ export const getUserFavouritesKots = (database, userID, success, error) => {
 
     if(userID_toObjectID==="") return error("BAD_USERID"); // l'userID fourni ne peut pas être transformé en mongodb.ObjectID
 
-    database.collection("savedKots").find({ userID: userID_toObjectID }).sort({ createdOn: -1 }).toArray(function(errFavs, favKots) {
+    database.collection("savedKots").find({ userID: userID_toObjectID }).limit(limit===false ? 0 : limit).sort({ createdOn: -1 }).toArray(function(errFavs, favKots) {
         if(errFavs) return error("SERVICE_ERROR");      // Erreur reliée à mongoDB
 
         const favKotsIDS = favKots.map((favKot) => {return favKot.kotID});

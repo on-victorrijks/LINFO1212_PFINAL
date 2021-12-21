@@ -20,7 +20,7 @@ export const renderAccount = (req, res, next) => {
 
     if(req.pageConfiguration.profilUser.isLandlord){
         // L'user demandé est un propriétaire
-        getKotsPublishedByUser(database, getConnectedUserID(req),
+        getKotsPublishedByUser(database, getConnectedUserID(req), 10,
         (publishedKots) => {
             req.pageConfiguration.kotsPublishedByUser = publishedKots;
             req.pageConfiguration.hasKotsPublishedByUser = publishedKots.length>0;
@@ -30,7 +30,7 @@ export const renderAccount = (req, res, next) => {
         (error) => { return res.redirect(errorHandler(error)) })
     } else {
         // L'user demandé est un résident
-        getUserFavouritesKots(database, getConnectedUserID(req),
+        getUserFavouritesKots(database, getConnectedUserID(req), 10,
         (favsKots) => {
             req.pageConfiguration.favsKots = favsKots;
             req.pageConfiguration.hasFavsKots = favsKots.length>0;

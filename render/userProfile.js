@@ -1,5 +1,6 @@
 import { errorHandler } from "../errorHandler/errorHandler.js";
 import { getKotsPublishedByUser } from "../functions/kots/getKotsPublishedByUser.js";
+import { getConnectedUserID } from "../functions/technicals/technicals.js";
 import { getUser } from "../functions/users/getUser.js";
 import { getUserFavouritesKots } from "../functions/users/kots/getUserFavouritesKots.js";
 
@@ -25,7 +26,7 @@ export const renderUserProfile = (req, res, next) => {
 
         if(req.pageConfiguration.profilUser.isLandlord){
             // L'user demandé est un propriétaire
-            getKotsPublishedByUser(database, userID,
+            getKotsPublishedByUser(database, userID, 10,
             (publishedKots) => {
                 req.pageConfiguration.kotsPublishedByUser = publishedKots;
                 req.pageConfiguration.hasKotsPublishedByUser = publishedKots.length>0;
@@ -35,7 +36,7 @@ export const renderUserProfile = (req, res, next) => {
             (error) => { return res.redirect(errorHandler(error)) })
         } else {
             // L'user demandé est un résident
-            getUserFavouritesKots(database, userID,
+            getUserFavouritesKots(database, userID, 10,
             (favsKots) => {
                 req.pageConfiguration.favsKots = favsKots;
                 req.pageConfiguration.hasFavsKots = favsKots.length>0;

@@ -6,10 +6,10 @@ role  : callback les données de tout les kots de l'userID
 // Imports
 import { log, toObjectID } from '../technicals/technicals.js';
 
-export const getKotsPublishedByUser = (database, userID, success, error) => {
+export const getKotsPublishedByUser = (database, userID, limit, success, error) => {
     /*
         DEF  : renvoie les donées de tout les kots de l'userID ou une erreur
-        PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) |sucess (kotsInterface) | error (error)
+        PRE  : database (mongodb.Db) | userID (mongodb.ObjectID sous forme de string) | limit (number|false) | success (kotsInterface) | error (error)
         CALLBACK : 
     */
 
@@ -17,7 +17,7 @@ export const getKotsPublishedByUser = (database, userID, success, error) => {
 
     if(userID_toObjectID==="") return error("BAD_USERID"); // l'userID fourni ne peut pas être transformé en mongodb.ObjectID
 
-    database.collection("kots").find({ creatorID: userID_toObjectID, hiddenInSearch: false }).sort({ createdOn: -1 }).toArray(function(err, kots) {
+    database.collection("kots").find({ creatorID: userID_toObjectID, hiddenInSearch: false }).limit(limit===false ? 0 : limit).sort({ createdOn: -1 }).toArray(function(err, kots) {
 
         if(err) return error("SERVICE_ERROR");      // Erreur reliée à mongoDB
         if(!kots) return success([]);     // Pas de kot pour cet userID

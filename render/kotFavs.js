@@ -4,7 +4,7 @@ import { getUserFavouritesKots } from "../functions/users/kots/getUserFavourites
 
 export const renderKotFavs = (req, res, next) => {
     const database = req.app.locals.database;
-    getUserFavouritesKots(database, getConnectedUserID(req),
+    getUserFavouritesKots(database, getConnectedUserID(req), false,
     (favsKots) => {
         req.pageConfiguration.favsKots = favsKots;
         req.pageConfiguration.hasFavsKots = favsKots.length>0;
