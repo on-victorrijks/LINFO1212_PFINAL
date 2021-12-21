@@ -1,6 +1,6 @@
 .infoContainer {
-    flex-direction: row;
     display: flex;
+    flex-direction: column;
 }
 
 .description {
@@ -27,7 +27,6 @@
     flex-shrink: 0;
     margin: calc(1vh + 25px);
     margin-top: 0;
-    margin-left: 25px;
     width: 330px;
 }
 .contactBox b{
@@ -84,4 +83,15 @@
     font-weight: 500;
     font-size: 16px;
     letter-spacing: 1px;
+}
+
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .infoContainer {
+        flex-direction: row;
+    }
+    .contactBox{
+        margin-left: 25px;
+    }
 }

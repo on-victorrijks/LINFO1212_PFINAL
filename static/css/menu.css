@@ -236,16 +236,21 @@
     opacity: 1;
 }
 .notificationsTab{
+
+    width: 90vw;
+    height: 80vh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 10vh;
+    margin: auto;
+
     background: var(--color-bg-light);
-    width: var(--width-menu);
-    height: 350px;
     z-index: 100;
     border-radius: var(--border-radius-small);
     border: solid 1px var(--color-bg);
     box-shadow: var(--shadow);
     position: absolute;
-    left: 100px;
-    bottom: 25px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -576,5 +581,14 @@
     }
     .registerorlogin_mobile{
         display: none;
+    }
+    .notificationsTab{
+        width: var(--width-menu);
+        height: 350px;
+        left: 100px;
+        bottom: 25px;
+        top: unset;
+        right: unset;
+        margin: unset;
     }
 }

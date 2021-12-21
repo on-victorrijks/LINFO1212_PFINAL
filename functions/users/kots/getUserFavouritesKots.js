@@ -22,7 +22,7 @@ export const getUserFavouritesKots = (database, userID, limit, success, error) =
         if(errFavs) return error("SERVICE_ERROR");      // Erreur reliée à mongoDB
 
         const favKotsIDS = favKots.map((favKot) => {return favKot.kotID});
-        database.collection("kots").find({ _id: { $in: favKotsIDS } }).toArray(function(err, kots) {
+        database.collection("kots").find({ _id: { $in: favKotsIDS }, hiddenInSearch: false }).toArray(function(err, kots) {
 
             if(err) return error("SERVICE_ERROR");      // Erreur reliée à mongoDB
             if(!kots) return success([]);     // Pas de kot pour cet userID

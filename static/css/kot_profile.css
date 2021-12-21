@@ -291,7 +291,6 @@
     background-color: var(--color-bg-light);
     border-radius: var(--border-radius);
     align-self: flex-start;
-    max-width: 250px;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -372,7 +371,6 @@
     border-radius: var(--border-radius);
     align-self: flex-start;
     width: 100%;
-    max-width: 280px;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -441,6 +439,12 @@
 
 /*DESKTOP VERSION*/
 @media only screen and (min-width: 1280px) {
+    .tagsAndButtonsContainer{
+        max-width: 250px;
+    }
+    .collocation-box{
+        max-width: 280px;
+    }
     .columnsContainer{
         flex-direction: row;
         width: calc(100vw - var(--width-menu) - 45px);

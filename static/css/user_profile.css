@@ -1,20 +1,24 @@
 .infoUser {
     margin: 25px;
-    display: flex;
-    flex-direction: row;
-    height: auto;
     padding: 25px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    display: flex;
+    height: auto;
     background-color: var(--color-bg-light);
     border: solid 1px var(--color-bg-dark);
     border-radius: var(--border-radius);
 }
 .picContainer{
+    width: 250px;
+    height: 250px;
+
+    border-radius: 50%;
+    aspect-ratio: 1;
     max-width: 200px;
     max-height: 200px;
-    width: 15%;
-    aspect-ratio: 1;
-    border-radius: 100px;
-    margin: 15px;
     overflow: hidden;
     -webkit-box-shadow: var(--shadow-strong); 
     box-shadow: var(--shadow-strong);   
@@ -26,9 +30,11 @@
 }
 .infoContainer {
     margin: 15px;
+    margin-top: 35px;
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
 }
 .infoContainer h1{
@@ -181,4 +187,21 @@
     padding: 25px;
     background-color: var(--color-bg-light);
     border-radius: var(--border-radius);
+}
+
+/*DESKTOP VERSION*/
+@media only screen and (min-width: 1280px) {
+    .infoUser{
+        flex-direction: row;
+        align-items: unset;
+        justify-content: unset;
+    }
+    .picContainer{
+        width: 15%;
+        margin: 15px;
+    }
+    .infoContainer{
+        margin-top: 15px;
+        align-items: unset;
+    }
 }

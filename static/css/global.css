@@ -95,29 +95,6 @@ a.g-topTitle h1{
     font-weight: bold;
     font-size: 25px;
 }
-.g-topIcons{
-    width: 6vh;
-    display: flex;
-    flex-direction: row;
-    margin-right: 15px;
-}
-.g-topIcons button{
-    background: none;
-    border: none;
-    width: 6vh;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: opacity 0.3s;
-}
-.g-topIcons button img{
-    width: 3vh;
-    height: 3vh;
-    margin: 1.5vh;
-}
-.g-topIcons button:hover{
-    animation: hithere 1s ease infinite;
-    opacity: 0.2;
-}
 @keyframes hithere {
     30% { transform: scale(1.1); }
     40%, 60% { transform: rotate(-10deg) scale(1.1); }
@@ -386,15 +363,6 @@ a.g-topTitle h1{
         width: 3vh;
         margin: 2.5vh;
         margin-right: calc(2.5vh + 15px);
-    }
-    .g-topIcons{
-        height: 8vh;
-        margin-right: 2vh;
-    }
-    .g-topIcons button img{
-        width: 4vh;
-        height: 4vh;
-        margin: 2vh;
     }
     .g-content{
         position: absolute;
