@@ -6,7 +6,7 @@ setInterval(getNotifications, 1000*60); // On récupère les notifications toute
 async function getNotifications() {
 
     // Clear
-    const UINotifications = document.querySelector(".notificationItem");
+    const UINotifications = document.querySelectorAll(".notificationItem");
     if(UINotifications) {
         UINotifications.forEach(UINotification => {
             UINotification.remove();

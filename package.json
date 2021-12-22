@@ -1,7 +1,7 @@
 {
   "name": "linfo1212_p1",
   "version": "1.0.0",
-  "description": "Projet LINFO1212",
+  "description": "Projet LINFO1212 - KotKot",
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/on-victorrijks/LINFO1212_P1.git"
   },
-  "author": "Guillaume & Victor",
+  "author": "Guillaume Danckaert & Victor Rijks",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/on-victorrijks/LINFO1212_P1/issues"

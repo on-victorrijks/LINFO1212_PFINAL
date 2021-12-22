@@ -30,7 +30,7 @@ function removeImage(toDelName, divID){
     picturesInput.files = fileBuffer.files;
 }
 
-let previewImageID = {{kot.pictures.length}};
+let previewImageID = document.getElementById("numberOfPictures").value;
 
 function setMainPictureName(toSetMainName, divID){
     mainPictureNameInput.value = toSetMainName;

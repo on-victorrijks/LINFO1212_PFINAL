@@ -292,6 +292,8 @@ describe('Execute tests on KotKot', () => {
         input_title.clear();
         input_title.sendKeys("TEST#Title_modified");
 
+        await sleep(500);
+
         driver.findElement(By.css('button#modify_btn')).click();
 
         await sleep(1000);

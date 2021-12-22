@@ -107,3 +107,4 @@ dist
 demo/
 users/uploads/*
 kots/uploads/*
+chromedriver.exe
