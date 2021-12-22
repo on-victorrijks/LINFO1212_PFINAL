@@ -5,7 +5,7 @@ Dans le cadre du cours “Projet d'approfondissement en sciences informatiques�
 
 Nous avions le choix du sujet d’application mais il y avait tout de même certaines conditions à respecter. Notre site devait utiliser une base de données, il devait contenir des utilisateurs, une fonctionnalité de recherche d’informations et il devait être mis en œuvre en utilisant Node JS, HTML, CSS et MongoDB au minimum.
 
-Après quelques réflexions, nous avons eu l’idée de créer une plateforme permettant de regrouper tous les kots de Louvain-La-Neuve. Le principe est simple : soit l’utilisateur a un compte propriétaire, ce qui lui permet de mettre en ligne des kots à louer, soit il a un compte résident et il peut chercher des kots en fonction de ses attentes. Si un kot l’intéresse, il peut contacter le propriétaire et demander à rejoindre la colocation.
+Après quelques réflexions, nous avons eu l’idée de créer une plateforme permettant de regrouper tous les kots de Louvain-La-Neuve. Le principe est simple : soit l’utilisateur a un compte propriétaire, ce qui lui permet de mettre en ligne des kots à louer, soit il a un compte résident et il peut chercher des kots en fonction de ses attentes. Si un kot l’intéresse, il peut contacter le propriétaire et demander de rejoindre cette colocation.
 
 ## Setup
 ### Pour setup l'application sans aucune donnée
