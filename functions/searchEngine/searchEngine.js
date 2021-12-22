@@ -13,6 +13,47 @@ const ENTRY_TYPES = ["flat", "house"];
 const ENTRY_PETFRIENDLY = ["false", "small", "big"];
 const lessThanDistance = 0.5;
 
+// TF-IDF
+
+function countAppearances(words, t){
+    let count = 0;
+    words.forEach(word => {
+        const dist = distance(word.toLowerCase(), t.toLowerCase());
+        if(dist < 3) count += 1; // Si deux mots ont moins de 3 erreurs entre eux ils sont considérés comme similaire
+    });
+    return count;
+}
+
+function tf(t, d){
+    return countAppearances(d, t)/d.length;
+}
+
+function df(t, docs){
+    let freq = 0;
+    docs.forEach(doc => {
+        freq += tf(t, doc); 
+    });
+    return freq/docs.length;
+}
+
+function idf(t, docs){
+    return Math.log(docs.length/( df(t, docs) + 1 ));
+}
+
+function tf_idf(t, docs, d){
+    return tf(t, d) * idf(t, docs);
+}
+
+function tf_idf_multiwords(words, docs, d){
+    let finalRes = 0;
+    words.forEach(word => {
+        finalRes += tf_idf(word, docs, d);
+    });
+    return finalRes
+}
+
+// TF-IDF END
+
 const convertPostedSinceToDate = (postedSince) => {
     let actualDate = new Date();
     switch(postedSince){
@@ -41,43 +82,6 @@ export const searchEngine = (database, req, callback) => {
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
 
     if(!isRequestPOST(req)) return callback(["ERROR", "BAD_REQUEST"])          // est-ce que req.body est défini (GET)
-
-    function countAppearances(words, t){
-        let count = 0;
-        words.forEach(word => {
-            const dist = distance(word.toLowerCase(), t.toLowerCase());
-            if(dist < 3) count += 1; // Si deux mots ont moins de 3 erreurs entre eux ils sont considérés comme similaire
-        });
-        return count;
-    }
-
-    function tf(t, d){
-        return countAppearances(d, t)/d.length;
-    }
-
-    function df(t, docs){
-        let freq = 0;
-        docs.forEach(doc => {
-            freq += tf(t, doc); 
-        });
-        return freq/docs.length;
-    }
-
-    function idf(t, docs){
-        return Math.log(docs.length/( df(t, docs) + 1 ));
-    }
-
-    function tf_idf(t, docs, d){
-        return tf(t, d) * idf(t, docs);
-    }
-
-    function tf_idf_multiwords(words, docs, d){
-        let finalRes = 0;
-        words.forEach(word => {
-            finalRes += tf_idf(word, docs, d);
-        });
-        return finalRes
-    }
     
     ////// Création de la query
     const query = {
