@@ -19,6 +19,10 @@ Après quelques réflexions, nous avons eu l’idée de créer une plateforme pe
 
 > Si vous souhaitez aussi avoir les images d'exemple, vous devrez exctracter le contenu du fichier images.zip a la racine du projet. Le fichier images.zip se trouve dans le dossier ./bdd_saves/.
 
+## Accéder au site
+Le site se trouve à l'URL https://localhost:8080
+
+
 ## Exécuter les tests
 
 Après avoir setup le site vous pouvez exécuter une série de tests. 
