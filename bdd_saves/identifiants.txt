@@ -1,0 +1,32 @@
+Utilisateurs :
+
+	résidents :
+		- Antoine Trottier :
+			mail : antoine@trottier.be
+			psw  : azerty
+
+		- Lola Peletier :
+			mail : lola@peletier.be
+			psw  : qsdfgh
+		
+		- Pierre LaRue :
+			mail : pierre@larue.be
+			psw  : 456123
+
+	
+	propriétaires :
+		- Axel Portier :
+			mail : axel@portier.com
+			psw  : 123456
+			kots : Kot 15 m² Rue du Chevalet - Kot chez l'habitant 20 m² avenue du Chêne - Studio 45 m² rue de la vallee
+
+		- Anita Poulin :
+			mail : anita@poulin.fr
+			psw  : wxcvbn
+			kots : Appartement à louer, ottignies - Studio Rue du Grand Hornu- Appartement 35 m² place de l'équerre
+		
+		-Adèle Niel :
+			mail : adele@niel.be
+			psw  : 789456
+			kots : Chambre en résidence 25 m² Rue du Centre 21 - Maison 100 m² Rue De Genval - Studio à louer
+						

@@ -19,48 +19,52 @@ export const modifyUserProfilPicture = (database, req, imageName, profilPictures
     const userID_toObjectID = toObjectID(getConnectedUserID(req));
     if(userID_toObjectID==="") return callback("BAD_REQUEST");  // l'userID de l'utilisateur connecté ne peut pas être transformé en mongodb.ObjectID
     
+
     if(![".png", ".jpeg", ".jpg"].includes(imageExtension)) {
         fs.unlink(tempPath, (err) => {
             return callback("BAD_FORMAT");
         });
-    };
+    } else {
+        database.collection("users").findOne({ _id: userID_toObjectID }, function(err, user) {
 
-    database.collection("users").findOne({ _id: userID_toObjectID }, function(err, user) {
-
-        if(err) return callback("SERVICE_PROBLEM"); // Erreur reliée à mongoDB
-        if(!user) return callback("BAD_USERID");
-
-        // On upload la nouvelle image
-        const targetPath = path.join(profilPicturesPath, imageName);
-        fs.rename(tempPath, targetPath, (err) => {
-            if(err) return callback(err);
-        });
-
-        const modifiedUser = {
-            $set: {
-                profilPicture: imageName
-            }
-        } 
-
-        const oldImagePath = user.profilPicture==="$DEFAULT" ? false : path.join(profilPicturesPath, user.profilPicture);
-        const newImagePath = path.join(profilPicturesPath, imageName);
-
-        database.collection("users").updateOne({ _id: userID_toObjectID }, modifiedUser, function(err, res) {
-            if(err) return callback("BAD_REQUEST");     // Erreur reliée à mongoDB
-
-            if(oldImagePath && oldImagePath !== newImagePath){
-                // On supprime l'ancienne image de l'utilisateur
-                fs.unlink(oldImagePath, (errUnlink) => {
-                    if(errUnlink) return callback("BAD_REQUEST");     // Erreur reliée à la suppression de l'ancienne image
-                    log("User's profil picture modified and old profil picture deleted, ID:" + res.insertedId);
-                    return callback(false);                           // Aucune erreur
+            if(err) return callback("SERVICE_PROBLEM"); // Erreur reliée à mongoDB
+            if(!user) return callback("BAD_USERID");
+    
+            // On upload la nouvelle image
+            const targetPath = path.join(profilPicturesPath, imageName);
+            fs.rename(tempPath, targetPath, (err) => {
+                if(err) return callback(err);
+    
+                const modifiedUser = {
+                    $set: {
+                        profilPicture: imageName
+                    }
+                } 
+        
+                const oldImagePath = user.profilPicture==="$DEFAULT" ? false : path.join(profilPicturesPath, user.profilPicture);
+                const newImagePath = path.join(profilPicturesPath, imageName);
+        
+                database.collection("users").updateOne({ _id: userID_toObjectID }, modifiedUser, function(err, res) {
+                    if(err) return callback("BAD_REQUEST");     // Erreur reliée à mongoDB
+        
+                    if(oldImagePath && oldImagePath !== newImagePath){
+                        // On supprime l'ancienne image de l'utilisateur
+                        fs.unlink(oldImagePath, (errUnlink) => {
+                            if(errUnlink) return callback("BAD_REQUEST");     // Erreur reliée à la suppression de l'ancienne image
+                            log("User's profil picture modified and old profil picture deleted, ID:" + res.insertedId);
+                            return callback(false);                           // Aucune erreur
+                        });
+                    } else {
+                        log("User's profil picture modified, ID:" + res.insertedId);
+                        return callback(false);  // Aucune erreur   
+                    }
+        
                 });
-            } else {
-                log("User's profil picture modified, ID:" + res.insertedId);
-                return callback(false);  // Aucune erreur   
-            }
+    
+            });
+    
+        }); 
 
-        });
+    }
 
-    }); 
 }

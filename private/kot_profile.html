@@ -39,7 +39,7 @@
     
         <div class="menu" id="menu" mobileHidden="true">
     
-            <div class="menuElms">
+            <nav class="menuElms">
     
                 <div class="menuTopElements">
                     <a class="logo" href="/">
@@ -186,7 +186,7 @@
                     </a>
                 </div>
                 {{/user}}
-            </div>
+            </nav>
             
         </div>
     </div>
@@ -421,12 +421,12 @@
                     {{/isConnectedUserTheCreator}}
                     {{^isConnectedUserTheCreator}}
                         {{#kot.isCollocation}}
-                            {{#user.isInKot}}
+                            {{#isUserTenantOfThisKot}}
                             <div class="collocation-box">
                                 <h3>Vous faites partie de cette colocation !</h3>
                             </div>
-                            {{/user.isInKot}}
-                            {{^user.isInKot}}
+                            {{/isUserTenantOfThisKot}}
+                            {{^isUserTenantOfThisKot}}
                             <div class="collocation-box">
                                 <h3>{{kot.collocationData.tenantsID.length}}/{{kot.collocationData.maxTenant}} colocataire(s) trouvé(s)</h3>
                                 {{#kot.canJoinCollocation}}
@@ -442,7 +442,7 @@
                                     <button disabled type="button" class="disabled">Colocation remplie</a>
                                 {{/kot.canJoinCollocation}}
                             </div>
-                            {{/user.isInKot}}
+                            {{/isUserTenantOfThisKot}}
                         {{/kot.isCollocation}}
                     {{/isConnectedUserTheCreator}}
                     

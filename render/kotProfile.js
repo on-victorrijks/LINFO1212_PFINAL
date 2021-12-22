@@ -17,6 +17,11 @@ export const renderKotProfile = (req, res, next) => {
                 req.pageConfiguration.isConnectedUserTheCreator = getConnectedUserID(req) && req.pageConfiguration.kot.creatorID.toString()===getConnectedUserID(req);
                 req.pageConfiguration.creatorData = creatorData;
 
+                // is connected user is kot
+                req.pageConfiguration.isUserTenantOfThisKot =   req.pageConfiguration.user!==null && 
+                                                                req.pageConfiguration.user.isInKot &&
+                                                                req.pageConfiguration.user.actualKot.toString()===req.pageConfiguration.kot._id.toString()
+
                 // favs & colocation preloader
                 req.pageConfiguration.isKotInFavs               = ![null, undefined].includes(isInConnectedUserFavs);
                 req.pageConfiguration.isKotInAskToJoin          = ![null, undefined].includes(hasUserAskedToJoinThisKot);   // We could avoid that by refactoring the 

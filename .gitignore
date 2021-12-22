@@ -105,5 +105,5 @@ dist
 
 # customs
 demo/
-users/uploads/
-kots/uploads/
+users/uploads/*
+kots/uploads/*

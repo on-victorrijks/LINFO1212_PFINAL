@@ -98,7 +98,7 @@ export const ERRORS = {
     "OWN_ACCOUNT": {
         type: "client",
         importance: "silly",
-        title: "",
+        title: "Vous avez été redirigé vers votre compte",
         description: "",
         redirectTo: "/account"      
     },
@@ -165,5 +165,21 @@ export const ERRORS = {
         description: "",
         redirectTo: "/login",
         buttons: [] 
-    }
+    },
+    "BAD_REQUEST": {
+        type: "client",
+        importance: "silly",
+        title: "Votre requête n'est pas correcte, il manque des informations ou elles sont incorrectes",
+        description: "",
+        redirectTo: "/",
+        buttons: [] 
+    },
+    "BAD_FORMAT": {
+        type: "client",
+        importance: "silly",
+        title: "Le format de l'image choisie n'est pas accepté",
+        description: "Format accepté : .png, .jpeg, .jpg",
+        redirectTo: "/account/settings",
+        buttons: [] 
+    },
 }

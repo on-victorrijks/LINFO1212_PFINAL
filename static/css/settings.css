@@ -1,0 +1,12 @@
+.uploadImageLabel img{
+    height: 90%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+.uploadImageLabel h2{
+    font-size: inherit;
+}

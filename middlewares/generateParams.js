@@ -20,7 +20,11 @@ const generatePageConfigurationObject = (pageCode, errorCode) => {
         isLandlord: false,
     };
 
-    const pageMetas = PAGES_METAS[GLOBAL_language][pageCode];
+    let usablePageCode = pageCode;
+    if(pageCode && pageCode[pageCode.length - 1]==="/"){
+        usablePageCode = usablePageCode.slice(0, -1); // Nécessaire pour la page /kot/create/ par exemple (convention arbitraire, le code de la page n'a pas de "/" à la fin)
+    }
+    const pageMetas = PAGES_METAS[GLOBAL_language][usablePageCode];
     if (pageMetas) {
         params.page.title       += pageMetas["title"];
         params.page.description  = pageMetas["description"];

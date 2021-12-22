@@ -11,6 +11,8 @@ export const apiCreateKot = (req, res, next) => {
     if(!(req && req.body)) return res.redirect("/kot/create/?error=BAD_REQUEST");
 
     let pictures = req.files;
+    if(!pictures || pictures.length === 0) return res.redirect("/kot/create/?error=BAD_REQUEST");
+
     let filteredPicturesName = [];
 
     let mainPictureIndex = 0;
