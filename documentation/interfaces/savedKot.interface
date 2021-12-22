@@ -1,0 +1,6 @@
+savedKotInterface {
+    "_id"                       : Mongodb.ObjectId,
+    "userID"                    : Mongodb.ObjectId,
+    "kotID"                     : Mongodb.ObjectId,
+    "createdOn"                 : Date (Number)
+}

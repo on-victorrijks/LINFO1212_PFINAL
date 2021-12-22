@@ -9,5 +9,7 @@ userInterface {
     "type"                      : "landlord" | "resident",
     "companyName"               : String,
     "preferences"               : String,
-    "hashedPassword"            : String
+    "hashedPassword"            : String,
+    "isInKot"                   : Boolean,
+    "actualKot"                 : undefined|Mongodb.ObjectId,
 }
