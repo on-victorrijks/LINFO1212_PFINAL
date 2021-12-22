@@ -130,7 +130,7 @@ async function getUsersFromConversation(){
             usersLoaderContainer.setAttribute("hidden", "");
         });
 
-    }, 500); //TO FIX
+    }, 500);
 
 }
 
@@ -278,13 +278,18 @@ async function sendMessage(){
     .then(result => {
         const error = result.error;
         if(!error){
+            const firstMessage = document.getElementById("conversationWindow").getAttribute("noMessage")==="true";
             dyn_messageInput.value = "";
             createUIMessage({
                 message: message,
                 isFromUser: true,
                 createdOn: (new Date()).getTime(),
                 fromUserID: connectedUserID
-            }, true);
+            }, 
+            true,
+            firstMessage
+            )
+
             document.getElementById("conversationWindow").removeAttribute("noMessage");
         } else {
             console.error('Error:', error);
@@ -299,6 +304,13 @@ async function sendMessage(){
 async function getMessages(){
 
     messagesLoaderContainer.removeAttribute("hidden");
+
+    const localMessages = document.querySelectorAll(".cW-message[local='true']");
+    if(localMessages){
+        localMessages.forEach(localMessage => {
+            localMessage.remove();
+        });
+    }
 
     const convID  = dyn_convID.value;
 
@@ -323,7 +335,7 @@ async function getMessages(){
             const oldestMessage = messages[messages.length - 1];
             dyn_lastNumID.value = oldestMessage.numID - 1;
             messages.forEach(message => {
-                createUIMessage(message);
+                createUIMessage(message, false, false);
             });
             messagesLoaderContainer.setAttribute("hidden", "");
         } else {
@@ -343,11 +355,14 @@ async function getMessages(){
 
 }
 
-function createUIMessage(messageData, isNewMessage=false){
+function createUIMessage(messageData, isNewMessage, firstMessage){
 
     const newUIMessage = document.createElement('div');
     newUIMessage.setAttribute("class", "cW-message");
     newUIMessage.setAttribute("fromUser", messageData.isFromUser.toString());
+    if(isNewMessage && firstMessage){
+        newUIMessage.setAttribute("local", "true");
+    }
 
     // Image
     const NUIMSG_userImage = document.createElement('div');
