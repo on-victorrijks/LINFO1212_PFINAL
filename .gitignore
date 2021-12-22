@@ -107,4 +107,6 @@ dist
 demo/
 users/uploads/*
 kots/uploads/*
+!users/uploads/keepAlive.txt
+!kots/uploads/keepAlive.txt
 chromedriver.exe
