@@ -1,8 +1,7 @@
-const fs = require('fs');
 const path = require('path');
 
 const chrome = require('selenium-webdriver/chrome');
-const { Builder, until, By } = require('selenium-webdriver');
+const { Builder, By } = require('selenium-webdriver');
 
 const script = require('jest');
 const { beforeAll, afterAll, expect } = require('@jest/globals');
@@ -13,7 +12,6 @@ chromeOptions.addArguments('--start-maximized');
 
 const exampleImage = path.join(__dirname, '/Test_selenium/images_test/1.jpg');
 
-
 const credentials = {
   "resident": {
     email: "resident@email.com",
@@ -21,10 +19,6 @@ const credentials = {
   },
   "landlord": {
     email: "landlord@email.com",
-    password: "123456"
-  },
-  "landlord2": {
-    email: "cruz.vera@erachatelain.be",
     password: "123456"
   }
 }
@@ -69,18 +63,9 @@ describe('Execute tests on KotKot', () => {
     .forBrowser('chrome')
     .setChromeOptions(chromeOptions)
     .build();
-
-    /*
-    // accept security dialog
-    await driver.get("https://localhost:8080");
-    driver.findElement(By.css('#details-button')).click();
-    driver.findElement(By.css('#proceed-link')).click();
-    */
-
   }, 10000);
  
   afterAll(async () => {
-    return;
     await driver.quit();
   }, 15000);
   
