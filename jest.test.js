@@ -10,7 +10,7 @@ var chromeOptions  = new chrome.Options();
 chromeOptions.addArguments('ignore-certificate-errors');
 chromeOptions.addArguments('--start-maximized');
 
-const exampleImage = path.join(__dirname, '/Test_selenium/images_test/1.jpg');
+const exampleImage = path.join(__dirname, '/Test_selenium/1.jpg');
 
 const credentials = {
   "resident": {

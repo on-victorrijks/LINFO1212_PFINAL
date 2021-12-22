@@ -11,6 +11,15 @@ export const PAGES_METAS = {
         }
     },
     "fr": {
+        "": {
+            "title": "Trouver le kot qui vous correspont !",
+            "description": "Page d'accueil de KotKot",
+            "icon": "default.png",
+            "keywords": "publier, créer, kot, KotKot",
+            "copyright": "© 2021 LINFO1212, Some Rights Reserved",
+            "charset": "UTF-8",
+            "selectedPage": "home"
+        },
         "/kot/create": {
             "title": "Créer un kot",
             "description": "Page pour créer/publier un kot sur KotKot",
